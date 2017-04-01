@@ -12,4 +12,5 @@
     <string name="poll_status_event">Voting on event</string>
     <string name="poll_status_date">Voting on date</string>
     <string name="poll_status_completed">Voting completed</string>
+    <string name="title_activity_vote_category">Vote for a category</string>
 </resources>

@@ -9,15 +9,9 @@ import android.widget.TextView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.view.main.PollFragment.OnListFragmentInteractionListener;
-import io.github.entertainmatch.view.main.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerViewAdapter.ViewHolder> {
 
     private final List<Poll> polls;
@@ -61,7 +55,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         private final View view;
         private final TextView nameView;
         private final TextView statusView;
-        public Poll poll;
+        private Poll poll;
 
         public ViewHolder(View view) {
             super(view);
@@ -73,7 +67,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         public void setPoll(Poll poll) {
             this.poll = poll;
             nameView.setText(poll.getName());
-            statusView.setText(poll.getStatus().getStringId());
+            statusView.setText(poll.getPollStage().getStageStringId());
         }
 
         @Override

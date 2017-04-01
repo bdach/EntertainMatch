@@ -1,5 +1,6 @@
 package io.github.entertainmatch.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,8 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.view.main.PollFragment;
-import io.github.entertainmatch.view.main.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -113,6 +114,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListFragmentInteraction(Poll poll) {
-
+        PollStage stage = poll.getPollStage();
+        Intent intent = stage.getViewStageIntent(this);
+        startActivity(intent);
     }
 }

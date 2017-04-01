@@ -4,9 +4,10 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/list"
-        android:name="io.github.entertainmatch.main.PollFragment"
+        android:name="io.github.entertainmatch.view.category.CategoryFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context=".view.main.PollFragment"
-        tools:listitem="@layout/fragment_poll"/>
+        tools:context="io.github.entertainmatch.view.category.CategoryFragment"
+        tools:listitem="@layout/fragment_category"/>
