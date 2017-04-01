@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">EntertainMatch</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="ongoing_polls">Ongoing polls</string>
+    <string name="upcoming_events">Upcoming events</string>
+
+    <string name="poll_status_category">Voting on category</string>
+    <string name="poll_status_event">Voting on event</string>
+    <string name="poll_status_date">Voting on date</string>
+    <string name="poll_status_completed">Voting completed</string>
+</resources>
