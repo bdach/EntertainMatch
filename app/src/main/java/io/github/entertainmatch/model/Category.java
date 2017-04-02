@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import io.github.entertainmatch.R;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,8 @@ public class Category implements Parcelable {
     private final String name;
     @Getter
     private Integer voteCount = 0;
+    @Getter
+    private boolean votedFor = false;
     @Getter
     private final Integer imageId;
 
@@ -43,14 +46,15 @@ public class Category implements Parcelable {
 
     public void registerVote() {
         voteCount++;
+        votedFor = true;
     }
 
     static ArrayList<Category> mockData() {
         List<Category> list = Arrays.asList(
-                new Category("Movies", 5, R.drawable.cinema),
-                new Category("Concerts", 3, R.drawable.concert),
-                new Category("Plays", 2, R.drawable.play),
-                new Category("Staff Picks", 1, R.drawable.staffpick)
+                new Category("Movies", 5, false, R.drawable.cinema),
+                new Category("Concerts", 3, false, R.drawable.concert),
+                new Category("Plays", 2, false, R.drawable.play),
+                new Category("Staff Picks", 1, false, R.drawable.staffpick)
         );
         return new ArrayList<>(list);
     }

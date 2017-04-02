@@ -2,14 +2,47 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="144dp"
-                android:layout_margin="16dp"
+                android:layout_margin="4dp"
                 android:orientation="horizontal">
+
     <ImageView android:layout_width="match_parent"
                android:layout_height="match_parent"
+               android:scaleType="centerCrop"
                android:id="@+id/category_background"/>
-    <Button android:id="@+id/category_vote_button"
-            android:layout_width="match_parent"
-            android:textColor="@color/colorAccent"
-            android:background="#cc4CAF50"
-            android:layout_height="match_parent"/>
+
+    <RelativeLayout android:id="@+id/category_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorShade"
+                    android:layout_alignParentBottom="true"
+                    android:padding="8dp">
+
+        <TextView android:id="@+id/category_name"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerVertical="true"
+                  android:textColor="@color/colorTintPrimary"/>
+
+        <ImageButton android:id="@+id/category_vote_button"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:padding="4dp"
+                     android:background="@drawable/drawable_icon_button_bg"
+                     android:src="@drawable/ic_check_black_24dp"
+                     android:tint="@color/colorTintPrimary"
+                     android:layout_alignParentEnd="true"
+                     android:layout_alignParentRight="true"
+                     android:contentDescription="@string/vote_icon_description" />
+
+        <TextView android:id="@+id/category_vote_count"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:visibility="invisible"
+                  android:textColor="@color/colorTintPrimary"
+                  android:layout_alignParentEnd="true"
+                  android:layout_alignParentRight="true"
+                  android:textSize="20sp" />
+
+    </RelativeLayout>
+
 </RelativeLayout>

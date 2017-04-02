@@ -3,6 +3,8 @@ package io.github.entertainmatch.view.category;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,12 +21,16 @@ public class VoteCategoryActivity extends AppCompatActivity implements CategoryF
 
     public static final String CATEGORIES_KEY = "categories";
 
+    private CoordinatorLayout layout;
     private CategoryFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vote_category);
+
+        layout = (CoordinatorLayout) findViewById(R.id.vote_category_layout);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,9 +49,11 @@ public class VoteCategoryActivity extends AppCompatActivity implements CategoryF
     @Override
     public void onListFragmentInteraction(Category item) {
         if (item == null) {
-            Log.d("VoteCategoryActivity", "Item was null");
             return;
         }
         item.registerVote();
+        fragment.disableVoting();
+        Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
+                .show();
     }
 }

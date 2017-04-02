@@ -4,18 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Category;
-import io.github.entertainmatch.view.category.dummy.DummyContent;
-import io.github.entertainmatch.view.category.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -27,7 +23,8 @@ public class CategoryFragment extends Fragment {
 
     public static final String CATEGORIES_KEY = "categories";
     private ArrayList<Category> categories;
-    private OnListFragmentInteractionListener mListener;
+    private OnListFragmentInteractionListener listener;
+    private CategoryRecyclerViewAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,7 +62,8 @@ public class CategoryFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-            recyclerView.setAdapter(new CategoryRecyclerViewAdapter(categories, mListener));
+            adapter = new CategoryRecyclerViewAdapter(categories, listener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
@@ -75,7 +73,7 @@ public class CategoryFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+            listener = (OnListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -85,7 +83,12 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
+    }
+
+    public void disableVoting() {
+        adapter.disableVoting();
+        adapter.notifyDataSetChanged();
     }
 
     /**

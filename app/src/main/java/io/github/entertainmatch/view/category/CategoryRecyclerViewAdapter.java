@@ -4,25 +4,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.view.category.CategoryFragment.OnListFragmentInteractionListener;
-import io.github.entertainmatch.view.category.dummy.DummyContent.DummyItem;
+import org.w3c.dom.Text;
 
-import java.util.Collection;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
 
     private final List<Category> categories;
     private final OnListFragmentInteractionListener listener;
+    private boolean canVote = true;
 
     public CategoryRecyclerViewAdapter(List<Category> categories, OnListFragmentInteractionListener listener) {
         this.categories = categories;
@@ -39,8 +36,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.setCategory(categories.get(position));
+        holder.setVoting(canVote);
 
-        holder.view.setOnClickListener(new View.OnClickListener() {
+        holder.voteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != listener) {
@@ -52,6 +50,10 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         });
     }
 
+    public void disableVoting() {
+        canVote = false;
+    }
+
     @Override
     public int getItemCount() {
         return categories.size();
@@ -59,20 +61,42 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
-        private Button button;
+
+        private RelativeLayout labelLayout;
+        private TextView titleView;
+        private TextView voteCountView;
+        private ImageButton voteButton;
         private ImageView imageView;
         private Category category;
 
         public ViewHolder(View view) {
             super(view);
             this.view = view;
-            this.button = (Button) view.findViewById(R.id.category_vote_button);
+            this.labelLayout = (RelativeLayout) view.findViewById(R.id.category_label);
             this.imageView = (ImageView) view.findViewById(R.id.category_background);
+            this.titleView = (TextView) view.findViewById(R.id.category_name);
+            this.voteButton = (ImageButton) view.findViewById(R.id.category_vote_button);
+            this.voteCountView = (TextView) view.findViewById(R.id.category_vote_count);
         }
 
         public void setCategory(Category category) {
-            button.setText(category.getName());
-            imageView.setBackgroundResource(category.getImageId());
+            this.category = category;
+            imageView.setImageResource(category.getImageId());
+            titleView.setText(category.getName());
+            if (category.isVotedFor()) {
+                labelLayout.setBackgroundResource(R.color.colorAccentShade);
+            }
+        }
+
+        public void setVoting(boolean canVote) {
+            if (canVote) {
+                voteCountView.setVisibility(View.INVISIBLE);
+                voteButton.setVisibility(View.VISIBLE);
+            } else {
+                voteCountView.setVisibility(View.VISIBLE);
+                voteCountView.setText(category.getVoteCount().toString());
+                voteButton.setVisibility(View.INVISIBLE);
+            }
         }
     }
 }
