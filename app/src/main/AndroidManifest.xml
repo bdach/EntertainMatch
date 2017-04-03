@@ -27,6 +27,24 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="io.github.entertainmatch.view.MainActivity"/>
         </activity>
+        <activity
+                android:name=".view.event.EventListActivity"
+                android:label="@string/title_event_list"
+                android:parentActivityName=".view.MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.MainActivity"/>
+        </activity>
+        <activity
+                android:name=".view.event.EventDetailActivity"
+                android:label="@string/title_event_detail"
+                android:parentActivityName=".view.event.EventListActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.event.EventListActivity"/>
+        </activity>
     </application>
 
 </manifest>

@@ -18,5 +18,10 @@
     <string name="title_activity_vote_category">Vote for a category</string>
     <string name="vote_icon_description">Vote</string>
     <string name="vote_category_snackbar">Thanks! Your vote was registered.
-        We\'ll notify you when the others have made a choice.</string>
+        We\'ll notify you when the others have made a choice.
+    </string>
+    <string name="title_event_list">Events</string>
+    <string name="title_event_detail">Event Detail</string>
+    <string name="event_image">Event image</string>
+    <string name="event_details">Details</string>
 </resources>

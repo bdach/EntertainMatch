@@ -19,14 +19,14 @@ public class Poll {
     @Getter
     private final String name;
     @Getter @Setter
-    private PollStage pollStage = new VoteCategoryStage();
+    private PollStage pollStage;
     @Getter
     private final Iterable<Person> members;
 
     public static List<Poll> mockData() {
         return Arrays.asList(
-                new Poll("Test poll", Collections.<Person>emptyList()),
-                new Poll("Another test poll", Collections.<Person>emptyList())
+                new Poll("Test poll", new VoteCategoryStage(), Collections.<Person>emptyList()),
+                new Poll("Another test poll", new VoteEventStage(), Collections.<Person>emptyList())
         );
     }
 }

@@ -43,7 +43,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
             public void onClick(View v) {
                 if (null != listener) {
                     // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
+                    // fragment is attached to one) that an event has been selected.
                     listener.onListFragmentInteraction(holder.category);
                 }
             }

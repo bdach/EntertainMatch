@@ -1,4 +1,4 @@
-package io.github.entertainmatch.view.category.dummy;
+package io.github.entertainmatch.view.event.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +51,7 @@ public class DummyContent {
     }
 
     /**
-     * A dummy item representing a piece of content.
+     * A dummy event representing a piece of content.
      */
     public static class DummyItem {
         public final String id;
