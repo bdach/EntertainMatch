@@ -1,6 +1,7 @@
 package io.github.entertainmatch.view.event;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.model.MovieEvent;
 
 /**
  * An activity representing a single Event detail screen. This
@@ -27,15 +29,6 @@ public class EventDetailActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -56,14 +49,27 @@ public class EventDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putParcelable(EventDetailFragment.ARG_ITEM_ID,
-                    getIntent().getParcelableExtra(EventDetailFragment.ARG_ITEM_ID));
+            MovieEvent event = getIntent().getParcelableExtra(EventDetailFragment.ARG_ITEM_ID);
+            arguments.putParcelable(EventDetailFragment.ARG_ITEM_ID, event);
             EventDetailFragment fragment = new EventDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.event_detail_container, fragment)
                     .commit();
+            setFabListener(event.getYoutubeTrailerUrl());
         }
+
+    }
+
+    private void setFabListener(final Uri youtubeTrailerUrl) {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, youtubeTrailerUrl);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

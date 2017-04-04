@@ -3,13 +3,11 @@ package io.github.entertainmatch.view.event;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.os.Build;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.graphics.Palette;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.MovieEvent;
-import io.github.entertainmatch.view.event.dummy.DummyContent;
+import lombok.Getter;
+import org.w3c.dom.Text;
 
 /**
  * A fragment representing a single Event detail screen.
@@ -35,7 +34,9 @@ public class EventDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
+    @Getter
     private MovieEvent event;
+    private CollapsingToolbarLayout layout;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -62,27 +63,41 @@ public class EventDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.event_detail, container, false);
 
         Activity activity = this.getActivity();
-        CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+        layout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
         ImageView view = (ImageView) activity.findViewById(R.id.toolbar_image);
 
         // Show the dummy content as text in a TextView.
         if (event != null) {
-            ((TextView) rootView.findViewById(R.id.event_detail)).setText(event.getSynopsis());
+            setContent(rootView);
             view.setImageResource(event.getDrawableId());
 
-            Palette.Swatch swatch = getPrimaryColor(event.getDrawableId());
-            appBarLayout.setContentScrimColor(swatch.getRgb());
-            appBarLayout.setStatusBarScrimColor(swatch.getRgb());
-            appBarLayout.setTitle(event.getTitle());
-            appBarLayout.setCollapsedTitleTextColor(swatch.getTitleTextColor());
+            Palette palette = getPalette(event.getDrawableId());
+            setColors(palette.getMutedSwatch());
         }
 
         return rootView;
     }
 
-    private Palette.Swatch getPrimaryColor(int drawableId) {
+    private void setContent(View rootView) {
+        layout.setTitle(event.getTitle());
+        ((TextView) rootView.findViewById(R.id.event_detail)).setText(event.getSynopsis());
+        TextView director = (TextView) rootView.findViewById(R.id.movie_event_director);
+        director.setText(event.getDirector());
+        TextView cast = (TextView) rootView.findViewById(R.id.movie_event_cast);
+        cast.setText(event.getCast());
+        TextView score = (TextView) rootView.findViewById(R.id.movie_event_score);
+        score.setText(event.getRottenTomatoesScore().toString());
+    }
+
+    private final void setColors(Palette.Swatch detailSwatch) {
+        layout.setContentScrimColor(detailSwatch.getRgb());
+        layout.setCollapsedTitleTextColor(detailSwatch.getTitleTextColor());
+        layout.setCollapsedTitleTextColor(detailSwatch.getTitleTextColor());
+    }
+
+    private Palette getPalette(int drawableId) {
         Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), drawableId);
         Palette palette = Palette.from(bitmap).generate();
-        return palette.getVibrantSwatch();
+        return palette;
     }
 }

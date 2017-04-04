@@ -1,5 +1,6 @@
 package io.github.entertainmatch.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import io.github.entertainmatch.R;
@@ -28,7 +29,7 @@ public class MovieEvent implements Parcelable {
     @Getter
     private String cast;
     @Getter
-    private String youtubeTrailerId;
+    private Uri youtubeTrailerUrl;
     @Getter
     private Integer rottenTomatoesScore;
 
@@ -38,7 +39,7 @@ public class MovieEvent implements Parcelable {
         synopsis = in.readString();
         director = in.readString();
         cast = in.readString();
-        youtubeTrailerId = in.readString();
+        youtubeTrailerUrl = Uri.parse(in.readString());
         rottenTomatoesScore = in.readInt();
     }
 
@@ -62,7 +63,7 @@ public class MovieEvent implements Parcelable {
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
-                        "G4VmJcZR0Yg",
+                        Uri.parse("https://www.youtube.com/watch?v=G4VmJcZR0Yg"),
                         42
                 ),
                 new MovieEvent(
@@ -71,7 +72,7 @@ public class MovieEvent implements Parcelable {
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
-                        "G4VmJcZR0Yg",
+                        Uri.parse("https://www.youtube.com/watch?v=G4VmJcZR0Yg"),
                         42
                 )
         );
@@ -89,7 +90,7 @@ public class MovieEvent implements Parcelable {
         dest.writeString(synopsis);
         dest.writeString(director);
         dest.writeString(cast);
-        dest.writeString(youtubeTrailerId);
+        dest.writeString(youtubeTrailerUrl.toString());
         dest.writeInt(rottenTomatoesScore);
     }
 }

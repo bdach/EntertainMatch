@@ -5,13 +5,13 @@
                                                  android:layout_height="match_parent"
                                                  android:fitsSystemWindows="true"
                                                  tools:context="io.github.entertainmatch.view.event.EventDetailActivity"
+                                                 android:background="@android:color/transparent"
                                                  tools:ignore="MergeRootFrame">
 
     <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/app_bar_height"
-            android:background="@android:color/transparent"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -19,12 +19,14 @@
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:statusBarScrim="@color/colorShade"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
                 app:toolbarId="@+id/toolbar">
 
             <ImageView android:id="@+id/toolbar_image"
                        android:layout_width="match_parent"
-                       android:layout_height="wrap_content"
+                       android:layout_height="300dp"
+                       android:foreground="@drawable/detail_scrim"
                        android:scaleType="centerCrop" />
 
             <android.support.v7.widget.Toolbar
@@ -50,7 +52,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@android:drawable/stat_notify_chat"
+            android:src="@drawable/ic_youtube_black_24dp"
+            app:backgroundTint="@color/colorYoutube"
+            android:tint="@color/colorTintPrimary"
             app:layout_anchor="@+id/event_detail_container"
             app:layout_anchorGravity="top|end"/>
 

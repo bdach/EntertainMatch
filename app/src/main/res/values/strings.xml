@@ -24,4 +24,7 @@
     <string name="title_event_detail">Event Detail</string>
     <string name="event_image">Event image</string>
     <string name="event_details">Details</string>
+    <string name="movie_event_director_label">Director</string>
+    <string name="movie_event_cast_label">Cast</string>
+    <string name="movie_event_score_label">Score on Rotten Tomatoes</string>
 </resources>
