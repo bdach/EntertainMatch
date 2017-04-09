@@ -1,15 +1,18 @@
-package io.github.entertainmatch.view.category;
+package io.github.entertainmatch.view.date;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
-import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.model.EventDate;
+import io.github.entertainmatch.view.date.dummy.DummyContent;
+import io.github.entertainmatch.view.date.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
 
@@ -19,24 +22,25 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class CategoryFragment extends Fragment {
+public class DateFragment extends Fragment {
 
-    public static final String CATEGORIES_KEY = "categories";
-    private ArrayList<Category> categories;
+    public static final String DATES_KEY = "dates";
+    private ArrayList<EventDate> dates;
     private OnListFragmentInteractionListener listener;
-    private CategoryRecyclerViewAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public CategoryFragment() {
+    public DateFragment() {
     }
 
-    public static CategoryFragment newInstance(ArrayList<Category> categories) {
-        CategoryFragment fragment = new CategoryFragment();
+    // TODO: Customize parameter initialization
+    @SuppressWarnings("unused")
+    public static DateFragment newInstance(ArrayList<EventDate> dates) {
+        DateFragment fragment = new DateFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList(CATEGORIES_KEY, categories);
+        args.putParcelableArrayList(DATES_KEY, dates);
         fragment.setArguments(args);
         return fragment;
     }
@@ -46,22 +50,21 @@ public class CategoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            categories = getArguments().getParcelableArrayList(CATEGORIES_KEY);
+            dates = getArguments().getParcelableArrayList(DATES_KEY);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_category_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_date_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-            adapter = new CategoryRecyclerViewAdapter(categories, listener);
-            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new DateRecyclerViewAdapter(dates, listener));
         }
         return view;
     }
@@ -84,11 +87,6 @@ public class CategoryFragment extends Fragment {
         listener = null;
     }
 
-    public void disableVoting() {
-        adapter.disableVoting();
-        adapter.notifyDataSetChanged();
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -100,7 +98,6 @@ public class CategoryFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Category item);
+        void onListFragmentInteraction(EventDate date);
     }
 }

@@ -26,7 +26,8 @@ public class Poll {
     public static List<Poll> mockData() {
         return Arrays.asList(
                 new Poll("Test poll", new VoteCategoryStage(), Collections.<Person>emptyList()),
-                new Poll("Another test poll", new VoteEventStage(), Collections.<Person>emptyList())
+                new Poll("Another test poll", new VoteEventStage(), Collections.<Person>emptyList()),
+                new Poll("Yet another test poll", new VoteDateStage(), Collections.<Person>emptyList())
         );
     }
 }

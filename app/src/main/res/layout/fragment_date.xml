@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal">
+
+    <CheckBox android:id="@+id/date_checked"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:clickable="false"
+              android:background="@android:color/transparent"
+              android:layout_marginLeft="8dp"
+              android:layout_marginRight="8dp"
+              android:layout_centerVertical="true" />
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_toRightOf="@id/date_checked"
+                  android:layout_toEndOf="@id/date_checked"
+                  android:orientation="vertical"
+                  android:layout_marginRight="64dp"
+                  android:layout_marginEnd="64dp">
+        <TextView
+                android:id="@+id/date_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
+                android:textColor="@color/colorTextPrimary" />
+
+        <TextView
+                android:id="@+id/date_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textSize="12sp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/colorTextSecondary"/>
+    </LinearLayout>
+
+    <ImageButton android:id="@+id/date_location_map"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?attr/textAppearanceListItem"
+                 android:padding="4dp"
+                 android:background="@drawable/drawable_icon_button_bg"
+                 android:src="@drawable/ic_map_black_24dp"
+                 android:tint="@color/colorTextSecondary"
+                 android:layout_alignParentRight="true"
+                 android:layout_alignParentEnd="true"
+                 android:layout_centerVertical="true"
+                 android:layout_marginRight="16dp"
+                 android:layout_marginLeft="16dp"
+                 android:contentDescription="@string/see_location_on_map" />
+</RelativeLayout>

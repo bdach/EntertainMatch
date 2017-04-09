@@ -45,6 +45,15 @@
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="io.github.entertainmatch.view.event.EventListActivity"/>
         </activity>
+        <activity
+                android:name=".view.date.VoteDateActivity"
+                android:label="@string/title_activity_vote_date"
+                android:parentActivityName=".view.MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>
