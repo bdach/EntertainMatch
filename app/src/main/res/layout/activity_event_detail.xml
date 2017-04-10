@@ -53,7 +53,7 @@
             android:layout_gravity="center_vertical|start"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_youtube_black_24dp"
-            app:backgroundTint="@color/colorYoutube"
+            app:backgroundTint="@color/colorRed"
             android:tint="@color/colorTintPrimary"
             app:layout_anchor="@+id/event_detail_container"
             app:layout_anchorGravity="top|end"/>

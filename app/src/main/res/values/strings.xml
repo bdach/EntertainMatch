@@ -31,4 +31,11 @@
     <string name="title_activity_vote_date">Vote for a date</string>
     <string name="see_location_on_map">See location on map</string>
     <string name="confirm_vote">Confirm</string>
+    <string name="vote_result_headline">So it\'s settled then!</string>
+    <string name="vote_result_introduction">You\'ve chosen to see</string>
+    <string name="vote_result_place_preposition">at</string>
+    <string name="vote_result_date_preposition">on the date of</string>
+    <string name="vote_result_call_to_action">Are you going?</string>
+    <string name="vote_result_yes">Yes</string>
+    <string name="vote_result_no">No</string>
 </resources>

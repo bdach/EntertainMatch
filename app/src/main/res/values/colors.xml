@@ -10,5 +10,7 @@
     <color name="colorTextDivider">#BDBDBD</color>
     <color name="colorShade">#40000000</color>
     <color name="colorAccentShade">#80FF9800</color>
-    <color name="colorYoutube">#f44336</color>
+    <color name="colorRed">#f44336</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>
