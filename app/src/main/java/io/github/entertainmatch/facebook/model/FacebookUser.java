@@ -5,12 +5,14 @@ import org.json.JSONObject;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by Adrian Bednarz on 4/5/17.
  */
 
 @AllArgsConstructor
+@NoArgsConstructor
 public class FacebookUser {
     @Getter
     public String facebookId;

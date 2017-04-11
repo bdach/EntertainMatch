@@ -1,5 +1,6 @@
 package io.github.entertainmatch.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
@@ -36,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
     LoginButton loginButton;
 
     private CallbackManager callbackManager;
-    private ProgressDialog progressDialog;
     private FacebookCallback<LoginResult> loginCallback;
 
     @Override
@@ -70,6 +71,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        // quit immediately without re-rendering
+        if (requestCode == CallbackManagerImpl.RequestCodeOffset.Login.toRequestCode() &&
+                resultCode == Activity.RESULT_OK)
+            finish();
     }
 
     private void setupLoginButton() {
@@ -80,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            showProgressDialog();
             performFacebookLogin();
             }
         });
@@ -90,8 +95,6 @@ public class LoginActivity extends AppCompatActivity {
         loginCallback = new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                progressDialog.dismiss();
-
                 GraphRequest request = GraphRequest.newMeRequest(
                     loginResult.getAccessToken(),
                     new GraphRequest.GraphJSONObjectCallback() {
@@ -122,13 +125,11 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                progressDialog.dismiss();
             }
 
             @Override
             public void onError(FacebookException e) {
                 Log.e(Tag, "Facebook login error -- " + e.getMessage());
-                progressDialog.dismiss();
             }
         };
     }
@@ -140,11 +141,5 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initFacebook() {
         FacebookSdk.sdkInitialize(getApplicationContext());
-    }
-
-    private void showProgressDialog() {
-        progressDialog = new ProgressDialog(LoginActivity.this);
-        progressDialog.setMessage(getString(R.string.loading_message));
-        progressDialog.show();
     }
 }
