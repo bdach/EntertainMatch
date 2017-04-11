@@ -12,22 +12,16 @@ import android.widget.TextView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.view.date.DateFragment.OnListFragmentInteractionListener;
-import io.github.entertainmatch.view.date.dummy.DummyContent.DummyItem;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- */
 public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerViewAdapter.ViewHolder> {
 
     private final List<EventDate> dates;
     private final OnListFragmentInteractionListener listener;
-    private Context context;
 
     public DateRecyclerViewAdapter(ArrayList<EventDate> dates, OnListFragmentInteractionListener listener) {
         this.dates = dates;
@@ -36,7 +30,6 @@ public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerVi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_date, parent, false);
         return new ViewHolder(view);

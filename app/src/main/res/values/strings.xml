@@ -38,4 +38,9 @@
     <string name="vote_result_call_to_action">Are you going?</string>
     <string name="vote_result_yes">Yes</string>
     <string name="vote_result_no">No</string>
+    <string name="title_activity_create_poll">New poll</string>
+    <string name="new_poll_name">New poll name</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

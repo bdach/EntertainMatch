@@ -56,9 +56,18 @@
         </activity>
         <activity
                 android:name=".view.result.VoteResultActivity"
-                android:parentActivityName=".view.MainActivity"
                 android:label="@string/vote_result_headline"
+                android:parentActivityName=".view.MainActivity"
                 android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+                android:name=".view.poll.CreatePollActivity"
+                android:label=""
+                android:parentActivityName=".view.MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.MainActivity"/>
         </activity>
     </application>
 

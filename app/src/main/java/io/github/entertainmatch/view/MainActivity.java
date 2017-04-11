@@ -19,6 +19,7 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.view.main.PollFragment;
+import io.github.entertainmatch.view.poll.CreatePollActivity;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -39,8 +40,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "New polls will be created here", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(MainActivity.this, CreatePollActivity.class);
+                MainActivity.this.startActivity(intent);
             }
         });
 

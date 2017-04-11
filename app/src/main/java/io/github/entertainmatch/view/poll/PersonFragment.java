@@ -1,17 +1,20 @@
-package io.github.entertainmatch.view.date;
+package io.github.entertainmatch.view.poll;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
-import io.github.entertainmatch.model.EventDate;
+import io.github.entertainmatch.model.Person;
+import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -19,25 +22,27 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class DateFragment extends Fragment {
+public class PersonFragment extends Fragment {
 
-    public static final String DATES_KEY = "dates";
-    private ArrayList<EventDate> dates;
+    private static final String PERSON_LIST = "person_list";
+    private ArrayList<Person> people;
     private OnListFragmentInteractionListener listener;
+    @Setter
+    private AppCompatActivity activity;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public DateFragment() {
+    public PersonFragment() {
     }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static DateFragment newInstance(ArrayList<EventDate> dates) {
-        DateFragment fragment = new DateFragment();
+    public static PersonFragment newInstance(List<Person> people, AppCompatActivity activity) {
+        PersonFragment fragment = new PersonFragment();
+        fragment.setActivity(activity);
         Bundle args = new Bundle();
-        args.putParcelableArrayList(DATES_KEY, dates);
+        args.putParcelableArrayList(PERSON_LIST, new ArrayList<>(people));
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,21 +52,21 @@ public class DateFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            dates = getArguments().getParcelableArrayList(DATES_KEY);
+            people = getArguments().getParcelableArrayList(PERSON_LIST);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_date_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_person_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new DateRecyclerViewAdapter(dates, listener));
+            recyclerView.setAdapter(new PersonRecyclerViewAdapter(people, listener));
         }
         return view;
     }
@@ -95,6 +100,7 @@ public class DateFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(EventDate date);
+        void onListFragmentInteraction(Person item);
+        Context getContext();
     }
 }

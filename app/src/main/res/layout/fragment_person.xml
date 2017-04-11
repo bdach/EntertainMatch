@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="horizontal">
+
+    <RelativeLayout
+              android:id="@+id/person_avatar"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_marginLeft="8dp"
+              android:layout_marginStart="8dp"
+              android:layout_marginRight="16dp"
+              android:layout_marginEnd="16dp">
+
+        <ImageView android:id="@+id/person_avatar_background"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:src="@color/colorAccent" />
+
+        <TextView android:id="@+id/person_avatar_letter"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textSize="24sp"
+                  android:textColor="@android:color/white"
+                  android:layout_centerHorizontal="true"
+                  android:layout_centerVertical="true"/>
+
+    </RelativeLayout>
+
+    <CheckBox android:id="@+id/person_selected"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:clickable="false"
+              android:background="@android:color/transparent"
+              android:layout_centerVertical="true"
+              android:layout_alignParentRight="true"
+              android:layout_alignParentEnd="true" />
+
+    <TextView android:id="@+id/person_name"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_centerVertical="true"
+              android:textColor="@color/colorTextPrimary"
+              android:textSize="16sp"
+              android:layout_toLeftOf="@id/person_selected"
+              android:layout_toStartOf="@id/person_selected"
+              android:layout_toRightOf="@id/person_avatar"
+              android:layout_toEndOf="@id/person_avatar" />
+
+</RelativeLayout>

@@ -62,7 +62,7 @@ public class EventDetailActivity extends AppCompatActivity {
     }
 
     private void setFabListener(final Uri youtubeTrailerUrl) {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.youtube_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
