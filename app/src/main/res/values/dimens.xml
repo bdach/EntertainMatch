@@ -10,4 +10,6 @@
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="item_width">200dp</dimen>
+
+    <dimen name="result_image_width">120dp</dimen>
 </resources>

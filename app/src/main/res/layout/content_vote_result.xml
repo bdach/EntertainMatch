@@ -12,7 +12,7 @@
         tools:context="io.github.entertainmatch.view.result.VoteResultActivity">
 
     <ImageView android:id="@+id/event_image"
-               android:layout_width="120dp"
+               android:layout_width="@dimen/result_image_width"
                android:layout_height="match_parent"
                android:scaleType="centerCrop" />
 
