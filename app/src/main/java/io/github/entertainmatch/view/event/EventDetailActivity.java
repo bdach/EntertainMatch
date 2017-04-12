@@ -56,7 +56,7 @@ public class EventDetailActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.event_detail_container, fragment)
                     .commit();
-            setFabListener(event.getYoutubeTrailerUrl());
+            setFabListener(Uri.parse(event.getYoutubeTrailerUrl()));
         }
 
     }

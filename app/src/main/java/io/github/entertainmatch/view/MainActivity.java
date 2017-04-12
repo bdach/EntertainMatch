@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.view.main.PollFragment;
@@ -25,6 +26,10 @@ public class MainActivity extends AppCompatActivity
         PollFragment.OnListFragmentInteractionListener{
 
     private PollFragment pollFragment;
+
+    static {
+        FirebaseController.init();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
