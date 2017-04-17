@@ -54,22 +54,22 @@ public class PersonRecyclerViewAdapter extends RecyclerView.Adapter<PersonRecycl
          * Name of the person.
          */
         @BindView(R.id.person_name)
-        private TextView personName;
+        TextView personName;
         /**
          * Indicates whether or not the person is selected.
          */
         @BindView(R.id.person_selected)
-        private CheckBox personSelected;
+        CheckBox personSelected;
         /**
          * Image view containing the person's avatar.
          */
         @BindView(R.id.person_avatar_background)
-        private ImageView avatarBackground;
+        ImageView avatarBackground;
         /**
          * The view with the letter inside the avatar.
          */
         @BindView(R.id.person_avatar_letter)
-        private TextView avatarLetter;
+        TextView avatarLetter;
         /**
          * Backing {@link Person} model object.
          */
