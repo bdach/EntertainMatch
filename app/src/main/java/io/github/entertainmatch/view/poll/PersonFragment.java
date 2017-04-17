@@ -19,14 +19,14 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link OnPersonSelectedListener}
  * interface.
  */
 public class PersonFragment extends Fragment {
 
     private static final String PERSON_LIST = "person_list";
     private ArrayList<Person> people;
-    private OnListFragmentInteractionListener listener;
+    private OnPersonSelectedListener listener;
     @Setter
     private AppCompatActivity activity;
 
@@ -75,11 +75,11 @@ public class PersonFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            listener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnPersonSelectedListener) {
+            listener = (OnPersonSelectedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnPersonSelectedListener");
         }
     }
 
@@ -90,17 +90,10 @@ public class PersonFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface used to notify of selection events.
      */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Person item);
+    public interface OnPersonSelectedListener {
+        void onPersonSelected(Person item);
         Context getContext();
     }
 }

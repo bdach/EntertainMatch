@@ -3,11 +3,9 @@ package io.github.entertainmatch.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,6 +13,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.model.Poll;
@@ -22,11 +23,41 @@ import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
 
+/**
+ * The main screen of the application. Displays lists of events and polls.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        PollFragment.OnListFragmentInteractionListener{
+        PollFragment.OnPollSelectedListener {
 
+    /**
+     * The fragment used to display the list of ongoing polls.
+     */
     private PollFragment pollFragment;
+
+    /**
+     * The view toolbar, containing the menu toggle and options bar.
+     */
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    /**
+     * The floating action button used to add new polls.
+     */
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
+    /**
+     * Drawer layout used to navigate between current polls and upcoming events.
+     */
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    /**
+     * The navigation view within the drawer layout.
+     */
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
 
     static {
         FirebaseController.init();
@@ -36,43 +67,22 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        pollFragment = new PollFragment();
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CreatePollActivity.class);
-                MainActivity.this.startActivity(intent);
-            }
-        });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        pollFragment = new PollFragment();
         setContentFragment(pollFragment);
-    }
-
-    private void setContentFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.content_frame, fragment)
-                .commit();
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -82,16 +92,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar event clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // TODO: handle options here
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -104,24 +111,51 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view event clicks here.
+        // TODO: handle content switch here
         int id = item.getItemId();
 
-        // handle actions based on ids here
         switch (id) {
             case R.id.nav_ongoing_polls:
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+    /**
+     * Navigates to the appropriate view upon the user's request to view a {@link Poll} status.
+     *
+     * @param poll The selected {@link Poll}.
+     */
     @Override
-    public void onListFragmentInteraction(Poll poll) {
+    public void onPollSelected(Poll poll) {
         PollStage stage = poll.getPollStage();
         Intent intent = stage.getViewStageIntent(this);
         startActivity(intent);
     }
+
+    /**
+     * Navigates to the {@link CreatePollActivity} activity in order to create a new poll.
+     *
+     * @param view The view that started the navigation interaction.
+     */
+    public void createNewPoll(View view) {
+        Intent intent = new Intent(MainActivity.this, CreatePollActivity.class);
+        MainActivity.this.startActivity(intent);
+    }
+
+    /**
+     * Sets the contents of the main content {@link android.widget.FrameLayout} to the supplied {@link Fragment}.
+     *
+     * @param fragment The {@link Fragment} to set as the contents of the {@link android.widget.FrameLayout}.
+     */
+    private void setContentFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .replace(R.id.content_frame, fragment)
+                .commit();
+    }
+
 }

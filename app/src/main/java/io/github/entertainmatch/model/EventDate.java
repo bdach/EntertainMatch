@@ -15,9 +15,21 @@ import java.util.*;
 @RequiredArgsConstructor
 @Getter
 public class EventDate implements Parcelable {
+    /**
+     * Name of the location where the event takes place.
+     */
     private final String place;
+    /**
+     * Latitude of the place location.
+     */
     private final Double lat;
+    /**
+     * Longtitude of the place location.
+     */
     private final Double lon;
+    /**
+     * The date on which the event is to take place.
+     */
     private final Date date;
 
     protected EventDate(Parcel in) {
@@ -69,6 +81,12 @@ public class EventDate implements Parcelable {
         );
     }
 
+    /**
+     * Returns a {@link Uri} that can be passed to an {@link android.content.Intent} to pull up the location
+     * on the map.
+     *
+     * @return {@link Uri} to pass to the intent to display the map.
+     */
     public Uri getGoogleMapsUri() {
         String uriString = String.format(
                 Locale.ENGLISH, "geo:%f,%f", lat, lon

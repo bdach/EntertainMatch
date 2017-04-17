@@ -19,7 +19,13 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class Person implements Parcelable {
+    /**
+     * Name of the person.
+     */
     private final String name;
+    /**
+     * ID of the drawable to use as the person's avatar.
+     */
     private Integer drawableId;
 
     protected Person(Parcel in) {

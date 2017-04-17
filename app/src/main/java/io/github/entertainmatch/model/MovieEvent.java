@@ -1,17 +1,11 @@
 package io.github.entertainmatch.model;
 
-import android.graphics.Movie;
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
 import io.github.entertainmatch.R;
-import io.github.entertainmatch.firebase.FirebaseController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,20 +16,35 @@ import java.util.List;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class MovieEvent implements Parcelable {
-    @Getter
+    /**
+     * Title of the event.
+     */
     private String title;
-    @Getter
+    /**
+     * ID of the drawable to use as event image.
+     */
     private Integer drawableId;
-    @Getter
+    /**
+     * Movie synopsis.
+     */
     private String synopsis;
-    @Getter
+    /**
+     * Movie director.
+     */
     private String director;
-    @Getter
+    /**
+     * Movie cast.
+     */
     private String cast;
-    @Getter
+    /**
+     * YouTube URL to the movie trailer.
+     */
     private String youtubeTrailerUrl;
-    @Getter
+    /**
+     * Movie score on Rotten Tomatoes.
+     */
     private Integer rottenTomatoesScore;
 
     protected MovieEvent(Parcel in) {
@@ -64,7 +73,7 @@ public class MovieEvent implements Parcelable {
         return Arrays.asList(
                 new MovieEvent(
                         "Ghost in the Shell",
-                        R.drawable.movie_example,
+                        R.drawable.movieexample,
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
@@ -73,7 +82,7 @@ public class MovieEvent implements Parcelable {
                 ),
                 new MovieEvent(
                         "Ghost in the Shell",
-                        R.drawable.movie_example,
+                        R.drawable.movieexample,
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",

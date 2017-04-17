@@ -2,26 +2,34 @@ package io.github.entertainmatch.view.date;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.widget.FrameLayout;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.EventDate;
 
 import java.util.ArrayList;
 
-public class VoteDateActivity extends AppCompatActivity implements DateFragment.OnListFragmentInteractionListener {
+/**
+ * The activity responsible for voting on a date for the selected event.
+ */
+public class VoteDateActivity extends AppCompatActivity implements DateFragment.OnDateSelectedListener {
+
+    /**
+     * The activity toolbar.
+     */
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vote_date);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -33,8 +41,12 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
                 .commit();
     }
 
+    /**
+     * Opens a Google Maps URI when a location for one of the {@link EventDate}s is requested.
+     * @param date The selected {@link EventDate} object.
+     */
     @Override
-    public void onListFragmentInteraction(EventDate date) {
+    public void onDateSelected(EventDate date) {
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, date.getGoogleMapsUri());
         startActivity(mapIntent);
     }

@@ -8,23 +8,30 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Category;
-import io.github.entertainmatch.view.category.CategoryFragment.OnListFragmentInteractionListener;
-import org.w3c.dom.Text;
+import io.github.entertainmatch.view.category.CategoryFragment.OnCategorySelectedListener;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+/**
+ * A {@link RecyclerView.Adapter} for {@link Category} items.
+ */
+@RequiredArgsConstructor
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
 
+    /**
+     * The list of all {@link Category} items.
+     */
     private final List<Category> categories;
-    private final OnListFragmentInteractionListener listener;
+    /**
+     * The {@link OnCategorySelectedListener} to be notified of {@link Category} selections.
+     */
+    private final OnCategorySelectedListener listener;
     private boolean canVote = true;
-
-    public CategoryRecyclerViewAdapter(List<Category> categories, OnListFragmentInteractionListener listener) {
-        this.categories = categories;
-        this.listener = listener;
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,18 +45,16 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         holder.setCategory(categories.get(position));
         holder.setVoting(canVote);
 
-        holder.voteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != listener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an event has been selected.
-                    listener.onListFragmentInteraction(holder.category);
-                }
+        holder.voteButton.setOnClickListener(v -> {
+            if (null != listener) {
+                listener.onCategorySelected(holder.category);
             }
         });
     }
 
+    /**
+     * Disables the user's ability to vote for a category.
+     */
     public void disableVoting() {
         canVote = false;
     }
@@ -59,26 +64,50 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         return categories.size();
     }
 
+    /**
+     * The {@link RecyclerView.ViewHolder} for {@link Category} items.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private View view;
-
-        private RelativeLayout labelLayout;
-        private TextView titleView;
-        private TextView voteCountView;
-        private ImageButton voteButton;
-        private ImageView imageView;
+        /**
+         * The {@link RelativeLayout} containing the category labels.
+         */
+        @BindView(R.id.category_label)
+        RelativeLayout labelLayout;
+        /**
+         * The text view containing the category name.
+         */
+        @BindView(R.id.category_name)
+        TextView titleView;
+        /**
+         * The text view containing the vote count for the given category.
+         */
+        @BindView(R.id.category_vote_count)
+        TextView voteCountView;
+        /**
+         * The button used to vote for the category.
+         */
+        @BindView(R.id.category_vote_button)
+        ImageButton voteButton;
+        /**
+         * The {@link ImageView} used to display the category image.
+         */
+        @BindView(R.id.category_background)
+        ImageView imageView;
+        /**
+         * The backing {@link Category} model object.
+         */
         private Category category;
 
         public ViewHolder(View view) {
             super(view);
-            this.view = view;
-            this.labelLayout = (RelativeLayout) view.findViewById(R.id.category_label);
-            this.imageView = (ImageView) view.findViewById(R.id.category_background);
-            this.titleView = (TextView) view.findViewById(R.id.category_name);
-            this.voteButton = (ImageButton) view.findViewById(R.id.category_vote_button);
-            this.voteCountView = (TextView) view.findViewById(R.id.category_vote_count);
+            ButterKnife.bind(this, view);
         }
 
+        /**
+         * Sets the {@link Category} backing model.
+         *
+         * @param category The {@link Category} object to associate this view holder with.
+         */
         public void setCategory(Category category) {
             this.category = category;
             imageView.setImageResource(category.getImageId());
@@ -88,6 +117,11 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
             }
         }
 
+        /**
+         * Sets the view appearance according to whether or not voting is permitted.
+         *
+         * @param canVote True if the user should be able to vote, false otherwise.
+         */
         public void setVoting(boolean canVote) {
             if (canVote) {
                 voteCountView.setVisibility(View.INVISIBLE);

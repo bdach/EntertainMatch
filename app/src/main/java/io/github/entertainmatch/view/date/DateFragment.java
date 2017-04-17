@@ -10,30 +10,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.EventDate;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Fragment containing a list of dates for a given event.
+ *
+ * Activities containing this fragment MUST implement the {@link OnDateSelectedListener}
  * interface.
  */
+@NoArgsConstructor
 public class DateFragment extends Fragment {
 
+    /**
+     * The key used to store and fetch {@link EventDate} items.
+     */
     public static final String DATES_KEY = "dates";
+    /**
+     * The list of all items.
+     */
     private ArrayList<EventDate> dates;
-    private OnListFragmentInteractionListener listener;
+    /**
+     * A {@link OnDateSelectedListener} to notify upon selection.
+     */
+    private OnDateSelectedListener listener;
+
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Factory method responsible for creating new instances of this fragment, containing the supplied dates.
+     * @param dates An {@link ArrayList} of {@link EventDate}s to pass to the new fragment.
+     * @return New fragment instance.
      */
-    public DateFragment() {
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
     public static DateFragment newInstance(ArrayList<EventDate> dates) {
         DateFragment fragment = new DateFragment();
         Bundle args = new Bundle();
@@ -70,11 +78,11 @@ public class DateFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            listener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnDateSelectedListener) {
+            listener = (OnDateSelectedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnDateSelectedListener");
         }
     }
 
@@ -85,16 +93,9 @@ public class DateFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface used to notify the activity of an item selection.
      */
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(EventDate date);
+    public interface OnDateSelectedListener {
+        void onDateSelected(EventDate date);
     }
 }

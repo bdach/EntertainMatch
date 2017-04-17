@@ -10,23 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Poll;
+import lombok.NoArgsConstructor;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment containing the list of polls.
+ *
+ * Activities with this fragment must implement the {@link OnPollSelectedListener} interface.
  */
+@NoArgsConstructor
 public class PollFragment extends Fragment {
 
-    private OnListFragmentInteractionListener listener;
-
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * A {@link OnPollSelectedListener} to be notified of user selection.
      */
-    public PollFragment() {
-    }
+    private OnPollSelectedListener listener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,6 @@ public class PollFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_poll_list, container, false);
 
-        // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
@@ -52,11 +48,11 @@ public class PollFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            listener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnPollSelectedListener) {
+            listener = (OnPollSelectedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnPollSelectedListener");
         }
     }
 
@@ -67,17 +63,14 @@ public class PollFragment extends Fragment {
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface allowing activities containing this fragment type to be notified of a selection.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Poll poll);
+    public interface OnPollSelectedListener {
+        /**
+         * Called when a {@link Poll} is selected from the list by the user.
+         *
+         * @param poll The selected {@link Poll}.
+         */
+        void onPollSelected(Poll poll);
     }
 }

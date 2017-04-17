@@ -16,14 +16,11 @@ import java.util.List;
  * @since 01.04.17
  */
 @AllArgsConstructor
+@Getter
 public class Category implements Parcelable {
-    @Getter
     private final String name;
-    @Getter
     private Integer voteCount = 0;
-    @Getter
     private boolean votedFor = false;
-    @Getter
     private final Integer imageId;
 
     protected Category(Parcel in) {

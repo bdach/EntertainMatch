@@ -16,12 +16,20 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Getter
 public class Poll {
-    @Getter
+    /**
+     * Name of the poll.
+     */
     private final String name;
-    @Getter @Setter
+    /**
+     * The stage of the poll.
+     */
+    @Setter
     private PollStage pollStage;
-    @Getter
+    /**
+     * Other users who are a part of the poll.
+     */
     private final Iterable<Person> members;
 
     public static List<Poll> mockData() {

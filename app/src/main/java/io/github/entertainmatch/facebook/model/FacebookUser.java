@@ -13,12 +13,10 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class FacebookUser {
-    @Getter
     public String facebookId;
-    @Getter
     public String name;
-    @Getter
     public String gender;
 
     public static FacebookUser fromJSON(JSONObject object) throws JSONException {

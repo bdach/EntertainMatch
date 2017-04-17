@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 
 import io.github.entertainmatch.firebase.FirebaseController;
@@ -26,12 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An activity representing a list of Events. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link EventDetailActivity} representing
- * event details. On tablets, the activity presents the list of items and
- * event details side-by-side using two vertical panes.
+ * An activity containing the list of available events.
  */
 public class EventListActivity extends AppCompatActivity {
 
@@ -41,12 +38,24 @@ public class EventListActivity extends AppCompatActivity {
      */
     private boolean twoPane;
 
+    /**
+     * The toolbar displayed in the view.
+     */
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    /**
+     * The {@link RecyclerView} containing the list of events.
+     */
+    @BindView(R.id.event_list)
+    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
@@ -56,9 +65,7 @@ public class EventListActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        View recyclerView = findViewById(R.id.event_list);
-        assert recyclerView != null;
-        setupRecyclerView((RecyclerView) recyclerView);
+        setupRecyclerView(recyclerView);
 
         if (findViewById(R.id.event_detail_container) != null) {
             // The detail container view will be present only in the
@@ -91,6 +98,9 @@ public class EventListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    /**
+     * An {@link RecyclerView.Adapter} for the displayed events.
+     */
     public class EventRecyclerViewAdapter
             extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
@@ -115,24 +125,21 @@ public class EventListActivity extends AppCompatActivity {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.setEvent(values.get(position));
 
-            holder.eventDetailButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (twoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putParcelable(EventDetailFragment.ARG_ITEM_ID, holder.event);
-                        EventDetailFragment fragment = new EventDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.event_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, EventDetailActivity.class);
-                        intent.putExtra(EventDetailFragment.ARG_ITEM_ID, holder.event);
+            holder.eventDetailButton.setOnClickListener(v -> {
+                if (twoPane) {
+                    Bundle arguments = new Bundle();
+                    arguments.putParcelable(EventDetailFragment.EVENTS_KEY, holder.event);
+                    EventDetailFragment fragment = new EventDetailFragment();
+                    fragment.setArguments(arguments);
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.event_detail_container, fragment)
+                            .commit();
+                } else {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, EventDetailActivity.class);
+                    intent.putExtra(EventDetailFragment.EVENTS_KEY, holder.event);
 
-                        context.startActivity(intent);
-                    }
+                    context.startActivity(intent);
                 }
             });
         }
@@ -142,28 +149,50 @@ public class EventListActivity extends AppCompatActivity {
             return values.size();
         }
 
+        /**
+         * A {@link RecyclerView.ViewHolder} for the event.
+         */
         public class ViewHolder extends RecyclerView.ViewHolder {
+            /**
+             * The root view of the holder.
+             */
             public final View view;
+            /**
+             * The backing event model object.
+             */
             public MovieEvent event;
-            private ImageView eventImage;
-            private TextView eventTitle;
-            private TextView eventDescription;
-            private Button eventDetailButton;
+            /**
+             * View responsible for displaying the image associated with the event.
+             */
+            @BindView(R.id.event_image)
+            ImageView eventImage;
+            /**
+             * Text view displaying the title of the event.
+             */
+            @BindView(R.id.event_title)
+            TextView eventTitle;
+            /**
+             * Text view displaying the description of the event.
+             */
+            @BindView(R.id.event_description)
+            TextView eventDescription;
+            /**
+             * Card button allowing the user to navigate to the details view.
+             */
+            @BindView(R.id.event_detail_button)
+            Button eventDetailButton;
+
+            public ViewHolder(View view) {
+                super(view);
+                this.view = view;
+                ButterKnife.bind(this, view);
+            }
 
             public void setEvent(MovieEvent movieEvent) {
                 this.event = movieEvent;
                 this.eventImage.setImageResource(movieEvent.getDrawableId());
                 this.eventDescription.setText(movieEvent.getSynopsis());
                 this.eventTitle.setText(movieEvent.getTitle());
-            }
-
-            public ViewHolder(View view) {
-                super(view);
-                this.view = view;
-                this.eventImage = (ImageView) view.findViewById(R.id.event_image);
-                this.eventTitle = (TextView) view.findViewById(R.id.event_title);
-                this.eventDescription = (TextView) view.findViewById(R.id.event_description);
-                this.eventDetailButton = (Button) view.findViewById(R.id.event_detail_button);
             }
         }
     }

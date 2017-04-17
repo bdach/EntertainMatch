@@ -6,21 +6,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Poll;
-import io.github.entertainmatch.view.main.PollFragment.OnListFragmentInteractionListener;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+/**
+ * A {@link RecyclerView.Adapter} for {@link Poll} objects.
+ */
+@RequiredArgsConstructor
 public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerViewAdapter.ViewHolder> {
 
+    /**
+     * The list of polls to be displayed in the list.
+     */
     private final List<Poll> polls;
-    private final OnListFragmentInteractionListener listener;
 
-    public PollRecyclerViewAdapter(List<Poll> polls, OnListFragmentInteractionListener listener) {
-        this.polls = polls;
-        this.listener = listener;
-    }
+    /**
+     * A {@link PollFragment.OnPollSelectedListener} to be notified of item selections.
+     */
+    private final PollFragment.OnPollSelectedListener listener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,14 +42,9 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         Poll poll = polls.get(position);
         holder.setPoll(poll);
 
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != listener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an event has been selected.
-                    listener.onListFragmentInteraction(holder.poll);
-                }
+        holder.view.setOnClickListener(v -> {
+            if (null != listener) {
+                listener.onPollSelected(holder.poll);
             }
         });
     }
@@ -51,28 +54,39 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         return polls.size();
     }
 
+    /**
+     * The {@link RecyclerView.ViewHolder} for {@link Poll} items.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
+        /**
+         * The root view of the item.
+         */
         private final View view;
-        private final TextView nameView;
-        private final TextView statusView;
+        /**
+         * Text label containing the poll name.
+         */
+        @BindView(R.id.poll_name)
+        TextView nameView;
+        /**
+         * Text label containing the poll status.
+         */
+        @BindView(R.id.poll_status)
+        TextView statusView;
+        /**
+         * The backing {@link Poll} item.
+         */
         private Poll poll;
 
         public ViewHolder(View view) {
             super(view);
             this.view = view;
-            nameView = (TextView) view.findViewById(R.id.poll_name);
-            statusView = (TextView) view.findViewById(R.id.poll_status);
+            ButterKnife.bind(this, view);
         }
 
         public void setPoll(Poll poll) {
             this.poll = poll;
             nameView.setText(poll.getName());
             statusView.setText(poll.getPollStage().getStageStringId());
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + statusView.getText() + "'";
         }
     }
 }

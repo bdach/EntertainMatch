@@ -10,29 +10,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Category;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * A fragment used to display a list of {@link Category} items to select from.
+ *
+ * Activities containing this fragment must implement the {@link OnCategorySelectedListener} interface.
  */
+@NoArgsConstructor
 public class CategoryFragment extends Fragment {
 
+    /**
+     * The key used to store and fetch {@link Category} items to be displayed on the list.
+     */
     public static final String CATEGORIES_KEY = "categories";
+    /**
+     * The list of displayed {@link Category} items.
+     */
     private ArrayList<Category> categories;
-    private OnListFragmentInteractionListener listener;
+    /**
+     * The listener to notify upon the user selecting a {@link Category}.
+     */
+    private OnCategorySelectedListener listener;
+    /**
+     * The {@link RecyclerView.Adapter} containing the items.
+     */
     private CategoryRecyclerViewAdapter adapter;
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Factory method used to pass a list of categories to a new instance of this fragment.
+     * @param categories An {@link ArrayList} of categories to pass to the fragment.
+     * @return New instance of the fragment containing the categories.
      */
-    public CategoryFragment() {
-    }
-
     public static CategoryFragment newInstance(ArrayList<Category> categories) {
         CategoryFragment fragment = new CategoryFragment();
         Bundle args = new Bundle();
@@ -70,11 +81,11 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            listener = (OnListFragmentInteractionListener) context;
+        if (context instanceof OnCategorySelectedListener) {
+            listener = (OnCategorySelectedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
+                    + " must implement OnCategorySelectedListener");
         }
     }
 
@@ -84,23 +95,24 @@ public class CategoryFragment extends Fragment {
         listener = null;
     }
 
-    public void disableVoting() {
+    /**
+     * Registers a vote for the supplied {@link Category}.
+     * @param item
+     */
+    public void registerVote(Category item) {
+        item.registerVote();
         adapter.disableVoting();
         adapter.notifyDataSetChanged();
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * Interface allowing activities containing this fragment to be notified of a {@link Category} selection.
      */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(Category item);
+    public interface OnCategorySelectedListener {
+        /**
+         * Called when a {@link Category} is selected by the user.
+         * @param item The selected {@link Category} item.
+         */
+        void onCategorySelected(Category item);
     }
 }
