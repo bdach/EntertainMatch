@@ -1,5 +1,6 @@
 package io.github.entertainmatch.model;
 
+import io.github.entertainmatch.firebase.FirebaseController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

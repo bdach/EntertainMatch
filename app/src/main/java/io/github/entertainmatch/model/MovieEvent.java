@@ -1,11 +1,16 @@
 package io.github.entertainmatch.model;
 
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.firebase.FirebaseController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
@@ -16,7 +21,7 @@ import java.util.List;
  * @since 02.04.17
  */
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class MovieEvent implements Parcelable {
     @Getter
     private String title;
@@ -29,7 +34,7 @@ public class MovieEvent implements Parcelable {
     @Getter
     private String cast;
     @Getter
-    private Uri youtubeTrailerUrl;
+    private String youtubeTrailerUrl;
     @Getter
     private Integer rottenTomatoesScore;
 
@@ -39,7 +44,7 @@ public class MovieEvent implements Parcelable {
         synopsis = in.readString();
         director = in.readString();
         cast = in.readString();
-        youtubeTrailerUrl = Uri.parse(in.readString());
+        youtubeTrailerUrl = in.readString();
         rottenTomatoesScore = in.readInt();
     }
 
@@ -63,7 +68,7 @@ public class MovieEvent implements Parcelable {
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
-                        Uri.parse("https://www.youtube.com/watch?v=G4VmJcZR0Yg"),
+                        "https://www.youtube.com/watch?v=G4VmJcZR0Yg",
                         42
                 ),
                 new MovieEvent(
@@ -72,7 +77,7 @@ public class MovieEvent implements Parcelable {
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
-                        Uri.parse("https://www.youtube.com/watch?v=G4VmJcZR0Yg"),
+                        "https://www.youtube.com/watch?v=G4VmJcZR0Yg",
                         42
                 )
         );

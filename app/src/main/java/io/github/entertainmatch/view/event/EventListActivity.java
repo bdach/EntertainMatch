@@ -18,8 +18,11 @@ import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import io.github.entertainmatch.R;
 
+import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.model.MovieEvent;
+import rx.Observable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -84,16 +87,21 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new EventRecyclerViewAdapter(MovieEvent.mockData()));
+        EventRecyclerViewAdapter adapter = new EventRecyclerViewAdapter(FirebaseController.getMovieEventsObservable());
+        recyclerView.setAdapter(adapter);
     }
 
     public class EventRecyclerViewAdapter
             extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
-        private final List<MovieEvent> values;
+        private final List<MovieEvent> values = new ArrayList<>();
 
-        public EventRecyclerViewAdapter(List<MovieEvent> items) {
-            values = items;
+        public EventRecyclerViewAdapter(Observable<List<MovieEvent>> eventsObservable) {
+            eventsObservable.subscribe(movieEvents -> {
+                values.clear();
+                values.addAll(movieEvents);
+                notifyDataSetChanged();
+            });
         }
 
         @Override
