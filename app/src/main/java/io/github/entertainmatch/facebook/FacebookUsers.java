@@ -2,6 +2,7 @@ package io.github.entertainmatch.facebook;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Field;
@@ -30,8 +31,8 @@ public class FacebookUsers {
         SharedPreferences preferences = ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
 
         FacebookUser candidate = getObject(preferences, KEY_USER, FacebookUser.class);
-        currentUser = candidate;
-        return candidate;
+        currentUser = candidate == null || TextUtils.isEmpty(candidate.facebookId) ? null : candidate;
+        return currentUser;
     }
 
     public static void setCurrentUser(Context ctx, FacebookUser user) {
