@@ -3,12 +3,14 @@ package io.github.entertainmatch.facebook;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
-import io.github.entertainmatch.facebook.model.FacebookUser;
+import com.facebook.AccessToken;
+import io.github.entertainmatch.model.Person;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by Adrian Bednarz on 4/5/17.
@@ -16,35 +18,35 @@ import io.github.entertainmatch.facebook.model.FacebookUser;
 
 public class FacebookUsers {
     private final static String PREF_KEY = "facebook_users";
-    private final static String KEY_USER = "user";
+    private final static String USER_KEY = "user";
 
-    private static FacebookUser currentUser = null;
+    private static Person currentUser = null;
 
     public static boolean isUserLoggedIn(Context ctx) {
         return currentUser != null || getCurrentUser(ctx) != null;
     }
 
-    public static FacebookUser getCurrentUser(Context ctx) {
+    public static Person getCurrentUser(Context ctx) {
         if (currentUser != null)
             return currentUser;
 
         SharedPreferences preferences = ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
 
-        FacebookUser candidate = getObject(preferences, KEY_USER, FacebookUser.class);
-        currentUser = candidate == null || TextUtils.isEmpty(candidate.facebookId) ? null : candidate;
+        Person candidate = getObject(preferences, USER_KEY, Person.class);
+        currentUser = candidate == null || TextUtils.isEmpty(candidate.getFacebookId()) ? null : candidate;
         return currentUser;
     }
 
-    public static void setCurrentUser(Context ctx, FacebookUser user) {
+    public static void setCurrentUser(Context ctx, Person user) {
         SharedPreferences preferences = ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
-        putObject(preferences, KEY_USER, user);
+        putObject(preferences, USER_KEY, user);
 
         currentUser = user;
     }
 
     public static void removeCurrentUser(Context ctx) {
         SharedPreferences preferences = ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
-        removeObject(preferences, KEY_USER, FacebookUser.class);
+        removeObject(preferences, USER_KEY, Person.class);
 
         currentUser = null;
     }
@@ -81,7 +83,7 @@ public class FacebookUsers {
         for (Field field : o.getClass().getDeclaredFields()) {
             try {
                 if (field.getType().equals(String.class))
-                    editor.putString(getFieldKey(KEY_USER, field.getName()), field.get(o).toString());
+                    editor.putString(getFieldKey(key, field.getName()), field.get(o).toString());
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

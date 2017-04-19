@@ -12,6 +12,8 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Poll;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+
 /**
  * A fragment containing the list of polls.
  *
@@ -24,6 +26,9 @@ public class PollFragment extends Fragment {
      * A {@link OnPollSelectedListener} to be notified of user selection.
      */
     private OnPollSelectedListener listener;
+
+    private ArrayList<Poll> polls = new ArrayList<>(Poll.mockData());
+    private PollRecyclerViewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,8 @@ public class PollFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new PollRecyclerViewAdapter(Poll.mockData(), listener));
+            adapter = new PollRecyclerViewAdapter(polls, listener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
@@ -60,6 +66,11 @@ public class PollFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    public void addPoll(Poll poll) {
+        polls.add(poll);
+        adapter.notifyDataSetChanged();
     }
 
     /**

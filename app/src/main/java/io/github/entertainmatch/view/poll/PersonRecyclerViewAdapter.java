@@ -9,23 +9,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Person;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Adapter used to display {@link Person} lists.
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class PersonRecyclerViewAdapter extends RecyclerView.Adapter<PersonRecyclerViewAdapter.ViewHolder> {
 
     /**
      * List of people to display.
      */
-    private final List<Person> people;
+    @Setter
+    private List<Person> people;
     /**
      * Listener to notify of selection events.
      */
@@ -88,28 +90,36 @@ public class PersonRecyclerViewAdapter extends RecyclerView.Adapter<PersonRecycl
         public void setItem(Person item) {
             this.person = item;
             personName.setText(item.getName());
-            view.setOnClickListener(v -> personSelected.toggle());
+            view.setOnClickListener(v -> {
+                personSelected.toggle();
+                if (listener != null) {
+                    listener.onPersonToggled(item, personSelected.isChecked());
+                }
+            });
             setAvatar(item);
         }
 
         /**
-         * Sets the person's avater.
+         * Sets the person's avatar.
          * @param person {@link Person} object to set avatar of.
          */
         private void setAvatar(Person person) {
-            if (person.getDrawableId() == null) {
-                setLetterAvatar(person.getName());
+            if (person.isProfilePictureSet()) {
+                setPictureAvatar(person.getProfilePictureUrl());
             } else {
-                setPictureAvatar(person.getDrawableId());
+                setLetterAvatar(person.getName());
             }
         }
 
         /**
          * Uses a user picture as an avatar.
-         * @param drawableId ID of drawable to use as an avatar.
+         * @param url URL of image to use as an avatar.
          */
-        private void setPictureAvatar(Integer drawableId) {
-            avatarBackground.setImageResource(drawableId);
+        private void setPictureAvatar(String url) {
+            Picasso.with(listener.getContext())
+                    .load(url)
+                    .fit()
+                    .into(avatarBackground);
         }
 
         /**

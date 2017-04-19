@@ -12,24 +12,18 @@
               android:gravity="bottom">
 
     <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:src="@drawable/ic_person_black_24dp"
-            android:tint="@color/colorTintPrimary"
-            android:id="@+id/imageView"/>
+            android:layout_marginLeft="-8dp"
+            android:layout_marginStart="-8dp"
+            android:id="@+id/user_avatar"/>
 
     <TextView
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:text="Android Studio"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
-
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="android.studio@android.com"
-            android:id="@+id/textView"/>
 
 </LinearLayout>

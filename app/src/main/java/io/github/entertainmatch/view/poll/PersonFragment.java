@@ -25,10 +25,11 @@ import java.util.List;
 public class PersonFragment extends Fragment {
 
     private static final String PERSON_LIST = "person_list";
-    private ArrayList<Person> people;
+    private ArrayList<Person> people = new ArrayList<>();
     private OnPersonSelectedListener listener;
     @Setter
     private AppCompatActivity activity;
+    private PersonRecyclerViewAdapter adapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,7 +67,8 @@ public class PersonFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            recyclerView.setAdapter(new PersonRecyclerViewAdapter(people, listener));
+            adapter = new PersonRecyclerViewAdapter(people, listener);
+            recyclerView.setAdapter(adapter);
         }
         return view;
     }
@@ -93,7 +95,18 @@ public class PersonFragment extends Fragment {
      * Interface used to notify of selection events.
      */
     public interface OnPersonSelectedListener {
-        void onPersonSelected(Person item);
+        /**
+         * Called when one of the items in the list is toggled using the check box.
+         *
+         * @param item The toggled {@link Person} item.
+         * @param state The state of the item (true if checked, false otherwise).
+         */
+        void onPersonToggled(Person item, boolean state);
         Context getContext();
+    }
+
+    public void setItems(ArrayList<Person> people) {
+        adapter.setPeople(people);
+        adapter.notifyDataSetChanged();
     }
 }

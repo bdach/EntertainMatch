@@ -48,5 +48,8 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="login_button_text">Login with Facebook</string>
     <string name="loading_message">Loading…</string>
-    <string name="requested_facebook_info">id, name, gender</string>
+    <string name="requested_facebook_info">id, name, picture</string>
+    <string name="create_poll">Create</string>
+    <string name="create_poll_empty_name_error">The poll name cannot be empty</string>
+    <string name="create_poll_no_people_selected">You must select at least one person</string>
 </resources>
