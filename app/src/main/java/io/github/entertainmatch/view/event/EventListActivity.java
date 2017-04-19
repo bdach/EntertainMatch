@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
@@ -190,7 +193,10 @@ public class EventListActivity extends AppCompatActivity {
 
             public void setEvent(MovieEvent movieEvent) {
                 this.event = movieEvent;
-                this.eventImage.setImageResource(movieEvent.getDrawableId());
+                Picasso.with(EventListActivity.this)
+                        .load(movieEvent.getDrawableUri())
+                        .into(eventImage);
+
                 this.eventDescription.setText(movieEvent.getSynopsis());
                 this.eventTitle.setText(movieEvent.getTitle());
             }

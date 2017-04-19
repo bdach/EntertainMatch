@@ -6,9 +6,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.MovieEvent;
@@ -50,7 +54,10 @@ public class VoteResultActivity extends AppCompatActivity {
     }
 
     private void bindData() {
-        eventImage.setImageResource(event.getDrawableId());
+        Picasso.with(this)
+                .load(event.getDrawableUri())
+                .into(eventImage);
+
         eventName.setText(event.getTitle());
         eventPlace.setText(date.getPlace());
         String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)

@@ -23,9 +23,9 @@ public class MovieEvent implements Parcelable {
      */
     private String title;
     /**
-     * ID of the drawable to use as event image.
+     * Uri of the drawable to use as event image.
      */
-    private Integer drawableId;
+    private String drawableUri;
     /**
      * Movie synopsis.
      */
@@ -49,7 +49,7 @@ public class MovieEvent implements Parcelable {
 
     protected MovieEvent(Parcel in) {
         title = in.readString();
-        drawableId = in.readInt();
+        drawableUri = in.readString();
         synopsis = in.readString();
         director = in.readString();
         cast = in.readString();
@@ -73,7 +73,7 @@ public class MovieEvent implements Parcelable {
         return Arrays.asList(
                 new MovieEvent(
                         "Ghost in the Shell",
-                        R.drawable.movieexample,
+                        "http://i.imgur.com/PLFkStW.jpg",
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
@@ -82,7 +82,7 @@ public class MovieEvent implements Parcelable {
                 ),
                 new MovieEvent(
                         "Ghost in the Shell",
-                        R.drawable.movieexample,
+                        "http://i.imgur.com/PLFkStW.jpg",
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
                         "Rupert Sanders",
                         "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
@@ -100,11 +100,11 @@ public class MovieEvent implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
-        dest.writeInt(drawableId);
+        dest.writeString(drawableUri);
         dest.writeString(synopsis);
         dest.writeString(director);
         dest.writeString(cast);
-        dest.writeString(youtubeTrailerUrl.toString());
+        dest.writeString(youtubeTrailerUrl);
         dest.writeInt(rottenTomatoesScore);
     }
 }
