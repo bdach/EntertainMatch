@@ -2,10 +2,14 @@ package io.github.entertainmatch.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import io.github.entertainmatch.R;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,13 +24,35 @@ import java.util.List;
 @Getter
 public class Person implements Parcelable {
     /**
+     * The Facebook ID of the person.
+     */
+    public String facebookId = "";
+    /**
      * Name of the person.
      */
-    private final String name;
+    public String name;
     /**
-     * ID of the drawable to use as the person's avatar.
+     * Indicates whether a person has a custom profile picture.
      */
-    private Integer drawableId;
+    public boolean profilePictureSet = false;
+    /**
+     * URL of the person's profile picture.
+     */
+    public String profilePictureUrl = "";
+
+    public Person(JSONObject jsonObject) throws JSONException {
+        this.facebookId = jsonObject.getString("id");
+        this.name = jsonObject.getString("name");
+        try {
+            JSONObject picture = jsonObject
+                    .getJSONObject("picture")
+                    .getJSONObject("data");
+            this.profilePictureSet = !picture.getBoolean("is_silhouette");
+            this.profilePictureUrl = picture.getString("url");
+        } catch (JSONException ex) {
+            Log.d("Person", "No picture object received");
+        }
+    }
 
     protected Person(Parcel in) {
         name = in.readString();
@@ -56,9 +82,9 @@ public class Person implements Parcelable {
 
     public static List<Person> mockData() {
         return Arrays.asList(
-                new Person("John Angle"),
-                new Person("Katie Bell"),
-                new Person("Leon Carson", R.drawable.person)
+                new Person("", "John Angle", false, ""),
+                new Person("", "Katie Bell", false, ""),
+                new Person("", "Leon Carson", false, "")
         );
     }
 }

@@ -1,7 +1,6 @@
 package io.github.entertainmatch.view;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,21 +20,18 @@ import com.facebook.GraphResponse;
 import com.facebook.internal.CallbackManagerImpl;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import io.github.entertainmatch.model.Person;
 import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.facebook.model.FacebookUser;
 
 public class LoginActivity extends AppCompatActivity {
     private final static String Tag = "EntertainMatch_Login";
@@ -161,11 +157,11 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject object,
                                 GraphResponse response) {
                         try {
-                            FacebookUser user = FacebookUser.fromJSON(object);
+                            Person user = new Person(response.getJSONObject());
                             FacebookUsers.setCurrentUser(LoginActivity.this, user);
 
                             // just for now to see if everything works
-                            Toast.makeText(LoginActivity.this, "Welcome aboard -- " + user.name, Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "Welcome aboard, " + user.getName(), Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

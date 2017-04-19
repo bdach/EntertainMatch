@@ -2,6 +2,7 @@ package io.github.entertainmatch.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,10 +15,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.view.main.PollFragment;
@@ -29,6 +36,13 @@ import io.github.entertainmatch.view.poll.CreatePollActivity;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         PollFragment.OnPollSelectedListener {
+
+    /**
+     * Identification number for the request to start a new poll.
+     */
+    public final static int NEW_POLL_REQUEST = 1;
+
+    public final static String NEW_POLL_RESPONSE_KEY = "new_poll";
 
     /**
      * The fragment used to display the list of ongoing polls.
@@ -79,6 +93,18 @@ public class MainActivity extends AppCompatActivity
 
         pollFragment = new PollFragment();
         setContentFragment(pollFragment);
+        populateUserData(FacebookUsers.getCurrentUser(this));
+    }
+
+    private void populateUserData(Person currentUser) {
+        LinearLayout headerView = (LinearLayout) navigationView.getHeaderView(0);
+        TextView userNameView = (TextView) headerView.findViewById(R.id.user_name);
+        ImageView avatarView = (ImageView) headerView.findViewById(R.id.user_avatar);
+        userNameView.setText(currentUser.getName());
+        Picasso.with(this)
+                .load(currentUser.getProfilePictureUrl())
+                .fit()
+                .into(avatarView);
     }
 
     @Override
@@ -135,6 +161,21 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case NEW_POLL_REQUEST:
+                handleNewPoll(resultCode, data);
+                break;
+        }
+    }
+
+    private void handleNewPoll(int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) return;
+        Poll poll = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
+        pollFragment.addPoll(poll);
+    }
+
     /**
      * Navigates to the {@link CreatePollActivity} activity in order to create a new poll.
      *
@@ -142,7 +183,7 @@ public class MainActivity extends AppCompatActivity
      */
     public void createNewPoll(View view) {
         Intent intent = new Intent(MainActivity.this, CreatePollActivity.class);
-        MainActivity.this.startActivity(intent);
+        MainActivity.this.startActivityForResult(intent, NEW_POLL_REQUEST);
     }
 
     /**

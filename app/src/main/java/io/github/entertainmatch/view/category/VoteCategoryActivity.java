@@ -33,7 +33,7 @@ public class VoteCategoryActivity extends AppCompatActivity
     /**
      * The {@link CoordinatorLayout} of the activity. Used to display {@link Snackbar}s.
      */
-    @BindView(R.id.vote_category_layout)
+    @BindView(R.id.coordinator_layout)
     CoordinatorLayout layout;
     /**
      * The {@link CategoryFragment} containing the list of available {@link Category} items.
