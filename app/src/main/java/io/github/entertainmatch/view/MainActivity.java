@@ -101,16 +101,23 @@ public class MainActivity extends AppCompatActivity
         populateUserData(FacebookUsers.getCurrentUser(this));
 
         // grab user from firebase (initially to fetch polls)
-        FirebasePersonController.getUser(FacebookUsers.getCurrentUser(this).facebookId)
+        FirebasePersonController.getUserOnce(FacebookUsers.getCurrentUser(this).facebookId)
             .subscribe(firebasePerson -> {
                 if (firebasePerson == null) return;
 
-                for (Observable<FirebasePoll> poll : FirebasePollController.getPollsForUser(firebasePerson)) {
+                for (Observable<FirebasePoll> poll : FirebasePollController.getPollsOnceForUser(firebasePerson)) {
                     poll.subscribe(firebasePoll -> {
                         pollFragment.addPoll(new Poll(
                                 firebasePoll.getName(),
                                 new VoteCategoryStage(),
                                 null)); // decide if we should store every person or just ids
+
+                        FirebasePollController
+                            .getPoll(firebasePoll.getPollId())
+                            .subscribe(updatedPoll -> {
+                                // TODO: poll update strategy, we should probably keep poll id in Poll object too
+                                Log.d("PollUpdate", "Updated!");
+                            });
                     });
                 }
             });
@@ -185,7 +192,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case NEW_POLL_REQUEST:
-                //handleNewPoll(resultCode, data);
+                handleNewPoll(resultCode, data);
                 break;
         }
     }
@@ -193,7 +200,19 @@ public class MainActivity extends AppCompatActivity
     private void handleNewPoll(int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
         Poll poll = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
+
+        // add poll to firebase, once added it should update views of all users involved
+        // and show notifications to them
+        String pollId = FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, poll);
+
+        // add this manually, no need to fetch the same object from firebase
         pollFragment.addPoll(poll);
+
+        // subscribe for poll changes
+        FirebasePollController.getPoll(pollId).subscribe(firebasePoll -> {
+            // TODO: update stage once added
+            Log.d("PollUpdate", "Updated!");
+        });
     }
 
     /**

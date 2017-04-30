@@ -23,6 +23,7 @@ public class FirebasePoll {
      */
     @Getter
     private List<String> memberFacebookIds;
+
     /**
      * Name of the poll.
      */
@@ -30,14 +31,22 @@ public class FirebasePoll {
     private String name;
 
     /**
+     * Identifier of the poll
+     */
+    @Getter
+    private String pollId;
+
+    /**
      * Private constructor used to instantiate Firebase Poll object.
      * TODO: pass current poll stage
      * @param memberFacebookIds Identifiers of members connected with this poll. For now it is a facebook id.
      * @param name Name of the poll
+     * @param pollId Identifier of the poll
      */
-    private FirebasePoll(List<String> memberFacebookIds, String name) {
+    private FirebasePoll(List<String> memberFacebookIds, String name, String pollId) {
         this.memberFacebookIds = memberFacebookIds;
         this.name = name;
+        this.pollId = pollId;
     }
 
     /**
@@ -45,12 +54,12 @@ public class FirebasePoll {
      * @param poll Poll to convert
      * @return FirebasePoll used in the cloud
      */
-    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll) {
+    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll, String pollId) {
         List<String> membersFacebookIds = ListExt.map(Arrays.asList(poll.getMembers()), Person::getFacebookId);
         membersFacebookIds.add(hostFacebookId);
         return new FirebasePoll(
                 membersFacebookIds,
-                poll.getName()
-        );
+                poll.getName(),
+                pollId);
     }
 }

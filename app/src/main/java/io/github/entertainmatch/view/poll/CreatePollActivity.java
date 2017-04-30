@@ -109,9 +109,6 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
                 pollName.getText().toString(),
                 selectedPeople.toArray(new Person[selectedPeople.size()])
         );
-        // add poll to firebase, once added it should update views of all users involved
-        // and show notifications to them
-        FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, poll);
 
         Intent intent = new Intent();
         intent.putExtra(MainActivity.NEW_POLL_RESPONSE_KEY, poll);

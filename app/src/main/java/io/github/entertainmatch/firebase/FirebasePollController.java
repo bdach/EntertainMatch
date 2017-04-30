@@ -34,9 +34,9 @@ public class FirebasePollController {
      * Adds poll information to the database
      * @param newPoll Newly created poll
      */
-    public static void addPoll(String facebookHostId, Poll newPoll) {
+    public static String addPoll(String facebookHostId, Poll newPoll) {
         DatabaseReference firebasePollRef = ref.push();
-        FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll);
+        FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll, firebasePollRef.getKey());
 
         // add poll to firebase
         firebasePollRef.setValue(firebasePoll);
@@ -45,17 +45,25 @@ public class FirebasePollController {
         FirebasePersonController.addPoll(
                 firebasePollRef.getKey(),
                 firebasePoll.getMemberFacebookIds());
+
+        // return poll id
+        return firebasePollRef.getKey();
     }
 
     /**
      * Retrieves observables for all polls of the user.
-     * TODO: Not too handy to use probably
+     * This is a one-use-only observable. Used primarily to add polls to the view.
+     * One should resubscribe with <code>getPoll</code> observable for further changes.
      * @param firebasePerson User to get poll information for
      * @return Observables of polls for given user
      */
-    public static List<Observable<FirebasePoll>> getPollsForUser(FirebasePerson firebasePerson) {
+    public static List<Observable<FirebasePoll>> getPollsOnceForUser(FirebasePerson firebasePerson) {
         return ListExt.map(new ArrayList<>(firebasePerson.getPolls().keySet()),
-                pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
+                pollId -> RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId),
                     FirebasePoll.class));
+    }
+
+    public static Observable<FirebasePoll> getPoll(String pollId) {
+        return RxFirebaseDatabase.observeValueEvent(ref.child(pollId), FirebasePoll.class);
     }
 }

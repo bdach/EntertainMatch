@@ -66,7 +66,9 @@ public class FirebasePersonController {
      * @param facebookId User's facebook id.
      * @return Observable to the person provided by Firebase
      */
-    public static Observable<FirebasePerson> getUser(String facebookId) {
-        return RxFirebaseDatabase.observeValueEvent(ref.child(facebookId), FirebasePerson.class);
+    public static Observable<FirebasePerson> getUserOnce(String facebookId) {
+        return RxFirebaseDatabase.observeSingleValueEvent(
+                ref.child(facebookId),
+                FirebasePerson.class);
     }
 }
