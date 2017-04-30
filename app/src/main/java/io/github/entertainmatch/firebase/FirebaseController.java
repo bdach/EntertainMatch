@@ -11,6 +11,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.MovieEvent;
 import lombok.Getter;
 import rx.Observable;
@@ -20,8 +21,19 @@ import rx.Observable;
  */
 
 public class FirebaseController {
+    /**
+     * Instance of the database
+     */
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+    /**
+     * Holds reference to movies collection.
+     */
     private static final DatabaseReference ref = database.getReference("list");
+
+    /**
+     * Returns observable collection of currently available movies.
+     */
     @Getter
     private static final Observable<List<MovieEvent>> movieEventsObservable;
 

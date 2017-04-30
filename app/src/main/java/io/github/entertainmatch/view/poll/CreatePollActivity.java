@@ -17,6 +17,7 @@ import butterknife.ButterKnife;
 import com.facebook.GraphRequest;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FriendsProvider;
+import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.view.MainActivity;
@@ -107,6 +108,7 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
                 pollName.getText().toString(),
                 selectedPeople.toArray(new Person[selectedPeople.size()])
         );
+        FirebasePollController.addPoll(poll);
         Intent intent = new Intent();
         intent.putExtra(MainActivity.NEW_POLL_RESPONSE_KEY, poll);
         return intent;

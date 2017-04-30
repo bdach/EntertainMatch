@@ -46,7 +46,7 @@ public class Category implements Parcelable {
         votedFor = true;
     }
 
-    static ArrayList<Category> mockData() {
+    public static ArrayList<Category> mockData() {
         List<Category> list = Arrays.asList(
                 new Category("Movies", 5, false, R.drawable.cinema),
                 new Category("Concerts", 3, false, R.drawable.concert),
