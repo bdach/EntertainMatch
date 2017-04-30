@@ -7,13 +7,16 @@ import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
+ *
  * The reason for this object is to provide Firebase-friendly implementation of Poll.
  * This is due to Firebase limitations that might occur in the future.
  * One of them is the serialization of Java Arrays. Firebase is not capable of doing that.
  */
+@NoArgsConstructor
 public class FirebasePoll {
     /**
      * Users who participate in the poll

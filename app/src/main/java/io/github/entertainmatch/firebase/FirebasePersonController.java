@@ -1,24 +1,23 @@
 package io.github.entertainmatch.firebase;
 
-import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.entertainmatch.firebase.models.FirebasePerson;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
-import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
+ *
+ * Manages user state stored in firebase
  */
-
 public class FirebasePersonController {
     /**
      * Instance of the database
@@ -45,7 +44,7 @@ public class FirebasePersonController {
      * @return Observables of polls for given user
      */
     public static List<Observable<FirebasePoll>> getPollsForUser(FirebasePerson firebasePerson) {
-        return ListExt.map(firebasePerson.getPollIds(),
+        return ListExt.map(new ArrayList<>(firebasePerson.getPolls().keySet()),
                 pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
                         FirebasePoll.class));
     }
@@ -57,7 +56,17 @@ public class FirebasePersonController {
      */
     public static void addPoll(String pollId, List<String> membersFacebookIds) {
         for (String facebookId : membersFacebookIds) {
-            ref.child(facebookId).child("polls").child(pollId).setValue("");
+            ref.child(facebookId).child("polls").child(pollId).setValue(true);
         }
+    }
+
+    /**
+     * Grabs user information stored in firebase by facebook id.
+     * Initially used to fetch data about polls.
+     * @param facebookId User's facebook id.
+     * @return Observable to the person provided by Firebase
+     */
+    public static Observable<FirebasePerson> getUser(String facebookId) {
+        return RxFirebaseDatabase.observeValueEvent(ref.child(facebookId), FirebasePerson.class);
     }
 }

@@ -2,17 +2,13 @@ package io.github.entertainmatch.firebase;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebasePerson;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
@@ -58,7 +54,7 @@ public class FirebasePollController {
      * @return Observables of polls for given user
      */
     public static List<Observable<FirebasePoll>> getPollsForUser(FirebasePerson firebasePerson) {
-        return ListExt.map(firebasePerson.getPollIds(),
+        return ListExt.map(new ArrayList<>(firebasePerson.getPolls().keySet()),
                 pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
                     FirebasePoll.class));
     }

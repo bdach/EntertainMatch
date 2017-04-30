@@ -2,7 +2,6 @@ package io.github.entertainmatch.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,6 +11,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,11 +24,13 @@ import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebasePersonController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
 import rx.Observable;
@@ -97,6 +99,21 @@ public class MainActivity extends AppCompatActivity
         pollFragment = new PollFragment();
         setContentFragment(pollFragment);
         populateUserData(FacebookUsers.getCurrentUser(this));
+
+        // grab user from firebase (initially to fetch polls)
+        FirebasePersonController.getUser(FacebookUsers.getCurrentUser(this).facebookId)
+            .subscribe(firebasePerson -> {
+                if (firebasePerson == null) return;
+
+                for (Observable<FirebasePoll> poll : FirebasePollController.getPollsForUser(firebasePerson)) {
+                    poll.subscribe(firebasePoll -> {
+                        pollFragment.addPoll(new Poll(
+                                firebasePoll.getName(),
+                                new VoteCategoryStage(),
+                                null)); // decide if we should store every person or just ids
+                    });
+                }
+            });
     }
 
     private void populateUserData(Person currentUser) {
@@ -168,7 +185,7 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case NEW_POLL_REQUEST:
-                handleNewPoll(resultCode, data);
+                //handleNewPoll(resultCode, data);
                 break;
         }
     }

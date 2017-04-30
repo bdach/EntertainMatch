@@ -1,8 +1,8 @@
 package io.github.entertainmatch.firebase.models;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import io.github.entertainmatch.model.Person;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class FirebasePerson {
     @Getter
-    private List<String> pollIds;
+    private Map<String, Boolean> polls = new HashMap<>();
 }
