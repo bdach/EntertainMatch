@@ -42,9 +42,11 @@ public class FirebasePoll {
      * @param poll Poll to convert
      * @return FirebasePoll used in the cloud
      */
-    public static FirebasePoll fromPoll(Poll poll) {
+    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll) {
+        List<String> membersFacebookIds = ListExt.map(Arrays.asList(poll.getMembers()), Person::getFacebookId);
+        membersFacebookIds.add(hostFacebookId);
         return new FirebasePoll(
-                ListExt.map(Arrays.asList(poll.getMembers()), Person::getFacebookId),
+                membersFacebookIds,
                 poll.getName()
         );
     }

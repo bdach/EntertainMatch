@@ -24,11 +24,14 @@ import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
+import rx.Observable;
 
 /**
  * The main screen of the application. Displays lists of events and polls.

@@ -1,15 +1,13 @@
 package io.github.entertainmatch.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebasePerson;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
@@ -19,36 +17,25 @@ import rx.Observable;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
- *
- * The controller used to retrieve and update information about polls in the Firebase.
  */
-public class FirebasePollController {
+
+public class FirebasePersonController {
     /**
      * Instance of the database
      */
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     /**
-     * Holds reference to polls collection.
-     * In this collection each node is denoted by a poll id.
-     * User can retrieve poll ids with <code>FirebaseUserController.getUserById(facebookId)</code>
+     * Holds reference to people collection.
+     * In this collection each node is denoted by user's facebook id.
      */
-    private static final DatabaseReference ref = database.getReference("polls");
+    private static final DatabaseReference ref = database.getReference("people");
 
     /**
-     * Adds poll information to the database
-     * @param newPoll Newly created poll
+     * Adds person information to the database
+     * @param person Freshly authorized person
      */
-    public static void addPoll(String facebookHostId, Poll newPoll) {
-        DatabaseReference firebasePollRef = ref.push();
-        FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll);
-
-        // add poll to firebase
-        firebasePollRef.setValue(firebasePoll);
-
-        // delegate person controller to update people
-        FirebasePersonController.addPoll(
-                firebasePollRef.getKey(),
-                firebasePoll.getMemberFacebookIds());
+    public static void addPerson(Person person) {
+        ref.child(person.getFacebookId());
     }
 
     /**
@@ -60,6 +47,17 @@ public class FirebasePollController {
     public static List<Observable<FirebasePoll>> getPollsForUser(FirebasePerson firebasePerson) {
         return ListExt.map(firebasePerson.getPollIds(),
                 pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
-                    FirebasePoll.class));
+                        FirebasePoll.class));
+    }
+
+    /**
+     * Adds poll for a user
+     * @param pollId Id of new poll to add for all the users.
+     * @param membersFacebookIds Facebook ids of members
+     */
+    public static void addPoll(String pollId, List<String> membersFacebookIds) {
+        for (String facebookId : membersFacebookIds) {
+            ref.child(facebookId).child("polls").child(pollId).setValue("");
+        }
     }
 }
