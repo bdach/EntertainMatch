@@ -33,7 +33,7 @@ public class FirebaseController {
     /**
      * Holds reference to movies collection.
      */
-    private static final DatabaseReference ref = database.getReference("list");
+    private static final DatabaseReference ref = database.getReference("events");
 
     /**
      * Returns observable collection of currently available movies.
@@ -50,14 +50,14 @@ public class FirebaseController {
     }
 
     private static Observable<List<MovieEvent>> read() {
-        return RxFirebaseDatabase.observeValueEvent(ref, DataSnapshotMapper.listOf(MovieEvent.class));
+        return RxFirebaseDatabase.observeValueEvent(ref.child("movies"), DataSnapshotMapper.listOf(MovieEvent.class));
     }
 
     public static void init() {
         // force to call static constructor
         FirebaseCategoriesTemplatesController.get().subscribe(x -> {
             VoteCategoryStage.categories = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
-            Log.d("FirebaseController", "mock ready");
+            Log.d("FirebaseController", "categories ready");
         });
     }
 }
