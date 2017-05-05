@@ -3,6 +3,8 @@ package io.github.entertainmatch.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
+import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,12 +23,12 @@ public class Category implements Parcelable {
     private final String name;
     private Integer voteCount = 0;
     private boolean votedFor = false;
-    private final Integer imageId;
+    private final String imageUrl;
 
     protected Category(Parcel in) {
         name = in.readString();
         voteCount = in.readInt();
-        imageId = in.readInt();
+        imageUrl = in.readString();
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {
@@ -46,14 +48,12 @@ public class Category implements Parcelable {
         votedFor = true;
     }
 
-    public static ArrayList<Category> mockData() {
-        List<Category> list = Arrays.asList(
-                new Category("Movies", 5, false, R.drawable.cinema),
-                new Category("Concerts", 3, false, R.drawable.concert),
-                new Category("Plays", 2, false, R.drawable.play),
-                new Category("Staff Picks", 1, false, R.drawable.staffpick)
-        );
-        return new ArrayList<>(list);
+    // TODO: fix me
+    public static List<FirebaseCategoryTemplate> temporaryCache;
+    public static List<Category> mockData() {
+        if (temporaryCache == null)
+            return new ArrayList<>();
+        return ListExt.map(temporaryCache, FirebaseCategoryTemplate::toCategory);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class Category implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeInt(voteCount);
-        dest.writeInt(imageId);
+        dest.writeString(imageUrl);
     }
 }

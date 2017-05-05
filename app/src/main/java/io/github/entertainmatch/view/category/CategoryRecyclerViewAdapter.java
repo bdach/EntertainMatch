@@ -8,6 +8,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
@@ -110,7 +113,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
          */
         public void setCategory(Category category) {
             this.category = category;
-            imageView.setImageResource(category.getImageId());
+            Picasso.with(imageView.getContext())
+                .load(category.getImageUrl())
+                .into(imageView);
             titleView.setText(category.getName());
             if (category.isVotedFor()) {
                 labelLayout.setBackgroundResource(R.color.colorAccentShade);

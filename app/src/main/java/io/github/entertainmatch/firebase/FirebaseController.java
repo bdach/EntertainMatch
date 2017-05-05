@@ -11,6 +11,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.MovieEvent;
 import lombok.Getter;
@@ -39,7 +40,6 @@ public class FirebaseController {
 
     static {
         movieEventsObservable = read();
-        Log.d("WTF", "A");
     }
 
     private static void save(List<MovieEvent> list) {
@@ -52,5 +52,9 @@ public class FirebaseController {
 
     public static void init() {
         // force to call static constructor
+        FirebaseCategoriesTemplatesController.get().subscribe(x -> {
+            Category.temporaryCache = x;
+            Log.d("FirebaseController", "mock ready");
+        });
     }
 }
