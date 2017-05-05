@@ -1,5 +1,7 @@
 package io.github.entertainmatch.firebase.models;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.List;
 

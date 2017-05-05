@@ -2,6 +2,8 @@ package io.github.entertainmatch.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import io.github.entertainmatch.firebase.FirebaseController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -69,6 +71,6 @@ public class Poll implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeParcelableArray(members, 0);
+        dest.writeTypedArray(members, 0);
     }
 }

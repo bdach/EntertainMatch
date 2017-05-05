@@ -56,6 +56,9 @@ public class Person implements Parcelable {
 
     protected Person(Parcel in) {
         name = in.readString();
+        facebookId = in.readString();
+        profilePictureSet = in.readInt() != 0;
+        profilePictureUrl = in.readString();
     }
 
     public static final Creator<Person> CREATOR = new Creator<Person>() {
@@ -78,6 +81,9 @@ public class Person implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeString(facebookId);
+        dest.writeInt(profilePictureSet ? 1 : 0);
+        dest.writeString(profilePictureUrl);
     }
 
     public static List<Person> mockData() {
