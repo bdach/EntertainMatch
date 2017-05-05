@@ -52,4 +52,7 @@
     <string name="create_poll">Create</string>
     <string name="create_poll_empty_name_error">The poll name cannot be empty</string>
     <string name="create_poll_no_people_selected">You must select at least one person</string>
+    <string name="splash_screen_text">Welcome to EntertainMatch! We\'ll help you and your friends decide what to do on a
+        day out. To continue, please
+    </string>
 </resources>
