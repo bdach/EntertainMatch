@@ -2,7 +2,6 @@ package io.github.entertainmatch.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -42,12 +41,24 @@ public class MainActivity extends AppCompatActivity
      */
     public final static int NEW_POLL_REQUEST = 1;
 
+    /**
+     * Key indicating that a poll has been created from within another activity.
+     */
     public final static String NEW_POLL_RESPONSE_KEY = "new_poll";
+
+    /**
+     * Name of the fragment back stack used to display settings.
+     */
+    private final static String SETTINGS_STACK_NAME = "settings_stack";
 
     /**
      * The fragment used to display the list of ongoing polls.
      */
     private PollFragment pollFragment;
+    /**
+     * The fragment used to display the settings menu.
+     */
+    private SettingsFragment settingsFragment;
 
     /**
      * The view toolbar, containing the menu toggle and options bar.
@@ -91,6 +102,7 @@ public class MainActivity extends AppCompatActivity
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        settingsFragment = new SettingsFragment();
         pollFragment = new PollFragment();
         setContentFragment(pollFragment);
         populateUserData(FacebookUsers.getCurrentUser(this));
@@ -112,6 +124,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            fab.show();
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             super.onBackPressed();
         }
     }
@@ -127,8 +141,16 @@ public class MainActivity extends AppCompatActivity
         // TODO: handle options here
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                            android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .replace(R.id.content_frame, settingsFragment)
+                    .addToBackStack(SETTINGS_STACK_NAME)
+                    .commit();
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            fab.hide();
             return true;
         }
 
