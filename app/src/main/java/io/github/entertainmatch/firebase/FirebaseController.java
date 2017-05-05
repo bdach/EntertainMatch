@@ -8,12 +8,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import rx.Observable;
 
@@ -53,7 +56,7 @@ public class FirebaseController {
     public static void init() {
         // force to call static constructor
         FirebaseCategoriesTemplatesController.get().subscribe(x -> {
-            Category.temporaryCache = x;
+            VoteCategoryStage.categories = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
             Log.d("FirebaseController", "mock ready");
         });
     }

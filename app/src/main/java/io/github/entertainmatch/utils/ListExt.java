@@ -14,8 +14,8 @@ import java.util.function.Function;
  * Unfortunately e.g. Streams require Android API 24 what is just hilarious.
  */
 public class ListExt {
-    public static <T, U> List<T> map(List<U> that, Function<U, T> f) {
-        List<T> result = new ArrayList<>(that.size());
+    public static <T, U> ArrayList<T> map(List<U> that, Function<U, T> f) {
+        ArrayList<T> result = new ArrayList<>(that.size());
         for (U item : that) {
             result.add(f.apply(item));
         }

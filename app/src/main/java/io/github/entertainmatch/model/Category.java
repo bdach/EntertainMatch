@@ -48,14 +48,6 @@ public class Category implements Parcelable {
         votedFor = true;
     }
 
-    // TODO: fix me
-    public static List<FirebaseCategoryTemplate> temporaryCache;
-    public static List<Category> mockData() {
-        if (temporaryCache == null)
-            return new ArrayList<>();
-        return ListExt.map(temporaryCache, FirebaseCategoryTemplate::toCategory);
-    }
-
     @Override
     public int describeContents() {
         return 0;

@@ -17,13 +17,13 @@ import java.util.ArrayList;
  */
 @RequiredArgsConstructor
 public class VoteCategoryStage implements PollStage {
-//    @Getter
-//    private final ArrayList<Category> categories = Category.mockData();
+    // TODO: Once loaded they doesn't change I guess, probably we need something more robust
+    public static ArrayList<Category> categories = new ArrayList<>();
 
     @Override
     public Intent getViewStageIntent(Activity callingActivity) {
         Intent intent = new Intent(callingActivity, VoteCategoryActivity.class);
-        intent.putParcelableArrayListExtra(VoteCategoryActivity.CATEGORIES_KEY, (ArrayList<? extends Parcelable>) Category.mockData());
+        intent.putParcelableArrayListExtra(VoteCategoryActivity.CATEGORIES_KEY, categories);
         return intent;
     }
 
