@@ -5,15 +5,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
-import io.github.entertainmatch.firebase.models.FirebasePerson;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.MovieEvent;
-import io.github.entertainmatch.model.Person;
-import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 
 /**

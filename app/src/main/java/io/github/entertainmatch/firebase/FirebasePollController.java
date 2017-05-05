@@ -7,7 +7,8 @@ import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.entertainmatch.firebase.models.FirebasePerson;
+import io.github.entertainmatch.firebase.models.FirebaseCategory;
+import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.utils.ListExt;
@@ -36,15 +37,15 @@ public class FirebasePollController {
      */
     public static String addPoll(String facebookHostId, Poll newPoll) {
         DatabaseReference firebasePollRef = ref.push();
-        FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll, firebasePollRef.getKey());
+        FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll, firebasePollRef.getKey(), new FirebaseCategory());
 
         // add poll to firebase
         firebasePollRef.setValue(firebasePoll);
 
         // delegate person controller to update people
-        FirebasePersonController.addPoll(
+        FirebaseUserController.addPoll(
                 firebasePollRef.getKey(),
-                firebasePoll.getMemberFacebookIds());
+                firebasePoll.getParticipants());
 
         // return poll id
         return firebasePollRef.getKey();
@@ -54,11 +55,11 @@ public class FirebasePollController {
      * Retrieves observables for all polls of the user.
      * This is a one-use-only observable. Used primarily to add polls to the view.
      * One should resubscribe with <code>getPoll</code> observable for further changes.
-     * @param firebasePerson User to get poll information for
+     * @param firebaseUser User to get poll information for
      * @return Observables of polls for given user
      */
-    public static List<Observable<FirebasePoll>> getPollsOnceForUser(FirebasePerson firebasePerson) {
-        return ListExt.map(new ArrayList<>(firebasePerson.getPolls().keySet()),
+    public static List<Observable<FirebasePoll>> getPollsOnceForUser(FirebaseUser firebaseUser) {
+        return ListExt.map(new ArrayList<>(firebaseUser.getPolls().keySet()),
                 pollId -> RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId),
                     FirebasePoll.class));
     }

@@ -24,7 +24,7 @@ import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
-import io.github.entertainmatch.firebase.FirebasePersonController;
+import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
         populateUserData(FacebookUsers.getCurrentUser(this));
 
         // grab user from firebase (initially to fetch polls)
-        FirebasePersonController.getUserOnce(FacebookUsers.getCurrentUser(this).facebookId)
+        FirebaseUserController.getUserOnce(FacebookUsers.getCurrentUser(this).facebookId)
             .subscribe(firebasePerson -> {
                 if (firebasePerson == null) return;
 

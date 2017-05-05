@@ -1,13 +1,12 @@
 package io.github.entertainmatch.firebase.models;
 
-import android.util.Log;
-
 import java.util.Arrays;
 import java.util.List;
 
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.utils.ListExt;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,12 +18,13 @@ import lombok.NoArgsConstructor;
  * One of them is the serialization of Java Arrays. Firebase is not capable of doing that.
  */
 @NoArgsConstructor
+@AllArgsConstructor
 public class FirebasePoll {
     /**
      * Users who participate in the poll
      */
     @Getter
-    private List<String> memberFacebookIds;
+    private List<String> participants;
 
     /**
      * Name of the poll.
@@ -39,29 +39,26 @@ public class FirebasePoll {
     private String pollId;
 
     /**
-     * Private constructor used to instantiate Firebase Poll object.
-     * TODO: pass current poll stage
-     * @param memberFacebookIds Identifiers of members connected with this poll. For now it is a facebook id.
-     * @param name Name of the poll
-     * @param pollId Identifier of the poll
+     * Current stage
      */
-    private FirebasePoll(List<String> memberFacebookIds, String name, String pollId) {
-        this.memberFacebookIds = memberFacebookIds;
-        this.name = name;
-        this.pollId = pollId;
-    }
+    @Getter
+    private String stage;
+
+    /**
+     * Vote stage object - category
+     */
+    @Getter
+    private FirebaseCategory category;
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param poll Poll to convert
      * @return FirebasePoll used in the cloud
      */
-    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll, String pollId) {
+    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll, String pollId, FirebaseCategory category) {
         List<String> membersFacebookIds = ListExt.map(Arrays.asList(poll.getMembers()), Person::getFacebookId);
         membersFacebookIds.add(hostFacebookId);
-        return new FirebasePoll(
-                membersFacebookIds,
-                poll.getName(),
-                pollId);
+
+        return new FirebasePoll(membersFacebookIds, poll.getName(), pollId, poll.stageName(), category);
     }
 }

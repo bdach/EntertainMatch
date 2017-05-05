@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
  * Represents user information in Firebase.
  */
 @NoArgsConstructor
-public class FirebasePerson {
+public class FirebaseUser {
     @Getter
     private Map<String, Boolean> polls = new HashMap<>();
 }

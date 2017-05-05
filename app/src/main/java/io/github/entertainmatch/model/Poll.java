@@ -73,4 +73,8 @@ public class Poll implements Parcelable {
         dest.writeString(name);
         dest.writeTypedArray(members, 0);
     }
+
+    public String stageName() {
+        return pollStage.getClass().toString();
+    }
 }

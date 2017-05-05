@@ -7,7 +7,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.entertainmatch.firebase.models.FirebasePerson;
+import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.utils.ListExt;
@@ -18,7 +18,7 @@ import rx.Observable;
  *
  * Manages user state stored in firebase
  */
-public class FirebasePersonController {
+public class FirebaseUserController {
     /**
      * Instance of the database
      */
@@ -27,7 +27,7 @@ public class FirebasePersonController {
      * Holds reference to people collection.
      * In this collection each node is denoted by user's facebook id.
      */
-    private static final DatabaseReference ref = database.getReference("people");
+    private static final DatabaseReference ref = database.getReference("user_polls");
 
     /**
      * Adds person information to the database
@@ -40,11 +40,11 @@ public class FirebasePersonController {
     /**
      * Retrieves observables for all polls of the user.
      * TODO: Not too handy to use probably
-     * @param firebasePerson User to get poll information for
+     * @param firebaseUser User to get poll information for
      * @return Observables of polls for given user
      */
-    public static List<Observable<FirebasePoll>> getPollsForUser(FirebasePerson firebasePerson) {
-        return ListExt.map(new ArrayList<>(firebasePerson.getPolls().keySet()),
+    public static List<Observable<FirebasePoll>> getPollsForUser(FirebaseUser firebaseUser) {
+        return ListExt.map(new ArrayList<>(firebaseUser.getPolls().keySet()),
                 pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
                         FirebasePoll.class));
     }
@@ -66,9 +66,9 @@ public class FirebasePersonController {
      * @param facebookId User's facebook id.
      * @return Observable to the person provided by Firebase
      */
-    public static Observable<FirebasePerson> getUserOnce(String facebookId) {
+    public static Observable<FirebaseUser> getUserOnce(String facebookId) {
         return RxFirebaseDatabase.observeSingleValueEvent(
                 ref.child(facebookId),
-                FirebasePerson.class);
+                FirebaseUser.class);
     }
 }
