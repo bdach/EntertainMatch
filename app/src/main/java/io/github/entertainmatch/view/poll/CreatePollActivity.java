@@ -22,6 +22,8 @@ import io.github.entertainmatch.facebook.FriendsProvider;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.view.MainActivity;
 
 import java.util.ArrayList;
@@ -106,7 +108,7 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
     }
 
     private Intent constructPoll() {
-        Poll poll = new Poll(
+        PollStub poll = new PollStub(
                 pollName.getText().toString(),
                 selectedPeople.toArray(new Person[selectedPeople.size()])
         );

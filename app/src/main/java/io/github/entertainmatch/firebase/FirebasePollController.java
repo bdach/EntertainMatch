@@ -20,7 +20,10 @@ import io.github.entertainmatch.firebase.models.FirebaseCategory;
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 
@@ -46,11 +49,9 @@ public class FirebasePollController {
      * Adds poll information to the database
      * @param newPoll Newly created poll
      */
-    public static String addPoll(String facebookHostId, Poll newPoll) {
+    public static Poll addPoll(String facebookHostId, PollStub newPoll) {
         DatabaseReference firebasePollRef = ref.push();
         FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll, firebasePollRef.getKey());
-        newPoll.setPollId(firebasePollRef.getKey());
-        newPoll.setPollStage(new VoteCategoryStage(firebasePollRef.getKey()));
 
         // add poll to firebase
         firebasePollRef.setValue(firebasePoll);
@@ -61,7 +62,8 @@ public class FirebasePollController {
                 firebasePoll.getParticipants());
 
         // return poll id
-        return firebasePollRef.getKey();
+        String pollId = firebasePollRef.getKey();
+        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId);
     }
 
     /**
@@ -92,6 +94,11 @@ public class FirebasePollController {
                 HashMap<String, String> votedFor = (HashMap<String, String>) votedForRef.getValue();
                 votedFor.put(facebookId, itemId);
                 votedForRef.setValue(votedFor);
+
+                // check next stage
+                if (HashMapExt.all(votedFor, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
+                    mutableData.child("stage").setValue(VoteEventStage.class.toString());
+                }
 
                 return Transaction.success(mutableData);
             }

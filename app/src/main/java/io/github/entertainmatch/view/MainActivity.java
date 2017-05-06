@@ -30,7 +30,9 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
 import rx.Observable;
@@ -107,16 +109,17 @@ public class MainActivity extends AppCompatActivity
                         FirebasePollController.polls.put(firebasePoll.getPollId(), firebasePoll);
                         pollFragment.addPoll(new Poll(
                                 firebasePoll.getName(),
-                                new VoteCategoryStage(firebasePoll.getPollId()),
-                                null,
-                                firebasePoll.getPollId())); // decide if we should store every person or just ids
+                                PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
+                                null, // decide if we should store every person or just ids
+                                firebasePoll.getPollId()));
 
-                        Log.d("XD3", firebasePoll.getPollId());
                         FirebasePollController
                             .getPoll(firebasePoll.getPollId())
                             .subscribe(updatedPoll -> {
                                 // TODO: poll vote strategy, we should probably keep poll id in Poll object too
                                 Log.d("PollUpdate", "Updated!");
+
+                                FirebasePollController.polls.get(updatedPoll.getPollId()).update(updatedPoll);
                             });
                     });
                 }
@@ -199,11 +202,12 @@ public class MainActivity extends AppCompatActivity
 
     private void handleNewPoll(int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
-        Poll poll = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
+        PollStub pollStub = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
 
         // add poll to firebase, once added it should vote views of all users involved
         // and show notifications to them
-        String pollId = FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, poll);
+        Poll poll = FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, pollStub);
+        String pollId = poll.getPollId();
 
         FirebasePollController.getPollOnce(pollId).subscribe(x -> {
             FirebasePollController.polls.put(x.getPollId(), x);
@@ -215,9 +219,9 @@ public class MainActivity extends AppCompatActivity
         });
 
         // subscribe for poll changes
-        FirebasePollController.getPoll(pollId).subscribe(firebasePoll -> {
-            // TODO: vote stage once added
+        FirebasePollController.getPoll(pollId).subscribe(updatedPoll -> {
             Log.d("PollUpdate", "Updated!");
+            FirebasePollController.polls.get(updatedPoll.getPollId()).update(updatedPoll);
         });
     }
 

@@ -10,6 +10,7 @@ import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
@@ -65,11 +66,11 @@ public class FirebasePoll {
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
-     * @param poll Poll to convert
+     * @param pollStub Poll to convert
      * @return FirebasePoll used in the cloud
      */
-    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll, String pollId) {
-        List<String> membersFacebookIds = ListExt.map(Arrays.asList(poll.getMembers()), Person::getFacebookId);
+    public static FirebasePoll fromPoll(String hostFacebookId, PollStub pollStub, String pollId) {
+        List<String> membersFacebookIds = ListExt.map(Arrays.asList(pollStub.getMembers()), Person::getFacebookId);
         membersFacebookIds.add(hostFacebookId);
 
         HashMap<String, Integer> voteCounts = new HashMap<>();
@@ -81,7 +82,8 @@ public class FirebasePoll {
         for (String facebookId : membersFacebookIds)
             votedFor.put(facebookId, NO_USER_VOTE);
 
-        return new FirebasePoll(membersFacebookIds, poll.getName(), pollId, poll.stageName(), voteCounts, votedFor);
+        return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
+                VoteCategoryStage.class.toString(), voteCounts, votedFor);
     }
 
     public void update(Category category) {
@@ -97,5 +99,11 @@ public class FirebasePoll {
 
         amendedCategory.setVotedFor(getVotedFor().get(facebookId).equals(itemId));
         amendedCategory.setVoteCount(getVoteCounts().get(itemId));
+    }
+
+    public void update(FirebasePoll updatedPoll) {
+        stage = updatedPoll.stage;
+        voteCounts = updatedPoll.voteCounts;
+        votedFor = updatedPoll.votedFor;
     }
 }
