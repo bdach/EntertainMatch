@@ -78,16 +78,13 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
-    static {
-        FirebaseController.init();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        FirebaseController.init();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -107,15 +104,18 @@ public class MainActivity extends AppCompatActivity
 
                 for (Observable<FirebasePoll> poll : FirebasePollController.getPollsOnceForUser(firebasePerson)) {
                     poll.subscribe(firebasePoll -> {
+                        FirebasePollController.polls.put(firebasePoll.getPollId(), firebasePoll);
                         pollFragment.addPoll(new Poll(
                                 firebasePoll.getName(),
-                                new VoteCategoryStage(),
-                                null)); // decide if we should store every person or just ids
+                                new VoteCategoryStage(firebasePoll.getPollId()),
+                                null,
+                                firebasePoll.getPollId())); // decide if we should store every person or just ids
 
+                        Log.d("XD3", firebasePoll.getPollId());
                         FirebasePollController
                             .getPoll(firebasePoll.getPollId())
                             .subscribe(updatedPoll -> {
-                                // TODO: poll update strategy, we should probably keep poll id in Poll object too
+                                // TODO: poll vote strategy, we should probably keep poll id in Poll object too
                                 Log.d("PollUpdate", "Updated!");
                             });
                     });
@@ -201,16 +201,22 @@ public class MainActivity extends AppCompatActivity
         if (resultCode != RESULT_OK) return;
         Poll poll = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
 
-        // add poll to firebase, once added it should update views of all users involved
+        // add poll to firebase, once added it should vote views of all users involved
         // and show notifications to them
         String pollId = FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, poll);
 
-        // add this manually, no need to fetch the same object from firebase
-        pollFragment.addPoll(poll);
+        FirebasePollController.getPollOnce(pollId).subscribe(x -> {
+            FirebasePollController.polls.put(x.getPollId(), x);
+            pollFragment.addPoll(new Poll(
+                x.getName(),
+                new VoteCategoryStage(x.getPollId()),
+                null,
+                x.getPollId()));
+        });
 
         // subscribe for poll changes
         FirebasePollController.getPoll(pollId).subscribe(firebasePoll -> {
-            // TODO: update stage once added
+            // TODO: vote stage once added
             Log.d("PollUpdate", "Updated!");
         });
     }

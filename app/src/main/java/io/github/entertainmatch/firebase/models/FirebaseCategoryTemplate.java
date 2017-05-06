@@ -29,12 +29,12 @@ public class FirebaseCategoryTemplate {
      * Identifier of a category
      */
     @Getter
-    public int id;
+    public String id;
 
     /**
      * @return Constructs application Category from firebase template
      */
     public Category toCategory() {
-        return new Category(name, 0, false, imageUrl);
+        return new Category(name, 0, false, imageUrl, id);
     }
 }

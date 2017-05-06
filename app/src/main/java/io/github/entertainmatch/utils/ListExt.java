@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import io.github.entertainmatch.model.Category;
+
 /**
  * Created by Adrian Bednarz on 4/30/17.
  *
@@ -20,5 +22,21 @@ public class ListExt {
             result.add(f.apply(item));
         }
         return result;
+    }
+
+    public static <T extends ICloneable<T>> ArrayList<T> clone(ArrayList<T> that) {
+        ArrayList<T> result = new ArrayList<>(that.size());
+        for (T item : that) {
+            result.add(item.clone());
+        }
+        return result;
+    }
+
+    public static <T> boolean any(List<T> that, Function<T, Boolean> f) {
+        for (T item : that) {
+            if (f.apply(item))
+                return true;
+        }
+        return false;
     }
 }

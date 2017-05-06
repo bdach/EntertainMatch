@@ -13,7 +13,7 @@ import rx.Observable;
 /**
  * Created by Adrian Bednarz on 5/5/17.
  *
- * Manages templates for categories.
+ * Manages templates for categoriesTemplates.
  */
 
 public class FirebaseCategoriesTemplatesController {

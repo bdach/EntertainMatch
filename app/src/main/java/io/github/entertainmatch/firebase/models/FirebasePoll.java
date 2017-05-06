@@ -1,10 +1,16 @@
 package io.github.entertainmatch.firebase.models;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FirebasePoll {
+    public static final String NO_USER_VOTE = "-1";
     /**
      * Users who participate in the poll
      */
@@ -45,20 +52,50 @@ public class FirebasePoll {
     private String stage;
 
     /**
-     * Vote stage object - category
+     * Maps categoryId to number of votes
      */
     @Getter
-    private FirebaseCategory category;
+    private Map<String, Integer> voteCounts = new HashMap<>();
+
+    /**
+     * Maps facebookId to categoryId that given user voted for.
+     */
+    @Getter
+    private Map<String, String> votedFor = new HashMap<>();
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param poll Poll to convert
      * @return FirebasePoll used in the cloud
      */
-    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll, String pollId, FirebaseCategory category) {
+    public static FirebasePoll fromPoll(String hostFacebookId, Poll poll, String pollId) {
         List<String> membersFacebookIds = ListExt.map(Arrays.asList(poll.getMembers()), Person::getFacebookId);
         membersFacebookIds.add(hostFacebookId);
 
-        return new FirebasePoll(membersFacebookIds, poll.getName(), pollId, poll.stageName(), category);
+        HashMap<String, Integer> voteCounts = new HashMap<>();
+        HashMap<String, String> votedFor = new HashMap<>();
+
+        for (Category category : VoteCategoryStage.categoriesTemplates)
+            voteCounts.put(category.getId(), 0);
+
+        for (String facebookId : membersFacebookIds)
+            votedFor.put(facebookId, NO_USER_VOTE);
+
+        return new FirebasePoll(membersFacebookIds, poll.getName(), pollId, poll.stageName(), voteCounts, votedFor);
+    }
+
+    public void update(Category category) {
+        String itemId = category.getId();
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+
+        FirebasePollController.vote(pollId, facebookId, itemId);
+    }
+
+    public void setValues(Category amendedCategory) {
+        String itemId = amendedCategory.getId();
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+
+        amendedCategory.setVotedFor(getVotedFor().get(facebookId).equals(itemId));
+        amendedCategory.setVoteCount(getVoteCounts().get(itemId));
     }
 }

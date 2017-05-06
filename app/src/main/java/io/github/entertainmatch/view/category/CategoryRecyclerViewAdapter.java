@@ -15,6 +15,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.category.CategoryFragment.OnCategorySelectedListener;
 import lombok.RequiredArgsConstructor;
 
@@ -40,6 +41,10 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_category, parent, false);
+
+        if (ListExt.any(categories, Category::isVotedFor))
+            disableVoting();
+
         return new ViewHolder(view);
     }
 

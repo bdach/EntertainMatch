@@ -35,11 +35,17 @@ public class Poll implements Parcelable {
      * Other users who are a part of the poll.
      */
     private final Person[] members;
+    /**
+     * Poll identifier
+     */
+    @Setter
+    private String pollId;
 
     protected Poll(Parcel in) {
         name = in.readString();
+        pollId = in.readString();
         members = in.createTypedArray(Person.CREATOR);
-        pollStage = new VoteCategoryStage();
+        pollStage = new VoteCategoryStage(pollId);
     }
 
     public static final Creator<Poll> CREATOR = new Creator<Poll>() {
@@ -56,10 +62,10 @@ public class Poll implements Parcelable {
 
     public static List<Poll> mockData() {
         return Arrays.asList(
-                new Poll("Test poll", new VoteCategoryStage(), new Person[0]),
-                new Poll("Another test poll", new VoteEventStage(), new Person[0]),
-                new Poll("Yet another test poll", new VoteDateStage(), new Person[0]),
-                new Poll("And yet another poll", new VoteResultStage(), new Person[0])
+//                new Poll("Test poll", new VoteCategoryStage(), new Person[0]),
+//                new Poll("Another test poll", new VoteEventStage(), new Person[0]),
+//                new Poll("Yet another test poll", new VoteDateStage(), new Person[0]),
+//                new Poll("And yet another poll", new VoteResultStage(), new Person[0])
         );
     }
 
@@ -71,6 +77,7 @@ public class Poll implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeString(pollId);
         dest.writeTypedArray(members, 0);
     }
 
