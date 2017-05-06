@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.utils.PollStageFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,7 +32,7 @@ public class Poll implements Parcelable {
     /**
      * The stage of the poll.
      */
-    private final PollStage pollStage;
+    private PollStage pollStage;
     /**
      * Other users who are a part of the poll.
      */
@@ -85,5 +87,10 @@ public class Poll implements Parcelable {
 
     public String stageName() {
         return pollStage.getClass().toString();
+    }
+
+    public void update() {
+        FirebasePoll newPoll = FirebasePollController.polls.get(pollId);
+        pollStage = PollStageFactory.get(newPoll.getStage(), pollId);
     }
 }

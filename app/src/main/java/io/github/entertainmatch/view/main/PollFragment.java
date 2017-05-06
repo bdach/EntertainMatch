@@ -73,6 +73,13 @@ public class PollFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void updatePolls() {
+        for (Poll poll : polls) {
+            poll.update();
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     /**
      * Interface allowing activities containing this fragment type to be notified of a selection.
      */

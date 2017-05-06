@@ -16,6 +16,9 @@ import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.view.MainActivity;
+import rx.Subscription;
 
 import java.util.ArrayList;
 
@@ -48,6 +51,10 @@ public class VoteCategoryActivity extends AppCompatActivity
      * Identifier of current poll
      */
     private String pollId;
+    /**
+     * Subscription object used to notify view about poll changes.
+     */
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,7 @@ public class VoteCategoryActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         populateCategoryList();
     }
 
@@ -71,11 +79,30 @@ public class VoteCategoryActivity extends AppCompatActivity
         ArrayList<Category> categories = data.getCategories();
         pollId = data.getPollId();
 
+        subscription = FirebasePollController.getPoll(pollId).subscribe(this::subscribeCallback);
+
         fragment = CategoryFragment.newInstance(categories);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.vote_category_content, fragment)
                 .commit();
+    }
+
+    private void subscribeCallback(FirebasePoll poll) {
+        if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
+            fragment.updateCategories(poll.getVoteCounts());
+        } else {
+            Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
+                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        subscription.unsubscribe();
+                        finish();
+                    }
+                })
+                .show();
+        }
     }
 
     /**
