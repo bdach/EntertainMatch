@@ -32,6 +32,7 @@ import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.MovieEvent;
 import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.model.VoteEventStage;
 import rx.Observable;
 import rx.Subscription;
 
@@ -68,6 +69,7 @@ public class EventListActivity extends AppCompatActivity {
     @BindView(R.id.event_list)
     RecyclerView recyclerView;
     private EventRecyclerViewAdapter adapter;
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class EventListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         pollId = getIntent().getStringExtra(PollStage.POLL_ID_KEY);
+        subscription = FirebasePollController.getPoll(pollId).subscribe(this::stageFinishCallback);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -98,6 +101,21 @@ public class EventListActivity extends AppCompatActivity {
             // If this view is present, then the
             // activity should be in two-pane mode.
             twoPane = true;
+        }
+    }
+
+    private void stageFinishCallback(FirebasePoll firebasePoll) {
+        if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
+            Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            subscription.unsubscribe();
+                            finish();
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -167,12 +185,12 @@ public class EventListActivity extends AppCompatActivity {
                     setVisible(userChoices, movieEvents);
                 }
                 notifyDataSetChanged();
-                checkOneChoiceLeft();
+                checkOneChoiceLeft(poll);
             });
         }
 
         private Map<String, Boolean> getUserChoices(FirebasePoll firebasePoll) {
-            Map<String, Map<String, Boolean>> remainingChoices = firebasePoll.getRemainingChoices();
+            Map<String, Map<String, Boolean>> remainingChoices = firebasePoll.getRemainingEventChoices();
             String facebookId = FacebookUsers.getCurrentUser(EventListActivity.this).getFacebookId();
             return remainingChoices.get(facebookId);
         }
@@ -198,17 +216,18 @@ public class EventListActivity extends AppCompatActivity {
                     if (event == DISMISS_EVENT_ACTION) return;
                     FirebasePoll poll = FirebasePollController.polls.get(pollId);
                     poll.updateRemainingEvents(visible);
-                    checkOneChoiceLeft();
+                    checkOneChoiceLeft(poll);
                 }
             };
         }
 
-        private void checkOneChoiceLeft() {
-            if (getItemCount() == 1) {
+        private void checkOneChoiceLeft(FirebasePoll poll) {
+            if (values.size() == 1) {
                 Snackbar.make(coordinatorLayout,
                         String.format("You've chosen %s!", values.get(0).getTitle()),
                         Snackbar.LENGTH_INDEFINITE)
                         .show();
+                poll.voteEvent(values.get(0));
             }
         }
 
@@ -221,6 +240,9 @@ public class EventListActivity extends AppCompatActivity {
         private void setVisible(Map<String, Boolean> visible, List<MovieEvent> movieEvents) {
             this.visible = visible;
             for (MovieEvent event : movieEvents) {
+                if (!visible.containsKey(event.getId())) {
+                    visible.put(event.getId(), true);
+                }
                 if (visible.get(event.getId())) {
                     values.add(event);
                 }

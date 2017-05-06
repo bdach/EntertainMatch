@@ -2,6 +2,7 @@ package io.github.entertainmatch.firebase.models;
 
 import java.util.*;
 
+import android.media.FaceDetector;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.*;
@@ -19,47 +20,40 @@ import lombok.NoArgsConstructor;
  */
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class FirebasePoll {
     public static final String NO_USER_VOTE = "-1";
     /**
      * Users who participate in the poll
      */
-    @Getter
     private List<String> participants;
 
     /**
      * Name of the poll.
      */
-    @Getter
     private String name;
 
     /**
      * Identifier of the poll
      */
-    @Getter
     private String pollId;
 
     /**
      * Current stage
      */
-    @Getter
     private String stage;
 
     /**
      * Maps categoryId to number of votes
      */
-    @Getter
     private Map<String, Integer> voteCounts = new HashMap<>();
 
     /**
      * Maps facebookId to categoryId that given user voted for.
      */
-    @Getter
     private Map<String, String> votedFor = new HashMap<>();
-
-    @Getter
-    private Map<String, Map<String, Boolean>> remainingChoices = new HashMap<>();
-
+    private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
+    private Map<String, String> eventVotes = new HashMap<>();
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
@@ -71,15 +65,19 @@ public class FirebasePoll {
 
         HashMap<String, Integer> voteCounts = new HashMap<>();
         HashMap<String, String> votedFor = new HashMap<>();
+        HashMap<String, String> eventVotes = new HashMap<>();
 
         for (Category category : VoteCategoryStage.categoriesTemplates)
             voteCounts.put(category.getId(), 0);
 
         for (String facebookId : membersFacebookIds)
+        {
             votedFor.put(facebookId, NO_USER_VOTE);
+            eventVotes.put(facebookId, NO_USER_VOTE);
+        }
 
         return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
-                VoteCategoryStage.class.toString(), voteCounts, votedFor, null);
+                VoteCategoryStage.class.toString(), voteCounts, votedFor, null, eventVotes);
     }
 
     public void update(Category category) {
@@ -101,12 +99,19 @@ public class FirebasePoll {
         stage = updatedPoll.stage;
         voteCounts = updatedPoll.voteCounts;
         votedFor = updatedPoll.votedFor;
-        remainingChoices = updatedPoll.remainingChoices;
+        remainingEventChoices = updatedPoll.remainingEventChoices;
+        eventVotes = updatedPoll.eventVotes;
     }
 
     public void updateRemainingEvents(Map<String, Boolean> selections) {
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);
+    }
+
+    public void voteEvent(MovieEvent event) {
+        String eventId = event.getId();
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        FirebasePollController.voteEvent(pollId, facebookId, eventId);
     }
 }

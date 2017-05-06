@@ -1,8 +1,10 @@
 package io.github.entertainmatch.firebase;
 
 import android.content.Intent;
+import android.hardware.Camera;
 import android.util.Log;
 
+import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,10 +21,7 @@ import java.util.Map;
 import io.github.entertainmatch.firebase.models.FirebaseCategory;
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.Poll;
-import io.github.entertainmatch.model.PollStub;
-import io.github.entertainmatch.model.VoteCategoryStage;
-import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
@@ -112,9 +111,30 @@ public class FirebasePollController {
 
     public static void updateRemainingEvents(String pollId, String facebookId, Map<String, Boolean> selections) {
         ref.child(pollId)
-                .child("remainingChoices")
+                .child("remainingEventChoices")
                 .child(facebookId)
                 .setValue(selections);
+    }
+
+    public static void voteEvent(String pollId, String facebookId, String itemId) {
+        ref.child(pollId).runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                MutableData eventVotesRef = mutableData.child("eventVotes");
+                HashMap<String, String> eventVotes = (HashMap<String, String>) eventVotesRef.getValue();
+                eventVotes.put(facebookId, itemId);
+                eventVotesRef.setValue(eventVotes);
+                if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
+                    mutableData.child("stage").setValue(VoteDateStage.class.toString());
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 
     public static Observable<FirebasePoll> getPollOnce(String pollId) {
