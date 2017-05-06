@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,9 +17,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.GraphRequest;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.facebook.FriendsProvider;
+import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.view.MainActivity;
 
 import java.util.ArrayList;
@@ -103,10 +108,11 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
     }
 
     private Intent constructPoll() {
-        Poll poll = new Poll(
+        PollStub poll = new PollStub(
                 pollName.getText().toString(),
                 selectedPeople.toArray(new Person[selectedPeople.size()])
         );
+
         Intent intent = new Intent();
         intent.putExtra(MainActivity.NEW_POLL_RESPONSE_KEY, poll);
         return intent;

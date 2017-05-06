@@ -13,6 +13,7 @@ import io.github.entertainmatch.model.Category;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * A fragment used to display a list of {@link Category} items to select from.
@@ -102,6 +103,17 @@ public class CategoryFragment extends Fragment {
     public void registerVote(Category item) {
         item.registerVote();
         adapter.disableVoting();
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Updates category counts with new data supplied by Firebase
+     * @param categoryToCount
+     */
+    public void updateCategories(Map<String, Integer> categoryToCount) {
+        for (Category category : categories) {
+            category.setVoteCount(categoryToCount.get(category.getId()));
+        }
         adapter.notifyDataSetChanged();
     }
 

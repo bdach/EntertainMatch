@@ -1,6 +1,5 @@
 package io.github.entertainmatch.firebase;
 
-import android.net.Uri;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -9,9 +8,13 @@ import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.List;
-import java.util.logging.Logger;
 
+import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import rx.Observable;
 
@@ -20,14 +23,24 @@ import rx.Observable;
  */
 
 public class FirebaseController {
+    /**
+     * Instance of the database
+     */
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private static final DatabaseReference ref = database.getReference("list");
+
+    /**
+     * Holds reference to movies collection.
+     */
+    private static final DatabaseReference ref = database.getReference("events");
+
+    /**
+     * Returns observable collection of currently available movies.
+     */
     @Getter
     private static final Observable<List<MovieEvent>> movieEventsObservable;
 
     static {
         movieEventsObservable = read();
-        Log.d("WTF", "A");
     }
 
     private static void save(List<MovieEvent> list) {
@@ -35,10 +48,14 @@ public class FirebaseController {
     }
 
     private static Observable<List<MovieEvent>> read() {
-        return RxFirebaseDatabase.observeValueEvent(ref, DataSnapshotMapper.listOf(MovieEvent.class));
+        return RxFirebaseDatabase.observeValueEvent(ref.child("movies"), DataSnapshotMapper.listOf(MovieEvent.class));
     }
 
     public static void init() {
         // force to call static constructor
+        FirebaseCategoriesTemplatesController.get().subscribe(x -> {
+            VoteCategoryStage.categoriesTemplates = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
+            Log.d("FirebaseController", "categoriesTemplates ready " + VoteCategoryStage.categoriesTemplates.size());
+        });
     }
 }

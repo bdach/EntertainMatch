@@ -3,6 +3,7 @@ package io.github.entertainmatch.view.event;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
@@ -13,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Optional;
@@ -33,7 +38,7 @@ public class EventDetailFragment extends Fragment {
      * The fragment argument representing the event ID that this fragment
      * represents.
      */
-    public static final String EVENTS_KEY = "event";
+    public static final String EVENTS_KEY = "event1";
 
     /**
      * The event this fragment is presenting.
@@ -89,10 +94,26 @@ public class EventDetailFragment extends Fragment {
         // Show the dummy content as text in a TextView.
         if (event != null) {
             setContent(rootView);
-            imageView.setImageResource(event.getDrawableId());
 
-            Palette palette = getPalette(event.getDrawableId());
-            setColors(palette.getMutedSwatch());
+            Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    imageView.setImageBitmap(bitmap);
+                    setColors(Palette.from(bitmap).generate().getMutedSwatch());
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+                }
+            };
+
+            Picasso.with(getContext())
+                    .load(event.getDrawableUri())
+                    .into(target);
         }
 
         return rootView;

@@ -8,10 +8,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.category.CategoryFragment.OnCategorySelectedListener;
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +41,10 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_category, parent, false);
+
+        if (ListExt.any(categories, Category::isVotedFor))
+            disableVoting();
+
         return new ViewHolder(view);
     }
 
@@ -110,7 +118,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
          */
         public void setCategory(Category category) {
             this.category = category;
-            imageView.setImageResource(category.getImageId());
+            Picasso.with(imageView.getContext())
+                .load(category.getImageUrl())
+                .into(imageView);
             titleView.setText(category.getName());
             if (category.isVotedFor()) {
                 labelLayout.setBackgroundResource(R.color.colorAccentShade);

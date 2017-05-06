@@ -25,6 +25,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.Person;
 import org.json.JSONObject;
 
@@ -159,6 +160,8 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             Person user = new Person(response.getJSONObject());
                             FacebookUsers.setCurrentUser(LoginActivity.this, user);
+                            // note in Firebase that user has been created successfully.
+                            FirebaseUserController.addPerson(user);
 
                             // just for now to see if everything works
                             Toast.makeText(LoginActivity.this, "Welcome aboard, " + user.getName(), Toast.LENGTH_LONG).show();

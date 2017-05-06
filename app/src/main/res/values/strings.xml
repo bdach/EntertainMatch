@@ -55,4 +55,5 @@
     <string name="splash_screen_text">Welcome to EntertainMatch! We\'ll help you and your friends decide what to do on a
         day out. To continue, please
     </string>
+    <string name="voting_finished">Voting finished! Moving to next stage</string>
 </resources>

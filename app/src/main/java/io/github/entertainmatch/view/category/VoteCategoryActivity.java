@@ -7,10 +7,18 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.view.MainActivity;
+import rx.Subscription;
 
 import java.util.ArrayList;
 
@@ -23,7 +31,7 @@ public class VoteCategoryActivity extends AppCompatActivity
     /**
      * The key used to store and fetch the {@link ArrayList} of {@link Category} items to display.
      */
-    public static final String CATEGORIES_KEY = "categories";
+    public static final String CATEGORIES_KEY = "categoriesTemplates";
 
     /**
      * The {@link Toolbar} displayed in the window as the action bar.
@@ -39,6 +47,14 @@ public class VoteCategoryActivity extends AppCompatActivity
      * The {@link CategoryFragment} containing the list of available {@link Category} items.
      */
     private CategoryFragment fragment;
+    /**
+     * Identifier of current poll
+     */
+    private String pollId;
+    /**
+     * Subscription object used to notify view about poll changes.
+     */
+    private Subscription subscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +64,45 @@ public class VoteCategoryActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         populateCategoryList();
     }
 
     /**
-     * Fetches the list of categories from the calling {@link Intent} and displays it in the activity as a
+     * Fetches the list of categoriesTemplates from the calling {@link Intent} and displays it in the activity as a
      * {@link CategoryFragment}.
      */
     private void populateCategoryList() {
         Intent intent = getIntent();
-        ArrayList<Category> categories = intent.getParcelableArrayListExtra(CATEGORIES_KEY);
+        VoteCategoryData data = intent.getParcelableExtra(CATEGORIES_KEY);
+
+        ArrayList<Category> categories = data.getCategories();
+        pollId = data.getPollId();
+
+        subscription = FirebasePollController.getPoll(pollId).subscribe(this::subscribeCallback);
+
         fragment = CategoryFragment.newInstance(categories);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.vote_category_content, fragment)
                 .commit();
+    }
+
+    private void subscribeCallback(FirebasePoll poll) {
+        if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
+            fragment.updateCategories(poll.getVoteCounts());
+        } else {
+            Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
+                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        subscription.unsubscribe();
+                        finish();
+                    }
+                })
+                .show();
+        }
     }
 
     /**
@@ -76,6 +116,9 @@ public class VoteCategoryActivity extends AppCompatActivity
             return;
         }
         fragment.registerVote(item);
+        FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        poll.update(item);
+
         Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
                 .show();
     }

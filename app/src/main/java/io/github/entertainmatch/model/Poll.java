@@ -2,7 +2,12 @@ package io.github.entertainmatch.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
 import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.utils.PollStageFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,17 +32,23 @@ public class Poll implements Parcelable {
     /**
      * The stage of the poll.
      */
-    @Setter
     private PollStage pollStage;
     /**
      * Other users who are a part of the poll.
      */
     private final Person[] members;
+    /**
+     * Poll identifier
+     */
+    @Setter
+    private String pollId;
 
     protected Poll(Parcel in) {
         name = in.readString();
+        pollId = in.readString();
         members = in.createTypedArray(Person.CREATOR);
-        pollStage = new VoteCategoryStage();
+        String stageName = in.readString();
+        pollStage = PollStageFactory.get(stageName, pollId);
     }
 
     public static final Creator<Poll> CREATOR = new Creator<Poll>() {
@@ -54,10 +65,10 @@ public class Poll implements Parcelable {
 
     public static List<Poll> mockData() {
         return Arrays.asList(
-                new Poll("Test poll", new VoteCategoryStage(), new Person[0]),
-                new Poll("Another test poll", new VoteEventStage(), new Person[0]),
-                new Poll("Yet another test poll", new VoteDateStage(), new Person[0]),
-                new Poll("And yet another poll", new VoteResultStage(), new Person[0])
+//                new Poll("Test poll", new VoteCategoryStage(), new Person[0]),
+//                new Poll("Another test poll", new VoteEventStage(), new Person[0]),
+//                new Poll("Yet another test poll", new VoteDateStage(), new Person[0]),
+//                new Poll("And yet another poll", new VoteResultStage(), new Person[0])
         );
     }
 
@@ -69,6 +80,17 @@ public class Poll implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeParcelableArray(members, 0);
+        dest.writeString(pollId);
+        dest.writeTypedArray(members, 0);
+        dest.writeString(stageName());
+    }
+
+    public String stageName() {
+        return pollStage.getClass().toString();
+    }
+
+    public void update() {
+        FirebasePoll newPoll = FirebasePollController.polls.get(pollId);
+        pollStage = PollStageFactory.get(newPoll.getStage(), pollId);
     }
 }
