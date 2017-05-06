@@ -26,16 +26,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.MovieEvent;
 import io.github.entertainmatch.model.PollStage;
 import rx.Observable;
+import rx.Subscription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An activity containing the list of available events.
@@ -48,6 +51,7 @@ public class EventListActivity extends AppCompatActivity {
      */
     private boolean twoPane;
     private String pollId;
+    private Subscription poll;
 
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
@@ -63,6 +67,7 @@ public class EventListActivity extends AppCompatActivity {
      */
     @BindView(R.id.event_list)
     RecyclerView recyclerView;
+    private EventRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +119,7 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        EventRecyclerViewAdapter adapter = new EventRecyclerViewAdapter(FirebaseController.getMovieEventsObservable());
+        adapter = new EventRecyclerViewAdapter(FirebaseController.getMovieEventsObservable());
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -146,17 +151,30 @@ public class EventListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
         private final List<MovieEvent> values = new ArrayList<>();
-        private final HashMap<String, Boolean> visible = new HashMap<>();
+        private Map<String, Boolean> visible = new HashMap<>();
 
         public EventRecyclerViewAdapter(Observable<List<MovieEvent>> eventsObservable) {
+            FirebasePoll poll = FirebasePollController.polls.get(pollId);
             eventsObservable.subscribe(movieEvents -> {
                 values.clear();
-                values.addAll(movieEvents);
-                for (MovieEvent event : values) {
-                    visible.put(event.getId(), true);
+                Map<String, Boolean> userChoices = getUserChoices(poll);
+                if (userChoices == null) {
+                    values.addAll(movieEvents);
+                    for (MovieEvent event : movieEvents) {
+                        visible.put(event.getId(), true);
+                    }
+                } else {
+                    setVisible(userChoices, movieEvents);
                 }
                 notifyDataSetChanged();
+                checkOneChoiceLeft();
             });
+        }
+
+        private Map<String, Boolean> getUserChoices(FirebasePoll firebasePoll) {
+            Map<String, Map<String, Boolean>> remainingChoices = firebasePoll.getRemainingChoices();
+            String facebookId = FacebookUsers.getCurrentUser(EventListActivity.this).getFacebookId();
+            return remainingChoices.get(facebookId);
         }
 
         public void removeItem(RecyclerView.ViewHolder viewHolder) {
@@ -168,28 +186,46 @@ public class EventListActivity extends AppCompatActivity {
             Snackbar.make(coordinatorLayout,
                     String.format(getString(R.string.vote_event_item_discarded), item.getTitle()),
                     Snackbar.LENGTH_LONG)
-                    .addCallback(new Snackbar.Callback() {
-                        @Override
-                        public void onDismissed(Snackbar transientBottomBar, int event) {
-                            if (event == DISMISS_EVENT_ACTION) return;
-                            FirebasePoll poll = FirebasePollController.polls.get(pollId);
-                            poll.updateRemainingEvents(visible);
-                            if (getItemCount() == 1) {
-                                Snackbar.make(coordinatorLayout,
-                                        String.format("You've chosen %s!", values.get(0).getTitle()),
-                                        Snackbar.LENGTH_INDEFINITE)
-                                        .show();
-                            }
-                        }
-                    })
+                    .addCallback(snackbarCallback())
                     .setAction("Undo", v -> undoRemoval(item, adapterPosition))
                     .show();
+        }
+
+        private Snackbar.Callback snackbarCallback() {
+            return new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    if (event == DISMISS_EVENT_ACTION) return;
+                    FirebasePoll poll = FirebasePollController.polls.get(pollId);
+                    poll.updateRemainingEvents(visible);
+                    checkOneChoiceLeft();
+                }
+            };
+        }
+
+        private void checkOneChoiceLeft() {
+            if (getItemCount() == 1) {
+                Snackbar.make(coordinatorLayout,
+                        String.format("You've chosen %s!", values.get(0).getTitle()),
+                        Snackbar.LENGTH_INDEFINITE)
+                        .show();
+            }
         }
 
         private void undoRemoval(MovieEvent item, int adapterPosition) {
             values.add(adapterPosition, item);
             visible.put(item.getId(), true);
             notifyItemInserted(adapterPosition);
+        }
+
+        private void setVisible(Map<String, Boolean> visible, List<MovieEvent> movieEvents) {
+            this.visible = visible;
+            for (MovieEvent event : movieEvents) {
+                if (visible.get(event.getId())) {
+                    values.add(event);
+                }
+            }
+            notifyDataSetChanged();
         }
 
         @Override

@@ -101,10 +101,10 @@ public class FirebasePoll {
         stage = updatedPoll.stage;
         voteCounts = updatedPoll.voteCounts;
         votedFor = updatedPoll.votedFor;
-        // TODO: update event choices
+        remainingChoices = updatedPoll.remainingChoices;
     }
 
-    public void updateRemainingEvents(HashMap<String, Boolean> selections) {
+    public void updateRemainingEvents(Map<String, Boolean> selections) {
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);

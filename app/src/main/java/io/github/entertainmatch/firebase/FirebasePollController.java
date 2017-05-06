@@ -110,7 +110,7 @@ public class FirebasePollController {
         });
     }
 
-    public static void updateRemainingEvents(String pollId, String facebookId, HashMap<String, Boolean> selections) {
+    public static void updateRemainingEvents(String pollId, String facebookId, Map<String, Boolean> selections) {
         ref.child(pollId)
                 .child("remainingChoices")
                 .child(facebookId)
