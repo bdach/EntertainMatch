@@ -22,7 +22,6 @@ import java.util.ArrayList;
  */
 @NoArgsConstructor
 public class VoteCategoryStage implements PollStage {
-    // TODO: Once loaded they doesn't change I guess, probably we need something more robust
     public static ArrayList<Category> categoriesTemplates = new ArrayList<>();
 
     @Getter

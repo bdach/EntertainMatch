@@ -11,8 +11,6 @@ import io.github.entertainmatch.model.VoteResultStage;
  */
 
 public class PollStageFactory {
-    public static final String Preparation = "prep";
-
     // TODO: quick hack
     public static PollStage get(String stage, String pollId) {
         if (stage.equals(VoteCategoryStage.class.toString()))
@@ -23,8 +21,6 @@ public class PollStageFactory {
             return new VoteDateStage();
         else if (stage.equals(VoteResultStage.class.toString()))
             return new VoteResultStage();
-        else if (stage.equals(Preparation))
-            return null;
 
         throw new UnsupportedOperationException("Unsupported stage");
     }

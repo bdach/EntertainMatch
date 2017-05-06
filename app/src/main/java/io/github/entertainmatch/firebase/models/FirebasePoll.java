@@ -9,7 +9,6 @@ import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.Person;
-import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;

@@ -84,6 +84,6 @@ public class Poll implements Parcelable {
     }
 
     public String stageName() {
-        return pollStage == null ? PollStageFactory.Preparation : pollStage.getClass().toString();
+        return pollStage.getClass().toString();
     }
 }
