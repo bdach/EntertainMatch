@@ -56,4 +56,8 @@
         day out. To continue, please
     </string>
     <string name="voting_finished">Voting finished! Moving to next stage</string>
+    <string name="vote_event_start_tip">Swipe in any direction on an event to dismiss it. The last remaining item will
+        be chosen.
+    </string>
+    <string name="vote_event_item_discarded">Discarded %s from the list</string>
 </resources>

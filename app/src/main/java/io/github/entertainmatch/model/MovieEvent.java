@@ -18,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class MovieEvent implements Parcelable {
+    private String id;
     /**
      * Title of the event.
      */
@@ -48,6 +49,7 @@ public class MovieEvent implements Parcelable {
     private Integer rottenTomatoesScore;
 
     protected MovieEvent(Parcel in) {
+        id = in.readString();
         title = in.readString();
         drawableUri = in.readString();
         synopsis = in.readString();
@@ -72,6 +74,7 @@ public class MovieEvent implements Parcelable {
     public static List<MovieEvent> mockData() {
         return Arrays.asList(
                 new MovieEvent(
+                        "a",
                         "Ghost in the Shell",
                         "http://i.imgur.com/PLFkStW.jpg",
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
@@ -81,6 +84,7 @@ public class MovieEvent implements Parcelable {
                         42
                 ),
                 new MovieEvent(
+                        "b",
                         "Ghost in the Shell",
                         "http://i.imgur.com/PLFkStW.jpg",
                         "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
@@ -99,6 +103,7 @@ public class MovieEvent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(title);
         dest.writeString(drawableUri);
         dest.writeString(synopsis);

@@ -16,7 +16,7 @@ public class PollStageFactory {
         if (stage.equals(VoteCategoryStage.class.toString()))
             return new VoteCategoryStage(pollId);
         else if (stage.equals(VoteEventStage.class.toString()))
-            return new VoteEventStage();
+            return new VoteEventStage(pollId);
         else if (stage.equals(VoteDateStage.class.toString()))
             return new VoteDateStage();
         else if (stage.equals(VoteResultStage.class.toString()))

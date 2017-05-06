@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +27,14 @@ import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 
 import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.PollStage;
 import rx.Observable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -40,6 +47,10 @@ public class EventListActivity extends AppCompatActivity {
      * device.
      */
     private boolean twoPane;
+    private String pollId;
+
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout coordinatorLayout;
 
     /**
      * The toolbar displayed in the view.
@@ -61,6 +72,7 @@ public class EventListActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+        pollId = getIntent().getStringExtra(PollStage.POLL_ID_KEY);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -69,6 +81,11 @@ public class EventListActivity extends AppCompatActivity {
         }
 
         setupRecyclerView(recyclerView);
+
+        Snackbar.make(coordinatorLayout,
+                R.string.vote_event_start_tip,
+                Snackbar.LENGTH_LONG)
+                .show();
 
         if (findViewById(R.id.event_detail_container) != null) {
             // The detail container view will be present only in the
@@ -99,6 +116,27 @@ public class EventListActivity extends AppCompatActivity {
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         EventRecyclerViewAdapter adapter = new EventRecyclerViewAdapter(FirebaseController.getMovieEventsObservable());
         recyclerView.setAdapter(adapter);
+
+        ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.removeItem(viewHolder);
+            }
+
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                int dragDirs = 0;
+                int swipeDirs = adapter.getItemCount() > 1 ? ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT : 0;
+                return makeMovementFlags(dragDirs, swipeDirs);
+            }
+        };
+        ItemTouchHelper touchHelper = new ItemTouchHelper(swipeCallback);
+        touchHelper.attachToRecyclerView(recyclerView);
     }
 
     /**
@@ -108,13 +146,50 @@ public class EventListActivity extends AppCompatActivity {
             extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
         private final List<MovieEvent> values = new ArrayList<>();
+        private final HashMap<String, Boolean> visible = new HashMap<>();
 
         public EventRecyclerViewAdapter(Observable<List<MovieEvent>> eventsObservable) {
             eventsObservable.subscribe(movieEvents -> {
                 values.clear();
                 values.addAll(movieEvents);
+                for (MovieEvent event : values) {
+                    visible.put(event.getId(), true);
+                }
                 notifyDataSetChanged();
             });
+        }
+
+        public void removeItem(RecyclerView.ViewHolder viewHolder) {
+            int adapterPosition = viewHolder.getAdapterPosition();
+            MovieEvent item = ((ViewHolder)viewHolder).event;
+            values.remove(adapterPosition);
+            visible.put(item.getId(), false);
+            notifyItemRemoved(adapterPosition);
+            Snackbar.make(coordinatorLayout,
+                    String.format(getString(R.string.vote_event_item_discarded), item.getTitle()),
+                    Snackbar.LENGTH_LONG)
+                    .addCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            if (event == DISMISS_EVENT_ACTION) return;
+                            FirebasePoll poll = FirebasePollController.polls.get(pollId);
+                            poll.updateRemainingEvents(visible);
+                            if (getItemCount() == 1) {
+                                Snackbar.make(coordinatorLayout,
+                                        String.format("You've chosen %s!", values.get(0).getTitle()),
+                                        Snackbar.LENGTH_INDEFINITE)
+                                        .show();
+                            }
+                        }
+                    })
+                    .setAction("Undo", v -> undoRemoval(item, adapterPosition))
+                    .show();
+        }
+
+        private void undoRemoval(MovieEvent item, int adapterPosition) {
+            values.add(adapterPosition, item);
+            visible.put(item.getId(), true);
+            notifyItemInserted(adapterPosition);
         }
 
         @Override

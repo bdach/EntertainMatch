@@ -70,7 +70,7 @@ public class PollFragment extends Fragment {
 
     public void addPoll(Poll poll) {
         polls.add(poll);
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(polls.size() - 1);
     }
 
     public void updatePolls() {

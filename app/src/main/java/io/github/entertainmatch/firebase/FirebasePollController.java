@@ -110,6 +110,13 @@ public class FirebasePollController {
         });
     }
 
+    public static void updateRemainingEvents(String pollId, String facebookId, HashMap<String, Boolean> selections) {
+        ref.child(pollId)
+                .child("remainingChoices")
+                .child(facebookId)
+                .setValue(selections);
+    }
+
     public static Observable<FirebasePoll> getPollOnce(String pollId) {
         return RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId), FirebasePoll.class);
     }

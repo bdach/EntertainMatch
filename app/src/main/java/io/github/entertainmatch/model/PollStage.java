@@ -8,6 +8,8 @@ import android.content.Intent;
  * @since 01.04.17
  */
 public interface PollStage {
+    String POLL_ID_KEY = "poll_id";
+
     Intent getViewStageIntent(Activity callingActivity);
     int getStageStringId();
 }

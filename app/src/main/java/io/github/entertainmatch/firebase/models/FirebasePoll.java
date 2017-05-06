@@ -1,16 +1,10 @@
 package io.github.entertainmatch.firebase.models;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
-import io.github.entertainmatch.model.Category;
-import io.github.entertainmatch.model.Person;
-import io.github.entertainmatch.model.PollStub;
-import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,6 +57,9 @@ public class FirebasePoll {
     @Getter
     private Map<String, String> votedFor = new HashMap<>();
 
+    @Getter
+    private Map<String, Map<String, Boolean>> remainingChoices = new HashMap<>();
+
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
@@ -82,7 +79,7 @@ public class FirebasePoll {
             votedFor.put(facebookId, NO_USER_VOTE);
 
         return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
-                VoteCategoryStage.class.toString(), voteCounts, votedFor);
+                VoteCategoryStage.class.toString(), voteCounts, votedFor, null);
     }
 
     public void update(Category category) {
@@ -104,5 +101,12 @@ public class FirebasePoll {
         stage = updatedPoll.stage;
         voteCounts = updatedPoll.voteCounts;
         votedFor = updatedPoll.votedFor;
+        // TODO: update event choices
+    }
+
+    public void updateRemainingEvents(HashMap<String, Boolean> selections) {
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+
+        FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);
     }
 }
