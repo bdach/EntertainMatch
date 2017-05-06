@@ -1,7 +1,6 @@
 package io.github.entertainmatch.utils;
 
 import java.util.HashMap;
-import java.util.function.Function;
 
 /**
  * Created by Adrian Bednarz on 5/6/17.

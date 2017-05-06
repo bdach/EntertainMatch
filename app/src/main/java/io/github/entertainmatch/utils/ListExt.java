@@ -2,7 +2,6 @@ package io.github.entertainmatch.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import io.github.entertainmatch.model.Category;
 
@@ -38,5 +37,11 @@ public class ListExt {
                 return true;
         }
         return false;
+    }
+
+    public static <T> void forEach(List<T> list, Action<T> action) {
+        for (T item : list) {
+            action.perform(item);
+        }
     }
 }
