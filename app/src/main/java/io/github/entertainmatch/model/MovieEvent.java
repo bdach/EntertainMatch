@@ -2,7 +2,6 @@ package io.github.entertainmatch.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import io.github.entertainmatch.R;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,20 +16,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class MovieEvent implements Parcelable {
-    private String id;
+public class MovieEvent extends Event implements Parcelable {
+    protected String id;
     /**
      * Title of the event.
      */
-    private String title;
+    protected String title;
     /**
      * Uri of the drawable to use as event image.
      */
-    private String drawableUri;
+    protected String drawableUri;
     /**
-     * Movie synopsis.
+     * Movie description.
      */
-    private String synopsis;
+    protected String description;
     /**
      * Movie director.
      */
@@ -52,7 +51,7 @@ public class MovieEvent implements Parcelable {
         id = in.readString();
         title = in.readString();
         drawableUri = in.readString();
-        synopsis = in.readString();
+        description = in.readString();
         director = in.readString();
         cast = in.readString();
         youtubeTrailerUrl = in.readString();
@@ -106,7 +105,7 @@ public class MovieEvent implements Parcelable {
         dest.writeString(id);
         dest.writeString(title);
         dest.writeString(drawableUri);
-        dest.writeString(synopsis);
+        dest.writeString(description);
         dest.writeString(director);
         dest.writeString(cast);
         dest.writeString(youtubeTrailerUrl);

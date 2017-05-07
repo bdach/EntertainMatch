@@ -18,7 +18,7 @@ import io.github.entertainmatch.model.MovieEvent;
  * event details are presented side-by-side with a list of items
  * in a {@link EventListActivity}.
  */
-public class EventDetailActivity extends AppCompatActivity {
+public class MovieEventDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +43,9 @@ public class EventDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            MovieEvent event = getIntent().getParcelableExtra(EventDetailFragment.EVENTS_KEY);
-            arguments.putParcelable(EventDetailFragment.EVENTS_KEY, event);
-            EventDetailFragment fragment = new EventDetailFragment();
+            MovieEvent event = getIntent().getParcelableExtra(EventListActivity.EVENTS_KEY);
+            arguments.putParcelable(EventListActivity.EVENTS_KEY, event);
+            MovieEventDetailFragment fragment = new MovieEventDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.event_detail_container, fragment)

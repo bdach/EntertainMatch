@@ -1,5 +1,6 @@
 package io.github.entertainmatch.firebase;
 
+import android.graphics.Movie;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -12,6 +13,8 @@ import java.util.List;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.model.ConcertEvent;
+import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.MovieEvent;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
@@ -37,17 +40,17 @@ public class FirebaseController {
      * Returns observable collection of currently available movies.
      */
     @Getter
-    private static final Observable<List<MovieEvent>> movieEventsObservable;
+    private static final Observable<List<? extends Event>> movieEventsObservable;
 
     static {
         movieEventsObservable = read();
     }
 
-    private static void save(List<MovieEvent> list) {
+    private static void save(List<? extends Event> list) {
         ref.setValue(list);
     }
 
-    private static Observable<List<MovieEvent>> read() {
+    private static Observable<List<? extends Event>> read() {
         return RxFirebaseDatabase.observeValueEvent(ref.child("movies"), DataSnapshotMapper.listOf(MovieEvent.class));
     }
 
@@ -57,5 +60,20 @@ public class FirebaseController {
             VoteCategoryStage.categoriesTemplates = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
             Log.d("FirebaseController", "categoriesTemplates ready " + VoteCategoryStage.categoriesTemplates.size());
         });
+    }
+
+    public static Observable<List<? extends Event>> getEventsObservable(String chosenCategory) {
+        Class<? extends Event> eventClass;
+        switch (chosenCategory) {
+            case "movies":
+                eventClass = MovieEvent.class;
+                break;
+            case "concerts":
+                eventClass = ConcertEvent.class;
+                break;
+            default:
+                throw new IllegalArgumentException("This type of category has not been implemented yet");
+        }
+        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
     }
 }

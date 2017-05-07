@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,7 +19,6 @@ import com.squareup.picasso.Target;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.Optional;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.MovieEvent;
 import lombok.Getter;
@@ -29,16 +27,11 @@ import lombok.NoArgsConstructor;
 /**
  * A fragment representing a single Event detail screen.
  * This fragment is either contained in a {@link EventListActivity}
- * in two-pane mode (on tablets) or a {@link EventDetailActivity}
+ * in two-pane mode (on tablets) or a {@link MovieEventDetailActivity}
  * on handsets.
  */
 @NoArgsConstructor
-public class EventDetailFragment extends Fragment {
-    /**
-     * The fragment argument representing the event ID that this fragment
-     * represents.
-     */
-    public static final String EVENTS_KEY = "event1";
+public class MovieEventDetailFragment extends Fragment {
 
     /**
      * The event this fragment is presenting.
@@ -74,11 +67,11 @@ public class EventDetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments().containsKey(EVENTS_KEY)) {
+        if (getArguments().containsKey(EventListActivity.EVENTS_KEY)) {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            event = getArguments().getParcelable(EVENTS_KEY);
+            event = getArguments().getParcelable(EventListActivity.EVENTS_KEY);
         }
     }
 
@@ -127,7 +120,7 @@ public class EventDetailFragment extends Fragment {
     private void setContent(View rootView) {
         ButterKnife.bind(this, rootView);
         layout.setTitle(event.getTitle());
-        detailTitle.setText(event.getSynopsis());
+        detailTitle.setText(event.getDescription());
         directorText.setText(event.getDirector());
         castText.setText(event.getCast());
         scoreText.setText(event.getRottenTomatoesScore().toString());

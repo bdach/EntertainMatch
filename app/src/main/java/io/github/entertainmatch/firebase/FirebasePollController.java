@@ -97,6 +97,7 @@ public class FirebasePollController {
                 // check next stage
                 if (HashMapExt.all(votedFor, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
                     mutableData.child("stage").setValue(VoteEventStage.class.toString());
+                    mutableData.child("chosenCategory").setValue(getWinningCategory(voteCountsRef.getValue()));
                 }
 
                 return Transaction.success(mutableData);
@@ -107,6 +108,12 @@ public class FirebasePollController {
 
             }
         });
+    }
+
+    private static String getWinningCategory(Object value) {
+        HashMap<String, Long> voteCounts = (HashMap<String, Long>) value;
+        // TODO ties
+        return HashMapExt.getMax(voteCounts);
     }
 
     public static void updateRemainingEvents(String pollId, String facebookId, Map<String, Boolean> selections) {

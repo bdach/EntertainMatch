@@ -54,6 +54,7 @@ public class FirebasePoll {
     private Map<String, String> votedFor = new HashMap<>();
     private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
     private Map<String, String> eventVotes = new HashMap<>();
+    private String chosenCategory;
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
@@ -77,7 +78,7 @@ public class FirebasePoll {
         }
 
         return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
-                VoteCategoryStage.class.toString(), voteCounts, votedFor, null, eventVotes);
+                VoteCategoryStage.class.toString(), voteCounts, votedFor, null, eventVotes, "");
     }
 
     public void update(Category category) {
@@ -101,6 +102,7 @@ public class FirebasePoll {
         votedFor = updatedPoll.votedFor;
         remainingEventChoices = updatedPoll.remainingEventChoices;
         eventVotes = updatedPoll.eventVotes;
+        chosenCategory = updatedPoll.chosenCategory;
     }
 
     public void updateRemainingEvents(Map<String, Boolean> selections) {
@@ -109,7 +111,7 @@ public class FirebasePoll {
         FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);
     }
 
-    public void voteEvent(MovieEvent event) {
+    public void voteEvent(Event event) {
         String eventId = event.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         FirebasePollController.voteEvent(pollId, facebookId, eventId);

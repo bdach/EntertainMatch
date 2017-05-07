@@ -16,4 +16,16 @@ public class HashMapExt {
         }
         return true;
     }
+
+    public static <T> T getMax(HashMap<T, Long> tally) {
+        T max = null;
+        Long maxCount = Long.MIN_VALUE;
+        for (HashMap.Entry<T, Long> entry : tally.entrySet()) {
+            if (entry.getValue() > maxCount) {
+                max = entry.getKey();
+                maxCount = entry.getValue();
+            }
+        }
+        return max;
+    }
 }

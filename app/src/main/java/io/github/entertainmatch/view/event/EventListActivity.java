@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +31,7 @@ import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteEventStage;
 import rx.Observable;
@@ -45,6 +46,11 @@ import java.util.Map;
  * An activity containing the list of available events.
  */
 public class EventListActivity extends AppCompatActivity {
+    /**
+     * The fragment argument representing the event ID that this fragment
+     * represents.
+     */
+    public static final String EVENTS_KEY = "event1";
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -88,7 +94,7 @@ public class EventListActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        setupRecyclerView(recyclerView);
+        setupRecyclerView(recyclerView, FirebasePollController.polls.get(pollId).getChosenCategory());
 
         Snackbar.make(coordinatorLayout,
                 R.string.vote_event_start_tip,
@@ -136,8 +142,8 @@ public class EventListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        adapter = new EventRecyclerViewAdapter(FirebaseController.getMovieEventsObservable());
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView, String chosenCategory) {
+        adapter = new EventRecyclerViewAdapter(FirebaseController.getEventsObservable(chosenCategory));
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -168,21 +174,21 @@ public class EventListActivity extends AppCompatActivity {
     public class EventRecyclerViewAdapter
             extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
-        private final List<MovieEvent> values = new ArrayList<>();
+        private final List<Event> values = new ArrayList<>();
         private Map<String, Boolean> visible = new HashMap<>();
 
-        public EventRecyclerViewAdapter(Observable<List<MovieEvent>> eventsObservable) {
+        public EventRecyclerViewAdapter(Observable<List<? extends Event>> eventsObservable) {
             FirebasePoll poll = FirebasePollController.polls.get(pollId);
-            eventsObservable.subscribe(movieEvents -> {
+            eventsObservable.subscribe(events -> {
                 values.clear();
                 Map<String, Boolean> userChoices = getUserChoices(poll);
                 if (userChoices == null) {
-                    values.addAll(movieEvents);
-                    for (MovieEvent event : movieEvents) {
+                    values.addAll(events);
+                    for (Event event : events) {
                         visible.put(event.getId(), true);
                     }
                 } else {
-                    setVisible(userChoices, movieEvents);
+                    setVisible(userChoices, events);
                 }
                 notifyDataSetChanged();
                 checkOneChoiceLeft(poll);
@@ -197,7 +203,7 @@ public class EventListActivity extends AppCompatActivity {
 
         public void removeItem(RecyclerView.ViewHolder viewHolder) {
             int adapterPosition = viewHolder.getAdapterPosition();
-            MovieEvent item = ((ViewHolder)viewHolder).event;
+            Event item = ((ViewHolder)viewHolder).event;
             values.remove(adapterPosition);
             visible.put(item.getId(), false);
             notifyItemRemoved(adapterPosition);
@@ -231,15 +237,15 @@ public class EventListActivity extends AppCompatActivity {
             }
         }
 
-        private void undoRemoval(MovieEvent item, int adapterPosition) {
+        private void undoRemoval(Event item, int adapterPosition) {
             values.add(adapterPosition, item);
             visible.put(item.getId(), true);
             notifyItemInserted(adapterPosition);
         }
 
-        private void setVisible(Map<String, Boolean> visible, List<MovieEvent> movieEvents) {
+        private void setVisible(Map<String, Boolean> visible, List<? extends Event> movieEvents) {
             this.visible = visible;
-            for (MovieEvent event : movieEvents) {
+            for (Event event : movieEvents) {
                 if (!visible.containsKey(event.getId())) {
                     visible.put(event.getId(), true);
                 }
@@ -264,16 +270,16 @@ public class EventListActivity extends AppCompatActivity {
             holder.eventDetailButton.setOnClickListener(v -> {
                 if (twoPane) {
                     Bundle arguments = new Bundle();
-                    arguments.putParcelable(EventDetailFragment.EVENTS_KEY, holder.event);
-                    EventDetailFragment fragment = new EventDetailFragment();
+                    arguments.putParcelable(EVENTS_KEY, holder.event);
+                    Fragment fragment = EventDetailViewResolver.createFragmentForEvent(holder.event);
                     fragment.setArguments(arguments);
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.event_detail_container, fragment)
                             .commit();
                 } else {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, EventDetailActivity.class);
-                    intent.putExtra(EventDetailFragment.EVENTS_KEY, holder.event);
+                    Intent intent = new Intent(context, EventDetailViewResolver.getActivityForEvent(holder.event));
+                    intent.putExtra(EVENTS_KEY, holder.event);
 
                     context.startActivity(intent);
                 }
@@ -296,7 +302,7 @@ public class EventListActivity extends AppCompatActivity {
             /**
              * The backing event model object.
              */
-            public MovieEvent event;
+            public Event event;
             /**
              * View responsible for displaying the image associated with the event.
              */
@@ -324,14 +330,14 @@ public class EventListActivity extends AppCompatActivity {
                 ButterKnife.bind(this, view);
             }
 
-            public void setEvent(MovieEvent movieEvent) {
-                this.event = movieEvent;
+            public void setEvent(Event event) {
+                this.event = event;
                 Picasso.with(EventListActivity.this)
-                        .load(movieEvent.getDrawableUri())
+                        .load(event.getDrawableUri())
                         .into(eventImage);
 
-                this.eventDescription.setText(movieEvent.getSynopsis());
-                this.eventTitle.setText(movieEvent.getTitle());
+                this.eventDescription.setText(event.getDescription());
+                this.eventTitle.setText(event.getTitle());
             }
         }
     }
