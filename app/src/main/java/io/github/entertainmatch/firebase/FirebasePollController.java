@@ -1,10 +1,5 @@
 package io.github.entertainmatch.firebase;
 
-import android.content.Intent;
-import android.hardware.Camera;
-import android.util.Log;
-
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,9 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.models.FirebaseCategory;
 import io.github.entertainmatch.firebase.models.FirebaseEventDate;
-import io.github.entertainmatch.firebase.models.FirebaseLocation;
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.*;
@@ -30,7 +23,6 @@ import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 import rx.subjects.PublishSubject;
-import rx.subjects.Subject;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -196,10 +188,15 @@ public class FirebasePollController {
             .child(facebookId)
             .setValue(true);
 
-        checkDateVotingNextStage(pollId);
+        checkDateVotingMoveToNextStage(pollId);
     }
 
-    private static void checkDateVotingNextStage(String pollId) {
+    /**
+     * Checks whether its time to move to next stage.
+     * TODO: not sure if there won't be any races between users
+     * @param pollId Current poll
+     */
+    private static void checkDateVotingMoveToNextStage(String pollId) {
         ref.child(pollId).child("eventDatesStatus").child("voted").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -210,6 +207,19 @@ public class FirebasePollController {
                 }
 
                 ref.child(pollId).child("stage").setValue(VoteResultStage.class.toString());
+
+                HashMap<String, Long> locationToCounts = new HashMap<>();
+                FirebasePoll poll = FirebasePollController.polls.get(pollId);
+                poll.getEventDatesStatus().forEach((locationId, facebookIdToChosen) -> {
+                    long votes = 0L;
+                    for (Boolean chosen : facebookIdToChosen.values()) {
+                        votes += chosen ? 1 : 0;
+                    }
+
+                    locationToCounts.put(locationId, votes);
+                });
+
+                ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts));
                 return Transaction.success(mutableData);
             }
 
