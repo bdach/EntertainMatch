@@ -25,8 +25,8 @@
     <string name="title_event_detail">Event Detail</string>
     <string name="event_image">Event image</string>
     <string name="event_details">Details</string>
-    <string name="movie_event_director_label">Director</string>
-    <string name="movie_event_cast_label">Cast</string>
+    <string name="event_director_label">Director</string>
+    <string name="event_cast_label">Cast</string>
     <string name="movie_event_score_label">Score on Rotten Tomatoes</string>
 
     <string name="title_activity_vote_date">Vote for a date</string>
@@ -60,4 +60,9 @@
         be chosen.
     </string>
     <string name="vote_event_item_discarded">Discarded %s from the list</string>
+    <string name="concert_event_band_members">Band members</string>
+    <string name="concert_event_last_album">Last released album</string>
+    <string name="play_event_duration">Duration</string>
+    <string name="play_event_costumes">Costumes</string>
+    <string name="play_event_scenography">Scenography</string>
 </resources>

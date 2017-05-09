@@ -13,10 +13,7 @@ import java.util.List;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.ConcertEvent;
-import io.github.entertainmatch.model.Event;
-import io.github.entertainmatch.model.MovieEvent;
-import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import rx.Observable;
@@ -70,6 +67,12 @@ public class FirebaseController {
                 break;
             case "concerts":
                 eventClass = ConcertEvent.class;
+                break;
+            case "plays":
+                eventClass = PlayEvent.class;
+                break;
+            case "staffpicks":
+                eventClass = StaffPickEvent.class;
                 break;
             default:
                 throw new IllegalArgumentException("This type of category has not been implemented yet");

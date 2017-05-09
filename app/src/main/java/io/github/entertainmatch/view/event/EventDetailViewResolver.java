@@ -1,9 +1,6 @@
 package io.github.entertainmatch.view.event;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
-import io.github.entertainmatch.model.Event;
-import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.*;
 
 /**
  * @author Bartlomiej Dach
@@ -12,17 +9,20 @@ import io.github.entertainmatch.model.MovieEvent;
 public class EventDetailViewResolver {
     private EventDetailViewResolver() {}
 
-    public static Fragment createFragmentForEvent(Event event) {
+    public static EventDetailFragment createFragmentForEvent(Event event) {
         if (event.getClass().equals(MovieEvent.class)) {
             return new MovieEventDetailFragment();
+        }
+        if (event.getClass().equals(ConcertEvent.class)) {
+            return new ConcertEventDetailFragment();
+        }
+        if (event.getClass().equals(PlayEvent.class)) {
+            return new PlayEventDetailFragment();
+        }
+        if (event.getClass().equals(StaffPickEvent.class)) {
+            return new StaffPickEventDetailFragment();
         }
         throw new IllegalArgumentException("An event of unknown type was supplied");
     }
 
-    public static Class<? extends Activity> getActivityForEvent(Event event) {
-        if (event.getClass().equals(MovieEvent.class)) {
-            return MovieEventDetailActivity.class;
-        }
-        throw new IllegalArgumentException("An event of unknown type was supplied");
-    }
 }

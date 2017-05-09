@@ -278,7 +278,7 @@ public class EventListActivity extends AppCompatActivity {
                             .commit();
                 } else {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, EventDetailViewResolver.getActivityForEvent(holder.event));
+                    Intent intent = new Intent(context, EventDetailActivity.class);
                     intent.putExtra(EVENTS_KEY, holder.event);
 
                     context.startActivity(intent);

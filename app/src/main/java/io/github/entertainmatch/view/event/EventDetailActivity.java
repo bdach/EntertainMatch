@@ -9,7 +9,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.MovieEvent;
 
 /**
@@ -18,12 +21,16 @@ import io.github.entertainmatch.model.MovieEvent;
  * event details are presented side-by-side with a list of items
  * in a {@link EventListActivity}.
  */
-public class MovieEventDetailActivity extends AppCompatActivity {
+public class EventDetailActivity extends AppCompatActivity {
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
+        ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
@@ -43,24 +50,17 @@ public class MovieEventDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            MovieEvent event = getIntent().getParcelableExtra(EventListActivity.EVENTS_KEY);
+            Event event = getIntent().getParcelableExtra(EventListActivity.EVENTS_KEY);
             arguments.putParcelable(EventListActivity.EVENTS_KEY, event);
-            MovieEventDetailFragment fragment = new MovieEventDetailFragment();
+            EventDetailFragment fragment = EventDetailViewResolver.createFragmentForEvent(event);
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.event_detail_container, fragment)
                     .commit();
-            setFabListener(Uri.parse(event.getYoutubeTrailerUrl()));
+            fab.setOnClickListener(fragment.getFabListener());
+            fab.setImageResource(fragment.getFabIconResource());
         }
 
-    }
-
-    private void setFabListener(final Uri youtubeTrailerUrl) {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.youtube_fab);
-        fab.setOnClickListener(view -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, youtubeTrailerUrl);
-            startActivity(intent);
-        });
     }
 
     @Override
