@@ -1,6 +1,7 @@
 package io.github.entertainmatch.view.date;
 
 import android.content.Intent;
+import android.hardware.camera2.params.Face;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
@@ -15,8 +16,10 @@ import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteResultStage;
@@ -124,11 +127,19 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_confirm_vote) {
-            List<EventDate> dates = dateFragment.getDates();
+            FirebasePoll poll = FirebasePollController.polls.get(pollId);
+            String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
+            dateFragment.disallowEdition();
 
-            FirebasePollController.polls.get(pollId).chooseDate(
-                    ListExt.map(dates, EventDate::getLocationId),
-                    ListExt.map(dates, EventDate::isSelected)
+            if (poll.getEventDatesStatus().get("voted").get(facebookId)) {
+                Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+
+            List<EventDate> dates = dateFragment.getDates();
+            poll.chooseDate(
+                ListExt.map(dates, EventDate::getLocationId),
+                ListExt.map(dates, EventDate::isSelected)
             );
 
             Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG).show();

@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.EventDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -87,7 +89,11 @@ public class DateFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            adapter = new DateRecyclerViewAdapter(dates, listener);
+
+            FirebasePoll poll = FirebasePollController.polls.get(pollId);
+            String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+            adapter = new DateRecyclerViewAdapter(dates, listener, !poll.getEventDatesStatus().get("voted").get(facebookId));
+
             recyclerView.setAdapter(adapter);
         }
         return view;
@@ -109,6 +115,13 @@ public class DateFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    /**
+     * Method used to prevent elements from being edited (checkboxes)
+     */
+    public void disallowEdition() {
+        adapter.setEditable(false);
     }
 
     /**
