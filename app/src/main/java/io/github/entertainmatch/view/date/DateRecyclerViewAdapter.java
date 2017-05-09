@@ -1,6 +1,7 @@
 package io.github.entertainmatch.view.date;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,8 @@ public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerVi
                     .format(item.getDate());
             dateText.setText(date);
             locationText.setText(item.getPlace());
-
+            checkBox.setChecked(item.isSelected());
+;
             view.setOnClickListener(v -> {
                 checkBox.toggle();
                 listener.onDateToggle(item, checkBox.isChecked());

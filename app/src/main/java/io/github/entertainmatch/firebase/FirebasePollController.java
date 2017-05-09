@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseCategory;
 import io.github.entertainmatch.firebase.models.FirebaseEventDate;
 import io.github.entertainmatch.firebase.models.FirebaseLocation;
@@ -163,7 +164,7 @@ public class FirebasePollController {
      * @param participantId User id to set values for
      */
     public static void setupDateStageForUser(String pollId, String locationId, String participantId) {
-        DatabaseReference eventDatesRef = ref.child(pollId).child("event_dates_status");
+        DatabaseReference eventDatesRef = ref.child(pollId).child("eventDatesStatus");
 
         eventDatesRef.child(locationId).child(participantId).setValue(false);
         eventDatesRef.child("voted").child(participantId).setValue(false);
@@ -177,7 +178,7 @@ public class FirebasePollController {
      * @param selection Whether user wants to go at given date
      */
     public static void chooseDate(String pollId, String locationId, String facebookId, Boolean selection) {
-        DatabaseReference eventDatesRef = ref.child(pollId).child("event_dates_status");
+        DatabaseReference eventDatesRef = ref.child(pollId).child("eventDatesStatus");
 
         eventDatesRef.child(locationId)
             .child(facebookId)
@@ -190,7 +191,7 @@ public class FirebasePollController {
      * @param facebookId Current user id
      */
     public static void dateVotingFinished(String pollId, String facebookId) {
-        ref.child(pollId).child("event_dates_status")
+        ref.child(pollId).child("eventDatesStatus")
             .child("voted")
             .child(facebookId)
             .setValue(true);
@@ -204,6 +205,8 @@ public class FirebasePollController {
      */
     public static Observable<List<EventDate>> getLocations(String pollId) {
         FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+
         return FirebaseEventDateController.getEventDatesSingle(poll.getChosenCategory(), poll.getVictoriousEvent()).flatMap(eventDates -> {
             List<EventDate> results = new ArrayList<>();
             PublishSubject<List<EventDate>> observable = PublishSubject.create();
@@ -217,7 +220,9 @@ public class FirebasePollController {
                         location.getLat(),
                         location.getLat(),
                         new Date(eventDate.getDate()),
-                        false)); // TODO: modify poll to hold information about selection
+                        poll.getEventDatesStatus()
+                                .get(location.getId())
+                                .get(facebookId)));
 
                     observable.onNext(results);
                 });
