@@ -195,6 +195,29 @@ public class FirebasePollController {
             .child("voted")
             .child(facebookId)
             .setValue(true);
+
+        checkDateVotingNextStage(pollId);
+    }
+
+    private static void checkDateVotingNextStage(String pollId) {
+        ref.child(pollId).child("eventDatesStatus").child("voted").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                for (MutableData facebookIdToVoted : mutableData.getChildren()) {
+                   if (facebookIdToVoted.getValue() == Boolean.FALSE) {
+                       return Transaction.success(mutableData);
+                   }
+                }
+
+                ref.child(pollId).child("stage").setValue(VoteResultStage.class.toString());
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 
     /**

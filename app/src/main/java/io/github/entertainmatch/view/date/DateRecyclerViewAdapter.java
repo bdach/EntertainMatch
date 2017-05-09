@@ -109,7 +109,7 @@ public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerVi
             dateText.setText(date);
             locationText.setText(item.getPlace());
             checkBox.setChecked(item.isSelected());
-;
+
             view.setOnClickListener(v -> {
                 checkBox.toggle();
                 listener.onDateToggle(item, checkBox.isChecked());

@@ -2,10 +2,12 @@ package io.github.entertainmatch.view.date;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +19,9 @@ import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.ListExt;
+import rx.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +42,38 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
 
     private String pollId;
     private DateFragment dateFragment;
+
+    /**
+     * Keeps track whether next stage is ready.
+     * On such scenario we finish this activity showing Snackbar.
+     */
+    private Subscription changesSubscription;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
+            if (poll.getStage().equals(VoteResultStage.class.toString())) {
+                Snackbar.make(coordinatorLayout, R.string.results_stage_message, Snackbar.LENGTH_LONG)
+                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        finish();
+                    }
+                }).show();
+            }
+        });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (changesSubscription != null)
+            changesSubscription.unsubscribe();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
