@@ -14,17 +14,22 @@ import com.google.firebase.database.Transaction;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import io.github.entertainmatch.firebase.models.FirebaseCategory;
+import io.github.entertainmatch.firebase.models.FirebaseEventDate;
+import io.github.entertainmatch.firebase.models.FirebaseLocation;
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -133,6 +138,9 @@ public class FirebasePollController {
                 eventVotesRef.setValue(eventVotes);
                 if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
                     mutableData.child("stage").setValue(VoteDateStage.class.toString());
+
+                    mutableData.child("victoriousEvent").setValue(HashMapExt.mostFrequent(eventVotes));
+                    FirebaseEventDateController.setup(FirebasePollController.polls.get(pollId), HashMapExt.mostFrequent(eventVotes));
                 }
                 return Transaction.success(mutableData);
             }
@@ -146,5 +154,75 @@ public class FirebasePollController {
 
     public static Observable<FirebasePoll> getPollOnce(String pollId) {
         return RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId), FirebasePoll.class);
+    }
+
+    /**
+     * Initializes location flags for user in poll object in firebase
+     * @param pollId Current poll
+     * @param locationId Current location
+     * @param participantId User id to set values for
+     */
+    public static void setupDateStageForUser(String pollId, String locationId, String participantId) {
+        DatabaseReference eventDatesRef = ref.child(pollId).child("event_dates_status");
+
+        eventDatesRef.child(locationId).child(participantId).setValue(false);
+        eventDatesRef.child("voted").child(participantId).setValue(false);
+    }
+
+    /**
+     * Registers user attitude to take part in an event at the given time and place
+     * @param pollId Current poll
+     * @param locationId Current location
+     * @param facebookId Current user id
+     * @param selection Whether user wants to go at given date
+     */
+    public static void chooseDate(String pollId, String locationId, String facebookId, Boolean selection) {
+        DatabaseReference eventDatesRef = ref.child(pollId).child("event_dates_status");
+
+        eventDatesRef.child(locationId)
+            .child(facebookId)
+            .setValue(selection);
+    }
+
+    /**
+     * Notify database that user has finished voting
+     * @param pollId Current poll id
+     * @param facebookId Current user id
+     */
+    public static void dateVotingFinished(String pollId, String facebookId) {
+        ref.child(pollId).child("event_dates_status")
+            .child("voted")
+            .child(facebookId)
+            .setValue(true);
+    }
+
+    /**
+     * Collects location information about chosen event
+     * Used in date stage
+     * @param pollId Poll to get information about
+     * @return Observable with retrieved event dates. It provides data once in sense that it will incrementally return the same list.
+     */
+    public static Observable<List<EventDate>> getLocations(String pollId) {
+        FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        return FirebaseEventDateController.getEventDatesSingle(poll.getChosenCategory(), poll.getVictoriousEvent()).flatMap(eventDates -> {
+            List<EventDate> results = new ArrayList<>();
+            PublishSubject<List<EventDate>> observable = PublishSubject.create();
+
+            for (FirebaseEventDate eventDate : eventDates.values()) {
+                FirebaseLocationsController.getLocationOnce(eventDate.getLocationId()).subscribe(location -> {
+                    results.add(new EventDate(
+                        eventDate.getEventId(),
+                        location.getId(),
+                        location.getPlace(),
+                        location.getLat(),
+                        location.getLat(),
+                        new Date(eventDate.getDate())));
+
+                    observable.onNext(results);
+                });
+            }
+
+            return observable;
+        });
     }
 }

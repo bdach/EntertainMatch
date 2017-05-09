@@ -7,7 +7,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -15,9 +14,7 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
-import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.VoteCategoryStage;
-import io.github.entertainmatch.view.MainActivity;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -117,7 +114,7 @@ public class VoteCategoryActivity extends AppCompatActivity
         }
         fragment.registerVote(item);
         FirebasePoll poll = FirebasePollController.polls.get(pollId);
-        poll.update(item);
+        poll.voteCategory(item);
 
         Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
                 .show();

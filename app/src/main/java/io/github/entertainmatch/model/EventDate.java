@@ -16,6 +16,14 @@ import java.util.*;
 @Getter
 public class EventDate implements Parcelable {
     /**
+     * Identifier of this event date in Firebase
+     */
+    private final String id;
+    /**
+     * Identifier of location
+     */
+    private final String locationId;
+    /**
      * Name of the location where the event takes place.
      */
     private final String place;
@@ -33,6 +41,8 @@ public class EventDate implements Parcelable {
     private final Date date;
 
     protected EventDate(Parcel in) {
+        id = in.readString();
+        locationId = in.readString();
         place = in.readString();
         lat = in.readDouble();
         lon = in.readDouble();
@@ -58,6 +68,8 @@ public class EventDate implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(locationId);
         dest.writeString(place);
         dest.writeDouble(lat);
         dest.writeDouble(lon);
@@ -67,12 +79,16 @@ public class EventDate implements Parcelable {
     public static List<EventDate> mockData() {
         return Arrays.asList(
                 new EventDate(
+                        "_0",
+                        "_0",
                         "Cinema City Warszawa, Galeria Mokotów",
                         52.179182,
                         21.004422,
                         new Date(2017 - 1900, 4, 9, 19, 40, 0)
                 ),
                 new EventDate(
+                        "_1",
+                        "_1",
                         "Cinema City Warszawa, Sadyba",
                         52.187350,
                         21.061075,

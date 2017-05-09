@@ -4,15 +4,21 @@ import android.app.Activity;
 import android.content.Intent;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.view.date.VoteDateActivity;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author Bartlomiej Dach
  * @since 09.04.17
  */
+@RequiredArgsConstructor
 public class VoteDateStage implements PollStage {
+    private final String pollId;
+
     @Override
     public Intent getViewStageIntent(Activity callingActivity) {
-        return new Intent(callingActivity, VoteDateActivity.class);
+        Intent intent = new Intent(callingActivity, VoteDateActivity.class);
+        intent.putExtra(PollStage.POLL_ID_KEY, pollId);
+        return intent;
     }
 
     @Override

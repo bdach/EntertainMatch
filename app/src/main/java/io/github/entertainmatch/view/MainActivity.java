@@ -184,6 +184,11 @@ public class MainActivity extends AppCompatActivity
             fab.hide();
             return true;
         }
+        else if (id == R.id.logout) {
+            FacebookUsers.removeCurrentUser(this);
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -8,13 +8,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
+import io.github.entertainmatch.firebase.models.FirebaseEventDate;
+import io.github.entertainmatch.firebase.models.FirebaseLocation;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.ConcertEvent;
 import io.github.entertainmatch.model.Event;
+import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.MovieEvent;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
@@ -63,8 +69,20 @@ public class FirebaseController {
     }
 
     public static Observable<List<? extends Event>> getEventsObservable(String chosenCategory) {
+        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
+
+        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
+    }
+
+    public static Observable<? extends Event> getEventSingle(String chosenCategory, String victoriousEvent) {
+        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
+
+        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory).child(victoriousEvent), eventClass);
+    }
+
+    private static Class<? extends Event> getClassForCategory(String category) {
         Class<? extends Event> eventClass;
-        switch (chosenCategory) {
+        switch (category) {
             case "movies":
                 eventClass = MovieEvent.class;
                 break;
@@ -74,6 +92,6 @@ public class FirebaseController {
             default:
                 throw new IllegalArgumentException("This type of category has not been implemented yet");
         }
-        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
+        return eventClass;
     }
 }

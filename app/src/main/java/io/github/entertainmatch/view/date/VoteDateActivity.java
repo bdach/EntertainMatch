@@ -6,10 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.EventDate;
+import io.github.entertainmatch.model.PollStage;
 
 import java.util.ArrayList;
 
@@ -24,6 +27,8 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    private String pollId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +38,14 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        DateFragment dateFragment = DateFragment.newInstance(new ArrayList<>(EventDate.mockData()));
+        pollId = getIntent().getStringExtra(PollStage.POLL_ID_KEY);
+
+        DateFragment dateFragment = DateFragment.newInstance(pollId);
 
         getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.date_list, dateFragment)
-                .commit();
+            .beginTransaction()
+            .add(R.id.date_list, dateFragment)
+            .commit();
     }
 
     /**
@@ -56,5 +63,14 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.vote_date_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_confirm_vote) {
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

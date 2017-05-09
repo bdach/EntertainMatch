@@ -4,6 +4,8 @@ import java.util.*;
 
 import android.media.FaceDetector;
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.ListExt;
@@ -55,6 +57,8 @@ public class FirebasePoll {
     private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
     private Map<String, String> eventVotes = new HashMap<>();
     private String chosenCategory;
+
+    private String victoriousEvent;
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
@@ -78,16 +82,24 @@ public class FirebasePoll {
         }
 
         return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
-                VoteCategoryStage.class.toString(), voteCounts, votedFor, null, eventVotes, "");
+                VoteCategoryStage.class.toString(), voteCounts, votedFor, null, eventVotes, "", "");
     }
 
-    public void update(Category category) {
+    /**
+     * Registers vote for category in firebase
+     * @param category Category voted for by current user
+     */
+    public void voteCategory(Category category) {
         String itemId = category.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.vote(pollId, facebookId, itemId);
     }
 
+    /**
+     * Updates vote values in given category object based on values cached in this poll object.
+     * @param amendedCategory Category object to voteCategory votes for.
+     */
     public void setValues(Category amendedCategory) {
         String itemId = amendedCategory.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
@@ -96,6 +108,10 @@ public class FirebasePoll {
         amendedCategory.setVoteCount(getVoteCounts().get(itemId));
     }
 
+    /**
+     * Updates poll values based on poll retrieved from firebase
+     * @param updatedPoll
+     */
     public void update(FirebasePoll updatedPoll) {
         stage = updatedPoll.stage;
         voteCounts = updatedPoll.voteCounts;
@@ -103,17 +119,37 @@ public class FirebasePoll {
         remainingEventChoices = updatedPoll.remainingEventChoices;
         eventVotes = updatedPoll.eventVotes;
         chosenCategory = updatedPoll.chosenCategory;
+        victoriousEvent = updatedPoll.victoriousEvent;
     }
 
+    /**
+     * Changes status of items selected by user in firebase
+     * @param selections User selections - eventId to isRemaining mapping
+     */
     public void updateRemainingEvents(Map<String, Boolean> selections) {
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);
     }
 
+    /**
+     * Registers vote for event in firebase
+     * @param event Event voted for by current user
+     */
     public void voteEvent(Event event) {
         String eventId = event.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         FirebasePollController.voteEvent(pollId, facebookId, eventId);
+    }
+
+    /**
+     * Updates firebase with information about dates that suit user
+     * @param locationIds Location identifiers
+     * @param selections Corresponding to locations selection flags (isChosen)
+     */
+    public void chooseDate(List<String> locationIds, List<Boolean> selections) {
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        ListExt.zippedForeach(locationIds, selections, (l, s) -> FirebasePollController.chooseDate(pollId, l, facebookId, s));
+        FirebasePollController.dateVotingFinished(pollId, facebookId);
     }
 }
