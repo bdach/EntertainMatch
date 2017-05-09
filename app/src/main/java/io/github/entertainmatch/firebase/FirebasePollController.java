@@ -264,4 +264,8 @@ public class FirebasePollController {
             return observable;
         });
     }
+
+    public static void setIsGoing(String pollId, String facebookId, boolean going) {
+        ref.child(pollId).child("going").child(facebookId).setValue(going);
+    }
 }

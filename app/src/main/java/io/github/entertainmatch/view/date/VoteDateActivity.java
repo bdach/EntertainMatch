@@ -57,7 +57,6 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         super.onStart();
 
         changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
-            Log.d("XDD", poll.getStage());
             if (poll.getStage().equals(VoteResultStage.class.toString())) {
                 Snackbar.make(coordinatorLayout, R.string.results_stage_message, Snackbar.LENGTH_LONG)
                         .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {

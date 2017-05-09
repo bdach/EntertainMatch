@@ -64,6 +64,12 @@ public class FirebasePoll {
      * Additionally under votes key keeps information about users that already voted.
      */
     private Map<String, HashMap<String, Boolean>> eventDatesStatus;
+
+    /**
+     * Maps users with their going choices.
+     */
+    private Map<String, Boolean> going;
+
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
@@ -77,6 +83,7 @@ public class FirebasePoll {
         HashMap<String, String> votedFor = new HashMap<>();
         HashMap<String, String> eventVotes = new HashMap<>();
         HashMap<String, HashMap<String, Boolean>> eventDatesStatus = new HashMap<>();
+        HashMap<String, Boolean> going = new HashMap<>();
 
         for (Category category : VoteCategoryStage.categoriesTemplates)
             voteCounts.put(category.getId(), 0);
@@ -88,8 +95,8 @@ public class FirebasePoll {
         }
 
         return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
-                VoteCategoryStage.class.toString(), voteCounts, votedFor, null,
-                eventVotes, "", "", eventDatesStatus);
+            VoteCategoryStage.class.toString(), voteCounts, votedFor, null,
+            eventVotes, "", "", eventDatesStatus, going);
     }
 
     /**
@@ -128,6 +135,7 @@ public class FirebasePoll {
         chosenCategory = updatedPoll.chosenCategory;
         victoriousEvent = updatedPoll.victoriousEvent;
         eventDatesStatus = updatedPoll.eventDatesStatus;
+        going = updatedPoll.going;
     }
 
     /**
