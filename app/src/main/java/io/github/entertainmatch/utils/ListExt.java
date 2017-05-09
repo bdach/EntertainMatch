@@ -44,4 +44,10 @@ public class ListExt {
             action.perform(item);
         }
     }
+
+    public static <T, U> void zippedForeach(List<T> lhs, List<U> rhs, Action2<T, U> action) {
+        int len = Math.min(lhs.size(), rhs.size());
+        for (int i = 0; i < len; i++)
+            action.perform(lhs.get(i), rhs.get(i));
+    }
 }

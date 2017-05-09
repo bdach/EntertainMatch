@@ -5,5 +5,6 @@ package io.github.entertainmatch.utils;
  * @since 06.05.17
  */
 public interface Action<U> {
-    void perform(U object);
+    void perform(U object1);
 }
+
