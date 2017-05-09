@@ -2,6 +2,8 @@ package io.github.entertainmatch.view.date;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -11,10 +13,14 @@ import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.firebase.FirebaseEventDateController;
+import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.PollStage;
+import io.github.entertainmatch.utils.ListExt;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The activity responsible for voting on a date for the selected event.
@@ -27,7 +33,11 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout coordinatorLayout;
+
     private String pollId;
+    private DateFragment dateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +50,7 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
 
         pollId = getIntent().getStringExtra(PollStage.POLL_ID_KEY);
 
-        DateFragment dateFragment = DateFragment.newInstance(pollId);
+        dateFragment = DateFragment.newInstance(pollId);
 
         getSupportFragmentManager()
             .beginTransaction()
@@ -58,6 +68,16 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         startActivity(mapIntent);
     }
 
+    /**
+     * Toggles selection state of an item
+     * @param date Pressed event date
+     * @param status Current checkbox status
+     */
+    @Override
+    public void onDateToggle(EventDate date, boolean status) {
+        date.setSelected(status);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -68,7 +88,14 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_confirm_vote) {
+            List<EventDate> dates = dateFragment.getDates();
 
+            FirebasePollController.polls.get(pollId).chooseDate(
+                    ListExt.map(dates, EventDate::getLocationId),
+                    ListExt.map(dates, EventDate::isSelected)
+            );
+
+            Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

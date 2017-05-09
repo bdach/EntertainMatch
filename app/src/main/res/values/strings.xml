@@ -60,4 +60,5 @@
         be chosen.
     </string>
     <string name="vote_event_item_discarded">Discarded %s from the list</string>
+    <string name="date_notification">Thank you for your votes. We will inform you once everyone make decision.</string>
 </resources>

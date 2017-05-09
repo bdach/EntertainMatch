@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.EventDate;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class DateFragment extends Fragment {
     /**
      * The list of all items.
      */
+    @Getter
     private ArrayList<EventDate> dates;
     /**
      * Current poll
@@ -114,5 +116,6 @@ public class DateFragment extends Fragment {
      */
     public interface OnDateSelectedListener {
         void onDateSelected(EventDate date);
+        void onDateToggle(EventDate date, boolean status);
     }
 }

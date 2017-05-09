@@ -3,8 +3,11 @@ package io.github.entertainmatch.model;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -12,7 +15,7 @@ import java.util.*;
  * @author Bartlomiej Dach
  * @since 09.04.17
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public class EventDate implements Parcelable {
     /**
@@ -39,6 +42,11 @@ public class EventDate implements Parcelable {
      * The date on which the event is to take place.
      */
     private final Date date;
+    /**
+     * Flag that represents status of an event
+     */
+    @Setter
+    private boolean selected;
 
     protected EventDate(Parcel in) {
         id = in.readString();
@@ -47,6 +55,7 @@ public class EventDate implements Parcelable {
         lat = in.readDouble();
         lon = in.readDouble();
         date = (Date) in.readSerializable();
+        selected = in.readInt() != 0;
     }
 
     public static final Creator<EventDate> CREATOR = new Creator<EventDate>() {
@@ -74,6 +83,7 @@ public class EventDate implements Parcelable {
         dest.writeDouble(lat);
         dest.writeDouble(lon);
         dest.writeSerializable(date);
+        dest.writeInt(selected ? 1 : 0);
     }
 
     public static List<EventDate> mockData() {
@@ -84,7 +94,8 @@ public class EventDate implements Parcelable {
                         "Cinema City Warszawa, Galeria Mokotów",
                         52.179182,
                         21.004422,
-                        new Date(2017 - 1900, 4, 9, 19, 40, 0)
+                        new Date(2017 - 1900, 4, 9, 19, 40, 0),
+                        false
                 ),
                 new EventDate(
                         "_1",
@@ -92,7 +103,8 @@ public class EventDate implements Parcelable {
                         "Cinema City Warszawa, Sadyba",
                         52.187350,
                         21.061075,
-                        new Date(2017 - 1900, 4, 9, 21, 40, 0)
+                        new Date(2017 - 1900, 4, 9, 21, 40, 0),
+                        false
                 )
         );
     }

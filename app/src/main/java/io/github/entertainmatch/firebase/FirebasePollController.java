@@ -216,7 +216,8 @@ public class FirebasePollController {
                         location.getPlace(),
                         location.getLat(),
                         location.getLat(),
-                        new Date(eventDate.getDate())));
+                        new Date(eventDate.getDate()),
+                        false)); // TODO: modify poll to hold information about selection
 
                     observable.onNext(results);
                 });
