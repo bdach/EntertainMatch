@@ -1,7 +1,11 @@
 package io.github.entertainmatch.firebase;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.ArrayList;
@@ -64,11 +68,45 @@ public class FirebaseUserController {
      * Grabs user information stored in firebase by facebook id.
      * Initially used to fetch data about polls.
      * @param facebookId User's facebook id.
-     * @return Observable to the person provided by Firebase
+     * @return Observable to the person provided by Firebase which fires one time only
      */
     public static Observable<FirebaseUser> getUserOnce(String facebookId) {
         return RxFirebaseDatabase.observeSingleValueEvent(
                 ref.child(facebookId),
                 FirebaseUser.class);
+    }
+
+    /**
+     * Grabs user information stored in firebase by facebook id.
+     * @param facebookId User's facebook id.
+     * @return Observable to the person provided by Firebase
+     */
+    public static Observable<FirebaseUser> getUser(String facebookId) {
+        return RxFirebaseDatabase.observeValueEvent(
+                ref.child(facebookId),
+                FirebaseUser.class);
+    }
+
+    /**
+     * Resets all user poll's flags to false indicating that user has already been informed
+     * about this poll
+     * @param facebookId Facebook id of user to consider
+     * @param user Firebase user representation to change. Should be paired with provided facebookId
+     */
+    public static void makePollsOldForUser(String facebookId, FirebaseUser user) {
+        ref.child(facebookId).child("polls").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                for (String pollId : user.getPolls().keySet()) {
+                    mutableData.child(pollId).setValue(false);
+                }
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
     }
 }

@@ -1,6 +1,7 @@
 package io.github.entertainmatch.model;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.view.event.EventListActivity;
@@ -15,8 +16,8 @@ public class VoteEventStage implements PollStage {
     private final String pollId;
 
     @Override
-    public Intent getViewStageIntent(Activity callingActivity) {
-        Intent intent = new Intent(callingActivity, EventListActivity.class);
+    public Intent getViewStageIntent(Context context) {
+        Intent intent = new Intent(context, EventListActivity.class);
         intent.putExtra(PollStage.POLL_ID_KEY, pollId);
         return intent;
     }

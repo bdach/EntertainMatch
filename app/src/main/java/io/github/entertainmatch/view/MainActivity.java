@@ -1,5 +1,8 @@
 package io.github.entertainmatch.view;
 
+import android.app.ActivityManager;
+import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +35,8 @@ import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.notifications.NotificationService;
+import io.github.entertainmatch.notifications.Notifications;
 import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
@@ -119,6 +124,7 @@ public class MainActivity extends AppCompatActivity
 
                 for (Observable<FirebasePoll> poll : FirebasePollController.getPollsOnceForUser(firebasePerson)) {
                     poll.subscribe(firebasePoll -> {
+
                         FirebasePollController.polls.put(firebasePoll.getPollId(), firebasePoll);
                         pollFragment.addPoll(new Poll(
                                 firebasePoll.getName(),
@@ -129,14 +135,25 @@ public class MainActivity extends AppCompatActivity
                         FirebasePollController
                             .getPoll(firebasePoll.getPollId())
                             .subscribe(updatedPoll -> {
-                                // TODO: poll vote strategy, we should probably keep poll id in Poll object too
-                                Log.d("PollUpdate", "Updated!");
-
                                 FirebasePollController.polls.get(updatedPoll.getPollId()).update(updatedPoll);
+                                pollFragment.updatePolls();
                             });
                     });
                 }
             });
+
+        if (!isMyServiceRunning(NotificationService.class))
+            startService(new Intent(this, NotificationService.class));
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void populateUserData(Person currentUser) {

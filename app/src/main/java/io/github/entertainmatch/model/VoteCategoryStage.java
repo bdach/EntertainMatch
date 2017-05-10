@@ -1,6 +1,7 @@
 package io.github.entertainmatch.model;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -40,8 +41,8 @@ public class VoteCategoryStage implements PollStage {
     }
 
     @Override
-    public Intent getViewStageIntent(Activity callingActivity) {
-        Intent intent = new Intent(callingActivity, VoteCategoryActivity.class);
+    public Intent getViewStageIntent(Context context) {
+        Intent intent = new Intent(context, VoteCategoryActivity.class);
         intent.putExtra(VoteCategoryActivity.CATEGORIES_KEY, new VoteCategoryData(pollId, categories));
         return intent;
     }

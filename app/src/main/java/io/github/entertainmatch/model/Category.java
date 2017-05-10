@@ -3,6 +3,7 @@ package io.github.entertainmatch.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.design.widget.CoordinatorLayout;
+import android.util.Log;
 
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;

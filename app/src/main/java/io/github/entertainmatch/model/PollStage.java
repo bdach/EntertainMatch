@@ -1,6 +1,7 @@
 package io.github.entertainmatch.model;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 /**
@@ -10,6 +11,6 @@ import android.content.Intent;
 public interface PollStage {
     String POLL_ID_KEY = "poll_id";
 
-    Intent getViewStageIntent(Activity callingActivity);
+    Intent getViewStageIntent(Context context);
     int getStageStringId();
 }
