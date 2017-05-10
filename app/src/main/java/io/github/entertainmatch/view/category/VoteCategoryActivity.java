@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -15,6 +16,7 @@ import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.MainActivity;
 import io.github.entertainmatch.view.date.VoteDateActivity;
 import rx.Subscription;
@@ -96,15 +98,37 @@ public class VoteCategoryActivity extends AppCompatActivity
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-                        subscription.unsubscribe();
-
-                        if (getParent() == null)
-                            startActivity(new Intent(VoteCategoryActivity.this, MainActivity.class));
-                        finish();
+                        onBackPressed();
                     }
                 })
                 .show();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getParent() == null)
+            startActivity(new Intent(VoteCategoryActivity.this, LoginActivity.class));
+
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (subscription != null)
+            subscription.unsubscribe();
     }
 
     /**

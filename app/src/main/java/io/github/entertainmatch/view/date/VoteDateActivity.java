@@ -1,34 +1,30 @@
 package io.github.entertainmatch.view.date;
 
 import android.content.Intent;
-import android.hardware.camera2.params.Face;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.ListExt;
-import io.github.entertainmatch.view.MainActivity;
+import io.github.entertainmatch.view.LoginActivity;
 import rx.Subscription;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The activity responsible for voting on a date for the selected event.
@@ -65,8 +61,6 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
 
-                        if (getParent() == null)
-                            startActivity(new Intent(VoteDateActivity.this, MainActivity.class));
                         finish();
                     }
                 }).show();

@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
@@ -24,6 +29,7 @@ public class NotificationService extends IntentService {
 
         String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
         FirebaseUserController.getUser(facebookId).subscribe(user -> {
+            Log.d("NotificationsService", "User data changed");
             user.getPolls().forEach((pollId, isNew) -> {
                 if (isNew) Notifications.notifyPollStarted(this, pollId);
             });
@@ -35,8 +41,7 @@ public class NotificationService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        Log.d("Notification", "BOOM");
+        Log.d("NotificationsService", "onDestroy");
     }
 
     @Override
