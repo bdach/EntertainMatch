@@ -9,6 +9,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.LoginActivity;
 
 /**
@@ -41,7 +43,7 @@ public class Notifications {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true); // hide on click
 
-        Intent intent = new Intent(context, LoginActivity.class); //PollStageFactory.get(VoteCategoryStage.class.toString(), pollId).getViewStageIntent(context);
+        Intent intent = PollStageFactory.get(VoteCategoryStage.class.toString(), pollId).getViewStageIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);

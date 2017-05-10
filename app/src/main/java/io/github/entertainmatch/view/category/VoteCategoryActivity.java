@@ -15,6 +15,8 @@ import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.view.MainActivity;
+import io.github.entertainmatch.view.date.VoteDateActivity;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -95,6 +97,9 @@ public class VoteCategoryActivity extends AppCompatActivity
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         subscription.unsubscribe();
+
+                        if (getParent() == null)
+                            startActivity(new Intent(VoteCategoryActivity.this, MainActivity.class));
                         finish();
                     }
                 })
