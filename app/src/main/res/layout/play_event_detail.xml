@@ -1,0 +1,74 @@
+<LinearLayout android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/event_detail"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:paddingTop="32dp"
+              android:paddingBottom="16dp"
+              android:textColor="@color/colorTextPrimary"
+              android:textSize="18sp"
+              tools:context="io.github.entertainmatch.view.event.MovieEventDetailFragment"/>
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/event_director_label" />
+
+    <TextView android:id="@+id/play_event_director"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingBottom="16dp"
+              android:textSize="18sp"
+              android:textColor="@color/colorTextPrimary" />
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/event_cast_label" />
+
+    <TextView android:id="@+id/play_event_cast"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingBottom="16dp"
+              android:textSize="18sp"
+              android:textColor="@color/colorTextPrimary" />
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/play_event_costumes" />
+
+    <TextView android:id="@+id/play_event_costumes"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingBottom="16dp"
+              android:textSize="18sp"
+              android:textColor="@color/colorTextPrimary" />
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/play_event_scenography" />
+
+    <TextView android:id="@+id/play_event_scenography"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingBottom="16dp"
+              android:textSize="18sp"
+              android:textColor="@color/colorTextPrimary" />
+
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/play_event_duration" />
+
+    <TextView android:id="@+id/play_event_duration"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:paddingBottom="16dp"
+              android:textSize="18sp"
+              android:textColor="@color/colorTextPrimary" />
+
+</LinearLayout>

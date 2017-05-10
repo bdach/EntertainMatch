@@ -2,25 +2,19 @@ package io.github.entertainmatch.view.event;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
-import android.support.v7.graphics.Palette;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.PlayEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,13 +25,13 @@ import lombok.NoArgsConstructor;
  * on handsets.
  */
 @NoArgsConstructor
-public class MovieEventDetailFragment extends EventDetailFragment {
+public class PlayEventDetailFragment extends EventDetailFragment {
 
     /**
      * The event this fragment is presenting.
      */
     @Getter
-    private MovieEvent event;
+    private PlayEvent event;
     /**
      * The toolbar of the view.
      */
@@ -50,18 +44,19 @@ public class MovieEventDetailFragment extends EventDetailFragment {
     /**
      * The view containing the name of the movie's director.
      */
-    @BindView(R.id.movie_event_director)
+    @BindView(R.id.play_event_director)
     TextView directorText;
     /**
      * The view containing the movie cast.
      */
-    @BindView(R.id.movie_event_cast)
+    @BindView(R.id.play_event_cast)
     TextView castText;
-    /**
-     * View containing the movie score.
-     */
-    @BindView(R.id.movie_event_score)
-    TextView scoreText;
+    @BindView(R.id.play_event_costumes)
+    TextView costumesText;
+    @BindView(R.id.play_event_scenography)
+    TextView scenographyText;
+    @BindView(R.id.play_event_duration)
+    TextView durationText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +73,7 @@ public class MovieEventDetailFragment extends EventDetailFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.movie_event_detail, container, false);
+        View rootView = inflater.inflate(R.layout.play_event_detail, container, false);
 
         Activity activity = this.getActivity();
         layout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
@@ -104,7 +99,9 @@ public class MovieEventDetailFragment extends EventDetailFragment {
         detailTitle.setText(event.getDescription());
         directorText.setText(event.getDirector());
         castText.setText(event.getCast());
-        scoreText.setText(event.getRottenTomatoesScore().toString());
+        costumesText.setText(event.getCostumes());
+        scenographyText.setText(event.getScenography());
+        durationText.setText(event.getDuration().toString());
     }
 
     @Override

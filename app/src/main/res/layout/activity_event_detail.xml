@@ -4,7 +4,7 @@
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
                                                  android:fitsSystemWindows="true"
-                                                 tools:context="io.github.entertainmatch.view.event.MovieEventDetailActivity"
+                                                 tools:context="io.github.entertainmatch.view.event.EventDetailActivity"
                                                  android:background="@android:color/transparent"
                                                  tools:ignore="MergeRootFrame">
 
@@ -47,13 +47,12 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <android.support.design.widget.FloatingActionButton
-            android:id="@+id/youtube_fab"
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:layout_margin="@dimen/fab_margin"
             android:src="@drawable/ic_youtube_black_24dp"
-            app:backgroundTint="@color/colorRed"
             android:tint="@color/colorTintPrimary"
             app:layout_anchor="@+id/event_detail_container"
             app:layout_anchorGravity="top|end"/>

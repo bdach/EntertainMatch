@@ -1,7 +1,6 @@
 package io.github.entertainmatch.view;
 
 import android.app.ActivityManager;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,14 +20,16 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
-import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
@@ -36,7 +37,6 @@ import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.notifications.NotificationService;
-import io.github.entertainmatch.notifications.Notifications;
 import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity
                         pollFragment.addPoll(new Poll(
                                 firebasePoll.getName(),
                                 PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
-                                null, // decide if we should store every person or just ids
+                                firebasePoll.getParticipants(), // decide if we should store every person or just ids
                                 firebasePoll.getPollId()));
 
                         FirebasePollController
@@ -237,6 +237,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case NEW_POLL_REQUEST:
@@ -259,7 +264,7 @@ public class MainActivity extends AppCompatActivity
             pollFragment.addPoll(new Poll(
                 x.getName(),
                 new VoteCategoryStage(x.getPollId()),
-                null,
+                poll.getMembers(),
                 x.getPollId()));
         });
 

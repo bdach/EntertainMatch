@@ -6,9 +6,14 @@ import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
@@ -22,6 +27,7 @@ import io.github.entertainmatch.view.date.VoteDateActivity;
 import rx.Subscription;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activity used for voting on an event category.
@@ -56,6 +62,7 @@ public class VoteCategoryActivity extends AppCompatActivity
      * Subscription object used to notify view about poll changes.
      */
     private Subscription subscription;
+    private List<String> participants;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,28 @@ public class VoteCategoryActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         populateCategoryList();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.default_vote_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.show_participants) {
+            View menuItemView = findViewById(R.id.show_participants);
+            PopupMenu popupMenu = new PopupMenu(this, menuItemView);
+            Menu menu = popupMenu.getMenu();
+            for (String participantId : participants) {
+                menu.add(participantId);
+            }
+            popupMenu.show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
@@ -90,6 +119,7 @@ public class VoteCategoryActivity extends AppCompatActivity
     }
 
     private void subscribeCallback(FirebasePoll poll) {
+        participants = poll.getParticipants();
         if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
             fragment.updateCategories(poll.getVoteCounts());
         } else {

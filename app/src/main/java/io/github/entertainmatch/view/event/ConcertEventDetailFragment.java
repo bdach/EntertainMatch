@@ -5,21 +5,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.graphics.Palette;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.model.ConcertEvent;
 import io.github.entertainmatch.model.MovieEvent;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,13 +30,13 @@ import lombok.NoArgsConstructor;
  * on handsets.
  */
 @NoArgsConstructor
-public class MovieEventDetailFragment extends EventDetailFragment {
+public class ConcertEventDetailFragment extends EventDetailFragment {
 
     /**
      * The event this fragment is presenting.
      */
     @Getter
-    private MovieEvent event;
+    private ConcertEvent event;
     /**
      * The toolbar of the view.
      */
@@ -47,21 +46,10 @@ public class MovieEventDetailFragment extends EventDetailFragment {
      */
     @BindView(R.id.event_detail)
     TextView detailTitle;
-    /**
-     * The view containing the name of the movie's director.
-     */
-    @BindView(R.id.movie_event_director)
-    TextView directorText;
-    /**
-     * The view containing the movie cast.
-     */
-    @BindView(R.id.movie_event_cast)
-    TextView castText;
-    /**
-     * View containing the movie score.
-     */
-    @BindView(R.id.movie_event_score)
-    TextView scoreText;
+    @BindView(R.id.concert_event_band_members)
+    TextView bandMembers;
+    @BindView(R.id.concert_event_last_album_title)
+    TextView lastAlbumTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,13 +66,12 @@ public class MovieEventDetailFragment extends EventDetailFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.movie_event_detail, container, false);
+        View rootView = inflater.inflate(R.layout.concert_event_detail, container, false);
 
         Activity activity = this.getActivity();
         layout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
         ImageView imageView = (ImageView) activity.findViewById(R.id.toolbar_image);
 
-        // Show the dummy content as text in a TextView.
         if (event != null) {
             setContent(rootView);
             applyImage(event, imageView, layout);
@@ -102,15 +89,14 @@ public class MovieEventDetailFragment extends EventDetailFragment {
         ButterKnife.bind(this, rootView);
         layout.setTitle(event.getTitle());
         detailTitle.setText(event.getDescription());
-        directorText.setText(event.getDirector());
-        castText.setText(event.getCast());
-        scoreText.setText(event.getRottenTomatoesScore().toString());
+        bandMembers.setText(event.getBandMembers());
+        lastAlbumTitle.setText(event.getLastAlbum());
     }
 
     @Override
     public View.OnClickListener getFabListener() {
         return v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getYoutubeTrailerUrl()));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(event.getYoutubePlaylistUrl()));
             startActivity(intent);
         };
     }

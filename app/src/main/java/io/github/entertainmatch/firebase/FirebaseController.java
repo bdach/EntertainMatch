@@ -1,6 +1,5 @@
 package io.github.entertainmatch.firebase;
 
-import android.graphics.Movie;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -8,20 +7,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.function.Consumer;
 
-import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
-import io.github.entertainmatch.firebase.models.FirebaseEventDate;
-import io.github.entertainmatch.firebase.models.FirebaseLocation;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.ConcertEvent;
 import io.github.entertainmatch.model.Event;
-import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.model.PlayEvent;
+import io.github.entertainmatch.model.StaffPickEvent;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
@@ -87,6 +80,12 @@ public class FirebaseController {
                 break;
             case "concerts":
                 eventClass = ConcertEvent.class;
+                break;
+            case "plays":
+                eventClass = PlayEvent.class;
+                break;
+            case "staffpicks":
+                eventClass = StaffPickEvent.class;
                 break;
             default:
                 throw new IllegalArgumentException("This type of category has not been implemented yet");

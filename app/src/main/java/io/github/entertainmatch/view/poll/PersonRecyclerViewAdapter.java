@@ -5,11 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.squareup.picasso.Picasso;
+import com.facebook.login.widget.ProfilePictureView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Person;
 import lombok.AllArgsConstructor;
@@ -63,15 +62,10 @@ public class PersonRecyclerViewAdapter extends RecyclerView.Adapter<PersonRecycl
         @BindView(R.id.person_selected)
         CheckBox personSelected;
         /**
-         * Image view containing the person's avatar.
+         * The person's avatar.
          */
-        @BindView(R.id.person_avatar_background)
-        ImageView avatarBackground;
-        /**
-         * The view with the letter inside the avatar.
-         */
-        @BindView(R.id.person_avatar_letter)
-        TextView avatarLetter;
+        @BindView(R.id.person_avatar)
+        ProfilePictureView personAvatar;
         /**
          * Backing {@link Person} model object.
          */
@@ -96,38 +90,8 @@ public class PersonRecyclerViewAdapter extends RecyclerView.Adapter<PersonRecycl
                     listener.onPersonToggled(item, personSelected.isChecked());
                 }
             });
-            setAvatar(item);
+            personAvatar.setProfileId(person.getFacebookId());
         }
 
-        /**
-         * Sets the person's avatar.
-         * @param person {@link Person} object to set avatar of.
-         */
-        private void setAvatar(Person person) {
-            if (person.isProfilePictureSet()) {
-                setPictureAvatar(person.getProfilePictureUrl());
-            } else {
-                setLetterAvatar(person.getName());
-            }
-        }
-
-        /**
-         * Uses a user picture as an avatar.
-         * @param url URL of image to use as an avatar.
-         */
-        private void setPictureAvatar(String url) {
-            Picasso.with(listener.getContext())
-                    .load(url)
-                    .fit()
-                    .into(avatarBackground);
-        }
-
-        /**
-         * Uses a initial as an avatar.
-         * @param name User's name.
-         */
-        private void setLetterAvatar(String name) {
-            avatarLetter.setText(name.substring(0, 1));
-        }
     }
 }
