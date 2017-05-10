@@ -16,7 +16,7 @@
     <string name="poll_status_date">Voting on date</string>
     <string name="poll_status_completed">Voting completed</string>
 
-    <string name="title_activity_vote_category">Vote for a category</string>
+    <string name="title_activity_vote_category">Vote for category</string>
     <string name="vote_icon_description">Vote</string>
     <string name="vote_category_snackbar">Thanks! Your vote was registered.
         We\'ll notify you when the others have made a choice.
@@ -65,4 +65,5 @@
     <string name="play_event_duration">Duration</string>
     <string name="play_event_costumes">Costumes</string>
     <string name="play_event_scenography">Scenography</string>
+    <string name="view_participants">View participants</string>
 </resources>

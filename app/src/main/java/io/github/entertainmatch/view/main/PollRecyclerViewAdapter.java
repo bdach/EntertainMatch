@@ -4,11 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.facebook.login.widget.ProfilePictureView;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import lombok.RequiredArgsConstructor;
 
@@ -72,6 +75,8 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
          */
         @BindView(R.id.poll_status)
         TextView statusView;
+        @BindView(R.id.member_avatars)
+        LinearLayout memberAvatarLayout;
         /**
          * The backing {@link Poll} item.
          */
@@ -87,6 +92,18 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             this.poll = poll;
             nameView.setText(poll.getName());
             statusView.setText(poll.getPollStage().getStageStringId());
+            memberAvatarLayout.removeAllViews();
+            for (Person person : poll.getMembers()) {
+                addMemberAvatar(person);
+            }
+        }
+
+        public void addMemberAvatar(Person personId) {
+            ProfilePictureView pictureView = new ProfilePictureView(listener.getContext());
+            pictureView.setProfileId(personId.getFacebookId());
+            pictureView.setPresetSize(ProfilePictureView.SMALL);
+            pictureView.setPadding(8, 8, 8, 8);
+            memberAvatarLayout.addView(pictureView);
         }
     }
 }

@@ -1,5 +1,6 @@
 package io.github.entertainmatch.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity
                         pollFragment.addPoll(new Poll(
                                 firebasePoll.getName(),
                                 PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
-                                null, // decide if we should store every person or just ids
+                                firebasePoll.getParticipants(), // decide if we should store every person or just ids
                                 firebasePoll.getPollId()));
 
                         FirebasePollController
@@ -215,6 +216,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case NEW_POLL_REQUEST:
@@ -237,7 +243,7 @@ public class MainActivity extends AppCompatActivity
             pollFragment.addPoll(new Poll(
                 x.getName(),
                 new VoteCategoryStage(x.getPollId()),
-                null,
+                poll.getMembers(),
                 x.getPollId()));
         });
 

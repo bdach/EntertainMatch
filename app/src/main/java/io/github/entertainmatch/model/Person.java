@@ -55,8 +55,8 @@ public class Person implements Parcelable {
     }
 
     protected Person(Parcel in) {
-        name = in.readString();
         facebookId = in.readString();
+        name = in.readString();
         profilePictureSet = in.readInt() != 0;
         profilePictureUrl = in.readString();
     }

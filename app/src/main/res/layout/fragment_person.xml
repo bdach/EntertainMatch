@@ -6,29 +6,13 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="horizontal">
 
-    <RelativeLayout
-              android:id="@+id/person_avatar"
-              android:layout_width="36dp"
-              android:layout_height="36dp"
-              android:layout_marginLeft="8dp"
-              android:layout_marginStart="8dp"
-              android:layout_marginRight="16dp"
-              android:layout_marginEnd="16dp">
-
-        <ImageView android:id="@+id/person_avatar_background"
-                   android:layout_width="match_parent"
-                   android:layout_height="match_parent"
-                   android:src="@color/colorAccent" />
-
-        <TextView android:id="@+id/person_avatar_letter"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:textSize="24sp"
-                  android:textColor="@android:color/white"
-                  android:layout_centerHorizontal="true"
-                  android:layout_centerVertical="true"/>
-
-    </RelativeLayout>
+    <com.facebook.login.widget.ProfilePictureView android:id="@+id/person_avatar"
+                                                  android:layout_width="36dp"
+                                                  android:layout_height="36dp"
+                                                  android:layout_marginLeft="8dp"
+                                                  android:layout_marginStart="8dp"
+                                                  android:layout_marginRight="16dp"
+                                                  android:layout_marginEnd="16dp" />
 
     <CheckBox android:id="@+id/person_selected"
               android:layout_width="wrap_content"

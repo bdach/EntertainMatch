@@ -7,6 +7,7 @@ import android.util.Log;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.utils.PollStageFactory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -62,6 +63,18 @@ public class Poll implements Parcelable {
             return new Poll[size];
         }
     };
+
+    // TODO: Makeshift constructor. Here until we decide how to fetch participants.
+    public Poll(String name, PollStage pollStage, List<String> participants, String pollId) {
+        this.name = name;
+        this.pollStage = pollStage;
+        this.members = ListExt.map(participants, (s) -> {
+            Person person = new Person();
+            person.facebookId = s;
+            return person;
+        }).toArray(new Person[participants.size()]);
+        this.pollId = pollId;
+    }
 
     public static List<Poll> mockData() {
         return Arrays.asList(
