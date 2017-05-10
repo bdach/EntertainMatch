@@ -1,34 +1,30 @@
 package io.github.entertainmatch.view.result;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import butterknife.BindView;
+import java.text.DateFormat;
+import java.util.Locale;
+import java.util.Map;
+
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventDateController;
+import io.github.entertainmatch.firebase.FirebaseLocationsController;
 import io.github.entertainmatch.firebase.FirebasePollController;
-import io.github.entertainmatch.model.EventDate;
-import io.github.entertainmatch.model.MovieEvent;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.VoteResultStage;
-
-import java.text.DateFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 public class VoteResultActivity extends AppCompatActivity {
 
@@ -42,8 +38,8 @@ public class VoteResultActivity extends AppCompatActivity {
     private TextView eventPlace;
     private TextView eventDate;
 
-    private MovieEvent event;
-    private EventDate date;
+    //private Event event;
+    //private EventDate date;
 
     private Button buttonYes;
     private Button buttonNo;
@@ -70,11 +66,32 @@ public class VoteResultActivity extends AppCompatActivity {
         buttonYes = (Button) findViewById(R.id.result_yes);
         buttonNo = (Button) findViewById(R.id.result_no);
 
-        Intent intent = getIntent();
-        event = intent.getParcelableExtra(EVENT_KEY);
-        date = intent.getParcelableExtra(DATE_KEY);
+        //Intent intent = getIntent();
+        //event = intent.getParcelableExtra(EVENT_KEY);
+        //date = intent.getParcelableExtra(DATE_KEY);
 
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
+        FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
+            eventPlace.setText(location.getPlace());
+        });
+
+        FirebaseEventDateController.getEventSingle(poll.getChosenCategory(), poll.getVictoriousEvent(), poll.getChosenLocationId()).subscribe(eventDate -> {
+            String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
+                    .format(eventDate.getDate());
+            this.eventDate.setText(date);
+        });
+
+        FirebaseController.getEventSingle(
+                poll.getChosenCategory(),
+                poll.getVictoriousEvent()
+                        .substring(poll.getChosenCategory().length())
+        ).subscribe(firebaseEvent -> {
+            Picasso.with(this)
+                    .load(firebaseEvent.getDrawableUri())
+                    .into(eventImage);
+            eventName.setText(firebaseEvent.getTitle());
+        });
 
         facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         buttonYes.setOnClickListener(v -> {
@@ -85,7 +102,7 @@ public class VoteResultActivity extends AppCompatActivity {
             buttonListener(false);
         });
 
-        bindData();
+        //bindData();
     }
 
     private void buttonListener(boolean going) {
@@ -105,15 +122,15 @@ public class VoteResultActivity extends AppCompatActivity {
     }
 
     private void bindData() {
-        Picasso.with(this)
-                .load(event.getDrawableUri())
-                .into(eventImage);
+//        Picasso.with(this)
+//                .load(event.getDrawableUri())
+//                .into(eventImage);
 
-        eventName.setText(event.getTitle());
-        eventPlace.setText(date.getPlace());
-        String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
-                .format(this.date.getDate());
-        eventDate.setText(date);
+//        eventName.setText(event.getTitle());
+//        eventPlace.setText(date.getPlace());
+//        String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
+//                .format(this.date.getDate());
+//        eventDate.setText(date);
     }
 
 }

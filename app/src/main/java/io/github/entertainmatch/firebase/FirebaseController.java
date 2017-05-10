@@ -76,7 +76,7 @@ public class FirebaseController {
 
     public static Observable<? extends Event> getEventSingle(String chosenCategory, String victoriousEvent) {
         Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
-
+        Log.d("XDD", chosenCategory + " " + victoriousEvent);
         return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory).child(victoriousEvent), eventClass);
     }
 

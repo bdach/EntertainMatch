@@ -66,4 +66,15 @@ public class FirebaseEventDateController {
     public static Observable<Map<String, FirebaseEventDate>> getEventDates(String category, String eventId) {
         return RxFirebaseDatabase.observeValueEvent(ref.child(category).child(eventId), DataSnapshotMapper.mapOf(FirebaseEventDate.class));
     }
+
+    /**
+     * One time observable for fetching specific event date
+     * @param category Category of an event
+     * @param eventId Identifier of an event
+     * @param locationId Location identifier of event's venue
+     * @return One-time observable with {@code FirebaseEventDate} asked for
+     */
+    public static Observable<FirebaseEventDate> getEventSingle(String category, String eventId, String locationId) {
+        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(category).child(eventId).child(locationId), FirebaseEventDate.class);
+    }
 }

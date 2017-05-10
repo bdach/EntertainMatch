@@ -71,6 +71,11 @@ public class FirebasePoll {
     private Map<String, Boolean> going;
 
     /**
+     * Location that has been chosen in event date stage
+     */
+    private String chosenLocationId;
+
+    /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
      * @return FirebasePoll used in the cloud
@@ -96,7 +101,7 @@ public class FirebasePoll {
 
         return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
             VoteCategoryStage.class.toString(), voteCounts, votedFor, null,
-            eventVotes, "", "", eventDatesStatus, going);
+            eventVotes, "", "", eventDatesStatus, going, "");
     }
 
     /**
