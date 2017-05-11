@@ -66,4 +66,5 @@
     <string name="play_event_costumes">Costumes</string>
     <string name="play_event_scenography">Scenography</string>
     <string name="view_participants">View participants</string>
+    <string name="poll_view_progress">View progress</string>
 </resources>

@@ -1,9 +1,13 @@
 package io.github.entertainmatch.view.main;
 
+import android.content.res.Resources;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +17,7 @@ import com.facebook.login.widget.ProfilePictureView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.view.CircularProfilePictureView;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -45,7 +50,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         Poll poll = polls.get(position);
         holder.setPoll(poll);
 
-        holder.view.setOnClickListener(v -> {
+        holder.viewProgressButton.setOnClickListener(v -> {
             if (null != listener) {
                 listener.onPollSelected(holder.poll);
             }
@@ -77,6 +82,8 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         TextView statusView;
         @BindView(R.id.member_avatars)
         LinearLayout memberAvatarLayout;
+        @BindView(R.id.poll_view_progress)
+        Button viewProgressButton;
         /**
          * The backing {@link Poll} item.
          */
@@ -99,11 +106,19 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         }
 
         public void addMemberAvatar(Person personId) {
-            ProfilePictureView pictureView = new ProfilePictureView(listener.getContext());
+            ProfilePictureView pictureView = new CircularProfilePictureView(listener.getContext());
             pictureView.setProfileId(personId.getFacebookId());
             pictureView.setPresetSize(ProfilePictureView.SMALL);
-            pictureView.setPadding(8, 8, 8, 8);
-            memberAvatarLayout.addView(pictureView);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            Resources r = listener.getContext().getResources();
+            int px = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    8,
+                    r.getDisplayMetrics()
+            );
+            params.setMargins(px, px, px, px);
+            memberAvatarLayout.addView(pictureView, params);
         }
     }
 }
