@@ -90,11 +90,11 @@ public class DateFragment extends Fragment {
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-            FirebasePoll poll = FirebasePollController.polls.get(pollId);
-            String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
-            adapter = new DateRecyclerViewAdapter(dates, listener, !poll.getEventDatesStatus().get("voted").get(facebookId));
-
-            recyclerView.setAdapter(adapter);
+            FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+                adapter = new DateRecyclerViewAdapter(dates, listener, !poll.getEventDatesStatus().get("voted").get(facebookId));
+                recyclerView.setAdapter(adapter);
+            });
         }
         return view;
     }

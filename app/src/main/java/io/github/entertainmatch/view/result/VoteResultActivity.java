@@ -71,26 +71,28 @@ public class VoteResultActivity extends AppCompatActivity {
         //date = intent.getParcelableExtra(DATE_KEY);
 
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
-        FirebasePoll poll = FirebasePollController.polls.get(pollId);
-        FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
-            eventPlace.setText(location.getPlace());
-        });
+        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
 
-        FirebaseEventDateController.getEventSingle(poll.getChosenCategory(), poll.getVictoriousEvent(), poll.getChosenLocationId()).subscribe(eventDate -> {
-            String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
-                    .format(eventDate.getDate());
-            this.eventDate.setText(date);
-        });
+            FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
+                eventPlace.setText(location.getPlace());
+            });
 
-        FirebaseController.getEventSingle(
-                poll.getChosenCategory(),
-                poll.getVictoriousEvent()
-                        .substring(poll.getChosenCategory().length())
-        ).subscribe(firebaseEvent -> {
-            Picasso.with(this)
-                    .load(firebaseEvent.getDrawableUri())
-                    .into(eventImage);
-            eventName.setText(firebaseEvent.getTitle());
+            FirebaseEventDateController.getEventSingle(poll.getChosenCategory(), poll.getVictoriousEvent(), poll.getChosenLocationId()).subscribe(eventDate -> {
+                String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
+                        .format(eventDate.getDate());
+                this.eventDate.setText(date);
+            });
+
+            FirebaseController.getEventSingle(
+                    poll.getChosenCategory(),
+                    poll.getVictoriousEvent()
+                            .substring(poll.getChosenCategory().length())
+            ).subscribe(firebaseEvent -> {
+                Picasso.with(this)
+                        .load(firebaseEvent.getDrawableUri())
+                        .into(eventImage);
+                eventName.setText(firebaseEvent.getTitle());
+            });
         });
 
         facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
@@ -106,19 +108,21 @@ public class VoteResultActivity extends AppCompatActivity {
     }
 
     private void buttonListener(boolean going) {
-        Map<String, Boolean> goingMap = FirebasePollController.polls.get(pollId).getGoing();
-        if (goingMap != null && goingMap.containsKey(facebookId))
-            return;
+        FirebasePollController.getPoll(pollId).subscribe(poll -> {
+            Map<String, Boolean> goingMap = poll.getGoing();
+            if (goingMap != null && goingMap.containsKey(facebookId))
+                return;
 
-        FirebasePollController.setIsGoing(pollId, facebookId, going);
-        Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
-                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-            @Override
-            public void onDismissed(Snackbar transientBottomBar, int event) {
-                super.onDismissed(transientBottomBar, event);
-                finish();
-            }
-        }).show();
+            FirebasePollController.setIsGoing(pollId, facebookId, going);
+            Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
+                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    finish();
+                }
+            }).show();
+        });
     }
 
     private void bindData() {

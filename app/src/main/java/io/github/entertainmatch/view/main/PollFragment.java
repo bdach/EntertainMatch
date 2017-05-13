@@ -3,6 +3,7 @@ package io.github.entertainmatch.view.main;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +14,8 @@ import io.github.entertainmatch.model.Poll;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A fragment containing the list of polls.
@@ -27,7 +30,8 @@ public class PollFragment extends Fragment {
      */
     private OnPollSelectedListener listener;
 
-    private ArrayList<Poll> polls = new ArrayList<>(Poll.mockData());
+    private Map<String, Pair<Integer, Poll>> pollMap = new HashMap<>();
+    private ArrayList<Poll> polls = new ArrayList<>();
     private PollRecyclerViewAdapter adapter;
 
     @Override
@@ -68,16 +72,16 @@ public class PollFragment extends Fragment {
         listener = null;
     }
 
-    public void addPoll(Poll poll) {
-        polls.add(poll);
-        adapter.notifyItemInserted(polls.size() - 1);
-    }
-
-    public void updatePolls() {
-        for (Poll poll : polls) {
-            poll.update();
+    public void updatePoll(Poll poll) {
+        if (pollMap.containsKey(poll.getPollId())) {
+            Pair<Integer, Poll> pair = pollMap.get(poll.getPollId());
+            adapter.notifyItemChanged(pair.first);
+        } else {
+            Pair<Integer, Poll> pair = Pair.create(polls.size(), poll);
+            pollMap.put(poll.getPollId(), pair);
+            polls.add(poll);
+            adapter.notifyItemInserted(polls.size() - 1);
         }
-        adapter.notifyDataSetChanged();
     }
 
     /**

@@ -24,6 +24,9 @@ public class NotificationService extends IntentService {
         String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
         FirebaseUserController.getUser(facebookId).subscribe(user -> {
             Log.d("NotificationsService", "User data changed");
+            if (user == null)
+                return;
+
             user.getPolls().forEach((pollId, isNew) -> {
                 if (isNew) {
                     Log.d("NotificationsService", pollId);

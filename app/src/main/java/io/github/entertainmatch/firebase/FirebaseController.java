@@ -56,8 +56,8 @@ public class FirebaseController {
     public static void init() {
         // force to call static constructor
         FirebaseCategoriesTemplatesController.get().subscribe((List<FirebaseCategoryTemplate> x) -> {
-            VoteCategoryStage.categoriesTemplates = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
-            Log.d("FirebaseController", "categoriesTemplates ready " + VoteCategoryStage.categoriesTemplates.size());
+            FirebaseCategoriesTemplatesController.cached = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
+            Log.d("FirebaseController", "categoriesTemplates ready " + FirebaseCategoriesTemplatesController.cached.size());
         });
     }
 

@@ -76,15 +76,6 @@ public class Poll implements Parcelable {
         this.pollId = pollId;
     }
 
-    public static List<Poll> mockData() {
-        return Arrays.asList(
-//                new Poll("Test poll", new VoteCategoryStage(), new Person[0]),
-//                new Poll("Another test poll", new VoteEventStage(), new Person[0]),
-//                new Poll("Yet another test poll", new VoteDateStage(), new Person[0]),
-//                new Poll("And yet another poll", new VoteResultStage(), new Person[0])
-        );
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -100,10 +91,5 @@ public class Poll implements Parcelable {
 
     public String stageName() {
         return pollStage.getClass().toString();
-    }
-
-    public void update() {
-        FirebasePoll newPoll = FirebasePollController.polls.get(pollId);
-        pollStage = PollStageFactory.get(newPoll.getStage(), pollId);
     }
 }

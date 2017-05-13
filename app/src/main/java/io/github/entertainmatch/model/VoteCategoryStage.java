@@ -23,27 +23,17 @@ import java.util.ArrayList;
  */
 @NoArgsConstructor
 public class VoteCategoryStage implements PollStage {
-    public static ArrayList<Category> categoriesTemplates = new ArrayList<>();
-
-    @Getter
-    private ArrayList<Category> categories = ListExt.clone(categoriesTemplates);
-
     @Getter
     private String pollId;
 
     public VoteCategoryStage(String pollId) {
         this.pollId = pollId;
-        // voteCategory categories only if poll already exists
-        FirebasePoll poll = FirebasePollController.polls.get(pollId);
-        if (poll != null) {
-            ListExt.forEach(categories, poll::setValues);
-        }
     }
 
     @Override
     public Intent getViewStageIntent(Context context) {
         Intent intent = new Intent(context, VoteCategoryActivity.class);
-        intent.putExtra(VoteCategoryActivity.CATEGORIES_KEY, new VoteCategoryData(pollId, categories));
+        intent.putExtra(VoteCategoryActivity.CATEGORIES_KEY, new VoteCategoryData(pollId));
         return intent;
     }
 

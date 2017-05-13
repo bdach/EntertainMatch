@@ -125,22 +125,23 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_confirm_vote) {
-            FirebasePoll poll = FirebasePollController.polls.get(pollId);
-            String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
-            dateFragment.disallowEdition();
+            FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
+                dateFragment.disallowEdition();
 
-            if (poll.getEventDatesStatus().get("voted").get(facebookId)) {
-                Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG).show();
-                return true;
-            }
+                if (poll.getEventDatesStatus().get("voted").get(facebookId)) {
+                    Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG).show();
+                } else {
+                    List<EventDate> dates = dateFragment.getDates();
+                    poll.chooseDate(
+                        ListExt.map(dates, EventDate::getLocationId),
+                        ListExt.map(dates, EventDate::isSelected)
+                    );
 
-            List<EventDate> dates = dateFragment.getDates();
-            poll.chooseDate(
-                ListExt.map(dates, EventDate::getLocationId),
-                ListExt.map(dates, EventDate::isSelected)
-            );
+                    Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG).show();
+                }
+            });
 
-            Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

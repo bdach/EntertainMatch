@@ -5,9 +5,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
+import io.github.entertainmatch.model.Category;
+import lombok.Getter;
+import lombok.Setter;
 import rx.Observable;
 
 /**
@@ -26,6 +30,12 @@ public class FirebaseCategoriesTemplatesController {
      * In this collection each node is denoted by user's facebook id.
      */
     private static final DatabaseReference ref = database.getReference("categories");
+    /**
+     * Since these templates are not going to change, they are cached and loaded on startup.
+     */
+    @Getter
+    @Setter
+    static List<Category> cached = new ArrayList<>();
 
     /**
      * Grabs user all category templates from firebase.

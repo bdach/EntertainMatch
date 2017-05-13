@@ -117,6 +117,10 @@ public class CategoryFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void categoriesChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
     /**
      * Interface allowing activities containing this fragment to be notified of a {@link Category} selection.
      */

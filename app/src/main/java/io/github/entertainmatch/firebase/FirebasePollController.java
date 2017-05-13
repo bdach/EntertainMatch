@@ -30,7 +30,6 @@ import rx.subjects.PublishSubject;
  * The controller used to retrieve and vote information about polls in the Firebase.
  */
 public class FirebasePollController {
-    public static Map<String, FirebasePoll> polls = new HashMap<>();
     /**
      * Instance of the database
      */
@@ -41,6 +40,31 @@ public class FirebasePollController {
      * User can retrieve poll ids with <code>FirebaseUserController.getUserById(facebookId)</code>
      */
     private static final DatabaseReference ref = database.getReference("polls");
+
+    /**
+     * Retrieves observables for all polls of the user.
+     * This is a one-use-only observable. Used primarily to add polls to the view.
+     * One should resubscribe with <code>getPoll</code> observable for further changes.
+     * @param firebaseUser User to get poll information for
+     * @return Observables of polls for given user
+     */
+    public static List<Observable<FirebasePoll>> getPollsOnceForUser(FirebaseUser firebaseUser) {
+        return ListExt.map(new ArrayList<>(firebaseUser.getPolls().keySet()),
+                pollId -> RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId),
+                        FirebasePoll.class));
+    }
+
+    /**
+     * Retrieves observables for all polls of the user.
+     * @param firebaseUser User to get poll information for
+     * @return Observables of polls for given user
+     */
+    public static List<Observable<FirebasePoll>> getPollsForUser(FirebaseUser firebaseUser) {
+        return firebaseUser == null ? new ArrayList<>() :
+                ListExt.map(new ArrayList<>(firebaseUser.getPolls().keySet()),
+                    pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
+                        FirebasePoll.class));
+    }
 
     /**
      * Adds poll information to the database
@@ -62,19 +86,6 @@ public class FirebasePollController {
         // return poll id
         String pollId = firebasePollRef.getKey();
         return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId);
-    }
-
-    /**
-     * Retrieves observables for all polls of the user.
-     * This is a one-use-only observable. Used primarily to add polls to the view.
-     * One should resubscribe with <code>getPoll</code> observable for further changes.
-     * @param firebaseUser User to get poll information for
-     * @return Observables of polls for given user
-     */
-    public static List<Observable<FirebasePoll>> getPollsOnceForUser(FirebaseUser firebaseUser) {
-        return ListExt.map(new ArrayList<>(firebaseUser.getPolls().keySet()),
-                pollId -> RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId),
-                    FirebasePoll.class));
     }
 
     public static Observable<FirebasePoll> getPoll(String pollId) {
@@ -134,7 +145,11 @@ public class FirebasePollController {
                     mutableData.child("stage").setValue(VoteDateStage.class.toString());
 
                     mutableData.child("victoriousEvent").setValue(HashMapExt.mostFrequent(eventVotes));
-                    FirebaseEventDateController.setup(FirebasePollController.polls.get(pollId), HashMapExt.mostFrequent(eventVotes));
+
+                    // TODO: not sure
+                    FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                        FirebaseEventDateController.setup(poll, HashMapExt.mostFrequent(eventVotes));
+                    });
                 }
                 return Transaction.success(mutableData);
             }
@@ -209,18 +224,20 @@ public class FirebasePollController {
 
                 ref.child(pollId).child("stage").setValue(VoteResultStage.class.toString());
 
-                HashMap<String, Long> locationToCounts = new HashMap<>();
-                FirebasePoll poll = FirebasePollController.polls.get(pollId);
-                poll.getEventDatesStatus().forEach((locationId, facebookIdToChosen) -> {
-                    long votes = 0L;
-                    for (Boolean chosen : facebookIdToChosen.values()) {
-                        votes += chosen ? 1 : 0;
-                    }
+                // TODO: not sure
+                FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                    poll.getEventDatesStatus().forEach((locationId, facebookIdToChosen) -> {
+                        HashMap<String, Long> locationToCounts = new HashMap<>();
+                        long votes = 0L;
+                        for (Boolean chosen : facebookIdToChosen.values()) {
+                            votes += chosen ? 1 : 0;
+                        }
 
-                    locationToCounts.put(locationId, votes);
+                        locationToCounts.put(locationId, votes);
+                        ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts));
+                    });
                 });
 
-                ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts));
                 return Transaction.success(mutableData);
             }
 
@@ -238,7 +255,8 @@ public class FirebasePollController {
      * @return Observable with retrieved event dates. It provides data once in sense that it will incrementally return the same list.
      */
     public static Observable<List<EventDate>> getLocations(String pollId) {
-        FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        return FirebasePollController.getPollOnce(pollId).flatMap(poll -> {
+
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         return FirebaseEventDateController.getEventDatesSingle(poll.getChosenCategory(), poll.getVictoriousEvent()).flatMap(eventDates -> {
@@ -263,6 +281,7 @@ public class FirebasePollController {
             }
 
             return observable;
+        });
         });
     }
 

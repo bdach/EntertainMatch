@@ -55,8 +55,8 @@ public class Person implements Parcelable {
     }
 
     protected Person(Parcel in) {
-        name = in.readString();
         facebookId = in.readString();
+        name = in.readString();
         profilePictureSet = in.readInt() != 0;
         profilePictureUrl = in.readString();
     }
@@ -84,13 +84,5 @@ public class Person implements Parcelable {
         dest.writeString(name);
         dest.writeInt(profilePictureSet ? 1 : 0);
         dest.writeString(profilePictureUrl);
-    }
-
-    public static List<Person> mockData() {
-        return Arrays.asList(
-                new Person("", "John Angle", false, ""),
-                new Person("", "Katie Bell", false, ""),
-                new Person("", "Leon Carson", false, "")
-        );
     }
 }

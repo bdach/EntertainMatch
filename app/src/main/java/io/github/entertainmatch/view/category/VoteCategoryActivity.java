@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import android.view.Menu;
@@ -17,7 +18,11 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebaseCategory;
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.VoteCategoryStage;
@@ -109,19 +114,34 @@ public class VoteCategoryActivity extends AppCompatActivity
      * {@link CategoryFragment}.
      */
     private void populateCategoryList() {
+        String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
         Intent intent = getIntent();
         VoteCategoryData data = intent.getParcelableExtra(CATEGORIES_KEY);
-
-        ArrayList<Category> categories = data.getCategories();
         pollId = data.getPollId();
 
-        subscription = FirebasePollController.getPoll(pollId).subscribe(this::subscribeCallback);
+        ArrayList<Category> categories = new ArrayList<>();
 
         fragment = CategoryFragment.newInstance(categories);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.vote_category_content, fragment)
                 .commit();
+
+        subscription = FirebasePollController.getPoll(pollId).subscribe(this::subscribeCallback);
+
+        FirebaseCategoriesTemplatesController.get()
+            .subscribe(firebaseCategories -> FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                for (FirebaseCategoryTemplate category : firebaseCategories) {
+                    categories.add(new Category(
+                            category.getName(),
+                            poll.getVoteCounts().get(category.getId()),
+                            poll.getVotedFor().get(facebookId).equals(category.getId()),
+                            category.getImageUrl(),
+                            category.getId()
+                        ));
+                }
+                fragment.categoriesChanged();
+        }));
     }
 
     private void subscribeCallback(FirebasePoll poll) {
@@ -168,10 +188,11 @@ public class VoteCategoryActivity extends AppCompatActivity
             return;
         }
         fragment.registerVote(item);
-        FirebasePoll poll = FirebasePollController.polls.get(pollId);
-        poll.voteCategory(item);
+        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+            poll.voteCategory(item);
 
-        Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
-                .show();
+            Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
+                    .show();
+        });
     }
 }

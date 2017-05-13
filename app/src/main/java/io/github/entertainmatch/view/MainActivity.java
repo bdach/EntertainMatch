@@ -23,6 +23,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
@@ -30,7 +33,6 @@ import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
@@ -40,7 +42,7 @@ import io.github.entertainmatch.notifications.NotificationService;
 import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
-import rx.Observable;
+import rx.Subscription;
 
 /**
  * The main screen of the application. Displays lists of events and polls.
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.nav_view)
     NavigationView navigationView;
 
+    private List<Subscription> subscriptions = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,32 +122,24 @@ public class MainActivity extends AppCompatActivity
         populateUserData(FacebookUsers.getCurrentUser(this));
 
         // grab user from firebase (initially to fetch polls)
-        FirebaseUserController.getUserOnce(FacebookUsers.getCurrentUser(this).facebookId)
-            .subscribe(firebasePerson -> {
-                if (firebasePerson == null) return;
-
-                for (Observable<FirebasePoll> poll : FirebasePollController.getPollsOnceForUser(firebasePerson)) {
-                    poll.subscribe(firebasePoll -> {
-
-                        FirebasePollController.polls.put(firebasePoll.getPollId(), firebasePoll);
-                        pollFragment.addPoll(new Poll(
-                                firebasePoll.getName(),
-                                PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
-                                firebasePoll.getParticipants(), // decide if we should store every person or just ids
-                                firebasePoll.getPollId()));
-
-                        FirebasePollController
-                            .getPoll(firebasePoll.getPollId())
-                            .subscribe(updatedPoll -> {
-                                FirebasePollController.polls.get(updatedPoll.getPollId()).update(updatedPoll);
-                                pollFragment.updatePolls();
-                            });
-                    });
-                }
-            });
+        subscriptions.add(FirebaseUserController.getPollsForUser(FacebookUsers.getCurrentUser(this).facebookId)
+            .subscribe(firebasePoll -> {
+                pollFragment.updatePoll(new Poll(
+                    firebasePoll.getName(),
+                    PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
+                    firebasePoll.getParticipants(),
+                    firebasePoll.getPollId()));
+            })
+        );
 
         if (!isMyServiceRunning(NotificationService.class))
             startService(new Intent(this, NotificationService.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        subscriptions.forEach(Subscription::unsubscribe);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -256,23 +252,7 @@ public class MainActivity extends AppCompatActivity
 
         // add poll to firebase, once added it should vote views of all users involved
         // and show notifications to them
-        Poll poll = FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, pollStub);
-        String pollId = poll.getPollId();
-
-        FirebasePollController.getPollOnce(pollId).subscribe(x -> {
-            FirebasePollController.polls.put(x.getPollId(), x);
-            pollFragment.addPoll(new Poll(
-                x.getName(),
-                new VoteCategoryStage(x.getPollId()),
-                poll.getMembers(),
-                x.getPollId()));
-        });
-
-        // subscribe for poll changes
-        FirebasePollController.getPoll(pollId).subscribe(updatedPoll -> {
-            Log.d("PollUpdate", "Updated!");
-            FirebasePollController.polls.get(updatedPoll.getPollId()).update(updatedPoll);
-        });
+        FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, pollStub);
     }
 
     /**
@@ -296,12 +276,5 @@ public class MainActivity extends AppCompatActivity
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(R.id.content_frame, fragment)
                 .commit();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        pollFragment.updatePolls();
     }
 }

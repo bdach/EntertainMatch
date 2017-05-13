@@ -21,13 +21,8 @@ public class VoteCategoryData implements Parcelable {
     @Getter
     private String pollId;
 
-    @Getter
-    private ArrayList<Category> categories;
-
     protected VoteCategoryData(Parcel in) {
         pollId = in.readString();
-        categories = new ArrayList<>();
-        in.readTypedList(categories, Category.CREATOR);
     }
 
     public static final Creator<VoteCategoryData> CREATOR = new Creator<VoteCategoryData>() {
@@ -50,6 +45,5 @@ public class VoteCategoryData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(pollId);
-        dest.writeTypedList(categories);
     }
 }

@@ -4,10 +4,12 @@ import java.util.*;
 
 import android.media.FaceDetector;
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.*;
+import io.github.entertainmatch.utils.DefaultHashMap;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,7 +50,7 @@ public class FirebasePoll {
     /**
      * Maps categoryId to number of votes
      */
-    private Map<String, Integer> voteCounts = new HashMap<>();
+    private HashMap<String, Integer> voteCounts = new HashMap<>();
 
     /**
      * Maps facebookId to categoryId that given user voted for.
@@ -90,8 +92,9 @@ public class FirebasePoll {
         HashMap<String, HashMap<String, Boolean>> eventDatesStatus = new HashMap<>();
         HashMap<String, Boolean> going = new HashMap<>();
 
-        for (Category category : VoteCategoryStage.categoriesTemplates)
+        for (Category category : FirebaseCategoriesTemplatesController.getCached()) {
             voteCounts.put(category.getId(), 0);
+        }
 
         for (String facebookId : membersFacebookIds)
         {

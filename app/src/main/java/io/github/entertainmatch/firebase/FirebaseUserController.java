@@ -43,18 +43,6 @@ public class FirebaseUserController {
     }
 
     /**
-     * Retrieves observables for all polls of the user.
-     * TODO: Not too handy to use probably
-     * @param firebaseUser User to get poll information for
-     * @return Observables of polls for given user
-     */
-    public static List<Observable<FirebasePoll>> getPollsForUser(FirebaseUser firebaseUser) {
-        return ListExt.map(new ArrayList<>(firebaseUser.getPolls().keySet()),
-                pollId -> RxFirebaseDatabase.observeValueEvent(ref.child(pollId),
-                        FirebasePoll.class));
-    }
-
-    /**
      * Adds poll for a user
      * @param pollId Id of new poll to add for all the users.
      * @param membersFacebookIds Facebook ids of members
@@ -76,6 +64,16 @@ public class FirebaseUserController {
         return RxFirebaseDatabase.observeSingleValueEvent(
                 ref.child(facebookId),
                 FirebaseUser.class);
+    }
+
+    /**
+     * Observes any poll in which user takes part
+     * @param facebookId User's facebook ID
+     * @return Observable Observable of polls with given user
+     */
+    public static Observable<FirebasePoll> getPollsForUser(String facebookId) {
+        return RxFirebaseDatabase.observeValueEvent(ref.child(facebookId), FirebaseUser.class)
+            .flatMap(user -> Observable.merge(FirebasePollController.getPollsForUser(user)));
     }
 
     /**

@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.PollStageFactory;
-import io.github.entertainmatch.view.LoginActivity;
 
 /**
  * Created by Adrian Bednarz on 5/10/17.
@@ -37,8 +36,7 @@ public class Notifications {
 
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                .setSmallIcon(R.drawable.app_icon)
-                .setSmallIcon(R.drawable.app_icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(title)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true); // hide on click
