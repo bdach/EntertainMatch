@@ -80,8 +80,8 @@ public class Person implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
         dest.writeString(facebookId);
+        dest.writeString(name);
         dest.writeInt(profilePictureSet ? 1 : 0);
         dest.writeString(profilePictureUrl);
     }

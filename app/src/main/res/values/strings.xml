@@ -60,18 +60,15 @@
         be chosen.
     </string>
     <string name="vote_event_item_discarded">Discarded %s from the list</string>
-<<<<<<< HEAD
     <string name="date_notification">Thank you for your votes. We will inform you once everyone make decision.</string>
     <string name="results_stage_message">Choosing date has been finished! Moving to results stage.</string>
     <string name="already_voted">You have already voted!</string>
     <string name="going_positive">Have a great time!</string>
     <string name="going_negative">Sorry to hear that :(</string>
-=======
     <string name="concert_event_band_members">Band members</string>
     <string name="concert_event_last_album">Last released album</string>
     <string name="play_event_duration">Duration</string>
     <string name="play_event_costumes">Costumes</string>
     <string name="play_event_scenography">Scenography</string>
     <string name="view_participants">View participants</string>
->>>>>>> master
 </resources>

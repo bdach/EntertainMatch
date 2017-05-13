@@ -10,6 +10,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
@@ -57,10 +58,11 @@ public class FirebaseUserController {
      * Adds poll for a user
      * @param pollId Id of new poll to add for all the users.
      * @param membersFacebookIds Facebook ids of members
+     * @param creatorUserId Poll creator facebookId
      */
-    public static void addPoll(String pollId, List<String> membersFacebookIds) {
+    public static void addPoll(String pollId, List<String> membersFacebookIds, String creatorUserId) {
         for (String facebookId : membersFacebookIds) {
-            ref.child(facebookId).child("polls").child(pollId).setValue(true);
+            ref.child(facebookId).child("polls").child(pollId).setValue(!facebookId.equals(creatorUserId));
         }
     }
 

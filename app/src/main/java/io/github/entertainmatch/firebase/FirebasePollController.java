@@ -56,7 +56,8 @@ public class FirebasePollController {
         // delegate person controller to vote people
         FirebaseUserController.addPoll(
                 firebasePollRef.getKey(),
-                firebasePoll.getParticipants());
+                firebasePoll.getParticipants(),
+                facebookHostId);
 
         // return poll id
         String pollId = firebasePollRef.getKey();

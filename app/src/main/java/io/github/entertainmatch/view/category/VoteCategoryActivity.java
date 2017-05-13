@@ -95,6 +95,12 @@ public class VoteCategoryActivity extends AppCompatActivity
             popupMenu.show();
             return true;
         }
+
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -133,16 +139,6 @@ public class VoteCategoryActivity extends AppCompatActivity
                 })
                 .show();
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
