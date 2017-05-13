@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseEventDate;
@@ -97,6 +98,7 @@ public class FirebasePollController {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 MutableData voteCountsRef = mutableData.child("voteCounts");
+                HashMap<String, Long> voteCountsMap = (HashMap<String, Long>)voteCountsRef.getValue();
                 voteCountsRef.child(itemId).setValue(voteCountsRef.child(itemId).getValue(Long.class) + 1);
 
                 MutableData votedForRef = mutableData.child("votedFor");
@@ -106,8 +108,27 @@ public class FirebasePollController {
 
                 // check next stage
                 if (HashMapExt.all(votedFor, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
-                    mutableData.child("stage").setValue(VoteEventStage.class.toString());
-                    mutableData.child("chosenCategory").setValue(getWinningCategory(voteCountsRef.getValue()));
+                    List<String> winningCategories = getWinningCategory(voteCountsRef.getValue());
+                    // reduce problem size
+                    if (winningCategories.size() == voteCountsMap.size()) {
+                        winningCategories.remove(new Random().nextInt(winningCategories.size()));
+                    }
+
+                    if (winningCategories.size() == 1) {
+                        mutableData.child("stage").setValue(VoteEventStage.class.toString());
+                        mutableData.child("chosenCategory").setValue(getWinningCategory(voteCountsRef.getValue()).get(0));
+                    } else {
+                        for (Category category : FirebaseCategoriesTemplatesController.getCached()) {
+                            if (!winningCategories.contains(category.getId())) {
+                                mutableData.child("voteCounts").child(category.getId()).setValue(null);
+                            } else {
+                                mutableData.child("voteCounts").child(category.getId()).setValue(0);
+                            }
+                        }
+                        for (MutableData votedForReset : mutableData.child("votedFor").getChildren()) {
+                            votedForReset.setValue(FirebasePoll.NO_USER_VOTE);
+                        }
+                    }
                 }
 
                 return Transaction.success(mutableData);
@@ -120,9 +141,8 @@ public class FirebasePollController {
         });
     }
 
-    private static String getWinningCategory(Object value) {
+    private static List<String> getWinningCategory(Object value) {
         HashMap<String, Long> voteCounts = (HashMap<String, Long>) value;
-        // TODO ties
         return HashMapExt.getMax(voteCounts);
     }
 

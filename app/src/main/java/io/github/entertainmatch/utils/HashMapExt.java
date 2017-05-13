@@ -2,8 +2,10 @@ package io.github.entertainmatch.utils;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Adrian Bednarz on 5/6/17.
@@ -20,12 +22,15 @@ public class HashMapExt {
         return true;
     }
 
-    public static <T> T getMax(HashMap<T, Long> tally) {
-        T max = null;
+    public static <T> List<T> getMax(HashMap<T, Long> tally) {
+        List<T> max = new ArrayList<>();
         Long maxCount = Long.MIN_VALUE;
         for (HashMap.Entry<T, Long> entry : tally.entrySet()) {
             if (entry.getValue() > maxCount) {
-                max = entry.getKey();
+                max.clear();
+            }
+            if (entry.getValue() >= maxCount) {
+                max.add(entry.getKey());
                 maxCount = entry.getValue();
             }
         }

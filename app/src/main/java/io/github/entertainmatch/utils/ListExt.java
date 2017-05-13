@@ -1,7 +1,9 @@
 package io.github.entertainmatch.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.entertainmatch.model.Category;
 
@@ -49,5 +51,13 @@ public class ListExt {
         int len = Math.min(lhs.size(), rhs.size());
         for (int i = 0; i < len; i++)
             action.perform(lhs.get(i), rhs.get(i));
+    }
+
+    public static <K, V> Map<K, V> toMap(List<V> elements, Function<V, K> selector) {
+        Map<K, V> result = new HashMap<>();
+        for (V elem : elements) {
+            result.put(selector.apply(elem), elem);
+        }
+        return result;
     }
 }

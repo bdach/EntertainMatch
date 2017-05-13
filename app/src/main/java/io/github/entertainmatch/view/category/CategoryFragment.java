@@ -9,11 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.utils.HashMapExt;
+import io.github.entertainmatch.utils.ListExt;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A fragment used to display a list of {@link Category} items to select from.
@@ -109,11 +114,23 @@ public class CategoryFragment extends Fragment {
     /**
      * Updates category counts with new data supplied by Firebase
      * @param categoryToCount
+     * @param votedFor
      */
-    public void updateCategories(Map<String, Integer> categoryToCount) {
+    public void updateCategories(Map<String, Integer> categoryToCount, Map<String, String> votedFor) {
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+
         for (Category category : categories) {
             category.setVoteCount(categoryToCount.get(category.getId()));
+            category.setVotedFor(facebookId.equals(votedFor.get(category.getId())));
         }
+
+        if (!ListExt.any(categories, Category::isVotedFor)) {
+            adapter.setCanVote(true);
+        }
+
+        Set<String> existingIds = categoryToCount.keySet();
+        categories.removeIf(category -> !existingIds.contains(category.getId()));
+
         adapter.notifyDataSetChanged();
     }
 

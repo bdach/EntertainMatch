@@ -129,25 +129,25 @@ public class VoteCategoryActivity extends AppCompatActivity
 
         subscription = FirebasePollController.getPoll(pollId).subscribe(this::subscribeCallback);
 
-        FirebaseCategoriesTemplatesController.get()
-            .subscribe(firebaseCategories -> FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                for (FirebaseCategoryTemplate category : firebaseCategories) {
+        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                for (String category : poll.getVoteCounts().keySet()) {
+                    Category template = FirebaseCategoriesTemplatesController.getCachedMap().get(category);
                     categories.add(new Category(
-                            category.getName(),
-                            poll.getVoteCounts().get(category.getId()),
-                            poll.getVotedFor().get(facebookId).equals(category.getId()),
-                            category.getImageUrl(),
-                            category.getId()
+                            template.getName(),
+                            poll.getVoteCounts().get(template.getId()),
+                            poll.getVotedFor().get(facebookId).equals(template.getId()),
+                            template.getImageUrl(),
+                            template.getId()
                         ));
                 }
                 fragment.categoriesChanged();
-        }));
+        });
     }
 
     private void subscribeCallback(FirebasePoll poll) {
         participants = poll.getParticipants();
         if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
-            fragment.updateCategories(poll.getVoteCounts());
+            fragment.updateCategories(poll.getVoteCounts(), poll.getVotedFor());
         } else {
             Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {

@@ -18,6 +18,7 @@ import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.category.CategoryFragment.OnCategorySelectedListener;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
      * The {@link OnCategorySelectedListener} to be notified of {@link Category} selections.
      */
     private final OnCategorySelectedListener listener;
+
+    @Setter
     private boolean canVote = true;
 
     @Override
@@ -124,6 +127,8 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
             titleView.setText(category.getName());
             if (category.isVotedFor()) {
                 labelLayout.setBackgroundResource(R.color.colorAccentShade);
+            } else {
+                labelLayout.setBackgroundResource(R.color.colorShade);
             }
         }
 

@@ -6,10 +6,13 @@ import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.utils.HashMapExt;
 import lombok.Getter;
 import lombok.Setter;
 import rx.Observable;
@@ -36,6 +39,12 @@ public class FirebaseCategoriesTemplatesController {
     @Getter
     @Setter
     static List<Category> cached = new ArrayList<>();
+    /**
+     * Since these templates are not going to change, they are cached and loaded on startup.
+     */
+    @Getter
+    @Setter
+    static Map<String, Category> cachedMap = new HashMap<>();
 
     /**
      * Grabs user all category templates from firebase.
