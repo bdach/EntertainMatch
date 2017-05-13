@@ -2,14 +2,10 @@ package io.github.entertainmatch.firebase.models;
 
 import java.util.*;
 
-import android.media.FaceDetector;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
-import io.github.entertainmatch.firebase.FirebaseController;
-import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.*;
-import io.github.entertainmatch.utils.DefaultHashMap;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

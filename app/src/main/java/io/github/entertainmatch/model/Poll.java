@@ -92,4 +92,8 @@ public class Poll implements Parcelable {
     public String stageName() {
         return pollStage.getClass().toString();
     }
+
+    public void update(Poll that) {
+        this.pollStage = that.pollStage;
+    }
 }

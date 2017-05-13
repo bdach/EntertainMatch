@@ -72,9 +72,14 @@ public class PollFragment extends Fragment {
         listener = null;
     }
 
+    /**
+     * Either adds poll to the view or updates existing
+     * @param poll Updated or new poll
+     */
     public void updatePoll(Poll poll) {
         if (pollMap.containsKey(poll.getPollId())) {
             Pair<Integer, Poll> pair = pollMap.get(poll.getPollId());
+            pair.second.update(poll);
             adapter.notifyItemChanged(pair.first);
         } else {
             Pair<Integer, Poll> pair = Pair.create(polls.size(), poll);
