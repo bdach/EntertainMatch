@@ -32,7 +32,7 @@ public class VoteCategoryStage implements PollStage {
 
     public VoteCategoryStage(String pollId) {
         this.pollId = pollId;
-        // update categories only if poll already exists
+        // voteCategory categories only if poll already exists
         FirebasePoll poll = FirebasePollController.polls.get(pollId);
         if (poll != null) {
             ListExt.forEach(categories, poll::setValues);

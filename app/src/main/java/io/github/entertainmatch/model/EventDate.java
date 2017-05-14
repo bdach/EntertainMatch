@@ -3,8 +3,11 @@ package io.github.entertainmatch.model;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.*;
 
@@ -12,9 +15,17 @@ import java.util.*;
  * @author Bartlomiej Dach
  * @since 09.04.17
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 public class EventDate implements Parcelable {
+    /**
+     * Identifier of this event date in Firebase
+     */
+    private final String id;
+    /**
+     * Identifier of location
+     */
+    private final String locationId;
     /**
      * Name of the location where the event takes place.
      */
@@ -31,12 +42,20 @@ public class EventDate implements Parcelable {
      * The date on which the event is to take place.
      */
     private final Date date;
+    /**
+     * Flag that represents status of an event
+     */
+    @Setter
+    private boolean selected;
 
     protected EventDate(Parcel in) {
+        id = in.readString();
+        locationId = in.readString();
         place = in.readString();
         lat = in.readDouble();
         lon = in.readDouble();
         date = (Date) in.readSerializable();
+        selected = in.readInt() != 0;
     }
 
     public static final Creator<EventDate> CREATOR = new Creator<EventDate>() {
@@ -58,25 +77,34 @@ public class EventDate implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(locationId);
         dest.writeString(place);
         dest.writeDouble(lat);
         dest.writeDouble(lon);
         dest.writeSerializable(date);
+        dest.writeInt(selected ? 1 : 0);
     }
 
     public static List<EventDate> mockData() {
         return Arrays.asList(
                 new EventDate(
+                        "_0",
+                        "_0",
                         "Cinema City Warszawa, Galeria Mokotów",
                         52.179182,
                         21.004422,
-                        new Date(2017 - 1900, 4, 9, 19, 40, 0)
+                        new Date(2017 - 1900, 4, 9, 19, 40, 0),
+                        false
                 ),
                 new EventDate(
+                        "_1",
+                        "_1",
                         "Cinema City Warszawa, Sadyba",
                         52.187350,
                         21.061075,
-                        new Date(2017 - 1900, 4, 9, 21, 40, 0)
+                        new Date(2017 - 1900, 4, 9, 21, 40, 0),
+                        false
                 )
         );
     }

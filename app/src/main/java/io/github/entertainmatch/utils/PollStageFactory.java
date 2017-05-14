@@ -18,9 +18,9 @@ public class PollStageFactory {
         else if (stage.equals(VoteEventStage.class.toString()))
             return new VoteEventStage(pollId);
         else if (stage.equals(VoteDateStage.class.toString()))
-            return new VoteDateStage();
+            return new VoteDateStage(pollId);
         else if (stage.equals(VoteResultStage.class.toString()))
-            return new VoteResultStage();
+            return new VoteResultStage(pollId);
 
         throw new UnsupportedOperationException("Unsupported stage");
     }

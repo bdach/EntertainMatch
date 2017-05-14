@@ -1,6 +1,7 @@
 package io.github.entertainmatch.view.date;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,10 @@ import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.view.date.DateFragment.OnDateSelectedListener;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -23,17 +27,23 @@ import java.util.Locale;
 /**
  * Adapter for {@link EventDate} objects.
  */
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerViewAdapter.ViewHolder> {
 
     /**
      * The list of all {@link EventDate} objects to be displayed.
      */
-    private final List<EventDate> dates;
+    private List<EventDate> dates;
     /**
      * The {@link OnDateSelectedListener} to notify.
      */
-    private final OnDateSelectedListener listener;
+    private OnDateSelectedListener listener;
+    /**
+     * Flag used to specify whether adapter items may change during this period.
+     * After pressing confirm button it should not be possible to edit items.
+     */
+    @Setter
+    private boolean isEditable;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -107,8 +117,15 @@ public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerVi
                     .format(item.getDate());
             dateText.setText(date);
             locationText.setText(item.getPlace());
+            checkBox.setChecked(item.isSelected());
 
-            view.setOnClickListener(v -> checkBox.toggle());
+            view.setOnClickListener(v -> {
+                if (!isEditable)
+                    return;
+
+                checkBox.toggle();
+                listener.onDateToggle(item, checkBox.isChecked());
+            });
         }
     }
 }

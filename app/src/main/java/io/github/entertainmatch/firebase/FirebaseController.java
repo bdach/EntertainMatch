@@ -1,22 +1,17 @@
 package io.github.entertainmatch.firebase;
 
-import android.graphics.Movie;
 import android.util.Log;
-
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
-
-import java.util.List;
-
-import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import rx.Observable;
+
+import java.util.List;
 
 /**
  * Created by Adrian Bednarz on 4/12/17.
@@ -60,8 +55,20 @@ public class FirebaseController {
     }
 
     public static Observable<List<? extends Event>> getEventsObservable(String chosenCategory) {
+        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
+
+        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
+    }
+
+    public static Observable<? extends Event> getEventSingle(String chosenCategory, String victoriousEvent) {
+        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
+        Log.d("XDD", chosenCategory + " " + victoriousEvent);
+        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory).child(victoriousEvent), eventClass);
+    }
+
+    private static Class<? extends Event> getClassForCategory(String category) {
         Class<? extends Event> eventClass;
-        switch (chosenCategory) {
+        switch (category) {
             case "movies":
                 eventClass = MovieEvent.class;
                 break;
@@ -77,6 +84,6 @@ public class FirebaseController {
             default:
                 throw new IllegalArgumentException("This type of category has not been implemented yet");
         }
-        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
+        return eventClass;
     }
 }

@@ -1,6 +1,9 @@
 package io.github.entertainmatch.model;
 
 import android.os.Parcelable;
+
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,4 +18,5 @@ public abstract class Event implements Parcelable {
     protected String title;
     protected String drawableUri;
     protected String description;
+    protected List<String> locationIds;
 }

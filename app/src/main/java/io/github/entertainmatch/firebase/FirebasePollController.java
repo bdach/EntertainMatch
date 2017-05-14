@@ -1,10 +1,5 @@
 package io.github.entertainmatch.firebase;
 
-import android.content.Intent;
-import android.hardware.Camera;
-import android.util.Log;
-
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,17 +9,20 @@ import com.google.firebase.database.Transaction;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.entertainmatch.firebase.models.FirebaseCategory;
+import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.models.FirebaseEventDate;
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
+import rx.subjects.PublishSubject;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -133,6 +131,9 @@ public class FirebasePollController {
                 eventVotesRef.setValue(eventVotes);
                 if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
                     mutableData.child("stage").setValue(VoteDateStage.class.toString());
+
+                    mutableData.child("victoriousEvent").setValue(HashMapExt.mostFrequent(eventVotes));
+                    FirebaseEventDateController.setup(FirebasePollController.polls.get(pollId), HashMapExt.mostFrequent(eventVotes));
                 }
                 return Transaction.success(mutableData);
             }
@@ -146,5 +147,125 @@ public class FirebasePollController {
 
     public static Observable<FirebasePoll> getPollOnce(String pollId) {
         return RxFirebaseDatabase.observeSingleValueEvent(ref.child(pollId), FirebasePoll.class);
+    }
+
+    /**
+     * Initializes location flags for user in poll object in firebase
+     * @param pollId Current poll
+     * @param locationId Current location
+     * @param participantId User id to set values for
+     */
+    public static void setupDateStageForUser(String pollId, String locationId, String participantId) {
+        DatabaseReference eventDatesRef = ref.child(pollId).child("eventDatesStatus");
+
+        eventDatesRef.child(locationId).child(participantId).setValue(false);
+        eventDatesRef.child("voted").child(participantId).setValue(false);
+    }
+
+    /**
+     * Registers user attitude to take part in an event at the given time and place
+     * @param pollId Current poll
+     * @param locationId Current location
+     * @param facebookId Current user id
+     * @param selection Whether user wants to go at given date
+     */
+    public static void chooseDate(String pollId, String locationId, String facebookId, Boolean selection) {
+        DatabaseReference eventDatesRef = ref.child(pollId).child("eventDatesStatus");
+
+        eventDatesRef.child(locationId)
+            .child(facebookId)
+            .setValue(selection);
+    }
+
+    /**
+     * Notify database that user has finished voting
+     * @param pollId Current poll id
+     * @param facebookId Current user id
+     */
+    public static void dateVotingFinished(String pollId, String facebookId) {
+        ref.child(pollId).child("eventDatesStatus")
+            .child("voted")
+            .child(facebookId)
+            .setValue(true);
+
+        checkDateVotingMoveToNextStage(pollId);
+    }
+
+    /**
+     * Checks whether its time to move to next stage.
+     * TODO: not sure if there won't be any races between users
+     * @param pollId Current poll
+     */
+    private static void checkDateVotingMoveToNextStage(String pollId) {
+        ref.child(pollId).child("eventDatesStatus").child("voted").runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                for (MutableData facebookIdToVoted : mutableData.getChildren()) {
+                   if (facebookIdToVoted.getValue() == Boolean.FALSE) {
+                       return Transaction.success(mutableData);
+                   }
+                }
+
+                ref.child(pollId).child("stage").setValue(VoteResultStage.class.toString());
+
+                HashMap<String, Long> locationToCounts = new HashMap<>();
+                FirebasePoll poll = FirebasePollController.polls.get(pollId);
+                poll.getEventDatesStatus().forEach((locationId, facebookIdToChosen) -> {
+                    long votes = 0L;
+                    for (Boolean chosen : facebookIdToChosen.values()) {
+                        votes += chosen ? 1 : 0;
+                    }
+
+                    locationToCounts.put(locationId, votes);
+                });
+
+                ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts));
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
+    }
+
+    /**
+     * Collects location information about chosen event
+     * Used in date stage
+     * @param pollId Poll to get information about
+     * @return Observable with retrieved event dates. It provides data once in sense that it will incrementally return the same list.
+     */
+    public static Observable<List<EventDate>> getLocations(String pollId) {
+        FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+
+        return FirebaseEventDateController.getEventDatesSingle(poll.getChosenCategory(), poll.getVictoriousEvent()).flatMap(eventDates -> {
+            List<EventDate> results = new ArrayList<>();
+            PublishSubject<List<EventDate>> observable = PublishSubject.create();
+
+            for (FirebaseEventDate eventDate : eventDates.values()) {
+                FirebaseLocationsController.getLocationOnce(eventDate.getLocationId()).subscribe(location -> {
+                    results.add(new EventDate(
+                        eventDate.getEventId(),
+                        location.getId(),
+                        location.getPlace(),
+                        location.getLat(),
+                        location.getLat(),
+                        new Date(eventDate.getDate()),
+                        poll.getEventDatesStatus()
+                                .get(location.getId())
+                                .get(facebookId)));
+
+                    observable.onNext(results);
+                });
+            }
+
+            return observable;
+        });
+    }
+
+    public static void setIsGoing(String pollId, String facebookId, boolean going) {
+        ref.child(pollId).child("going").child(facebookId).setValue(going);
     }
 }
