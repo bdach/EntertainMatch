@@ -1,7 +1,7 @@
 package io.github.entertainmatch.view.main;
 
+import android.content.Context;
 import android.content.res.Resources;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.login.widget.ProfilePictureView;
@@ -66,6 +65,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
      * The {@link RecyclerView.ViewHolder} for {@link Poll} items.
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private static final int MAX_AVATARS = 3;
         /**
          * The root view of the item.
          */
@@ -100,15 +100,46 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             nameView.setText(poll.getName());
             statusView.setText(poll.getPollStage().getStageStringId());
             memberAvatarLayout.removeAllViews();
-            for (Person person : poll.getMembers()) {
+            Integer counter = 0;
+            Person[] members = poll.getMembers();
+            for (Person person : members) {
+                if (counter >= MAX_AVATARS) {
+                    PlusFragment plusFragment = PlusFragment.newInstance(members.length - MAX_AVATARS);
+                    listener.getContext()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.member_avatars, plusFragment)
+                            .commit();
+                    break;
+                }
                 addMemberAvatar(person);
+                counter++;
             }
+        }
+
+        private void addPlusCircle(Integer plus) {
+            Context context = listener.getContext();
+            Resources resources = listener.getContext().getResources();
+            int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.com_facebook_profilepictureview_preset_size_small);
+            TextView textView = new TextView(context);
+            textView.setText("+" + plus.toString());
+            textView.setWidth(dimensionPixelSize);
+            textView.setHeight(dimensionPixelSize);
+            textView.setBackgroundResource(R.drawable.plus_circle);
+            textView.setTextColor(resources.getColor(R.color.colorTintPrimary));
+            LinearLayout.LayoutParams paramsWithMargin = getParamsWithMargin();
+            memberAvatarLayout.addView(textView, paramsWithMargin);
         }
 
         public void addMemberAvatar(Person personId) {
             ProfilePictureView pictureView = new CircularProfilePictureView(listener.getContext());
             pictureView.setProfileId(personId.getFacebookId());
             pictureView.setPresetSize(ProfilePictureView.SMALL);
+            LinearLayout.LayoutParams params = getParamsWithMargin();
+            memberAvatarLayout.addView(pictureView, params);
+        }
+
+        private LinearLayout.LayoutParams getParamsWithMargin() {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             Resources r = listener.getContext().getResources();
@@ -118,7 +149,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
                     r.getDisplayMetrics()
             );
             params.setMargins(px, px, px, px);
-            memberAvatarLayout.addView(pictureView, params);
+            return params;
         }
     }
 }

@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public Context getContext() {
+    public AppCompatActivity getContext() {
         return this;
     }
 

@@ -67,4 +67,5 @@
     <string name="play_event_scenography">Scenography</string>
     <string name="view_participants">View participants</string>
     <string name="poll_view_progress">View progress</string>
+    <string name="list_of_participants">List of participants</string>
 </resources>

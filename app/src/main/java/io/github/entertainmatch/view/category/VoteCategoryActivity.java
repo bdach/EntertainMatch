@@ -1,7 +1,9 @@
 package io.github.entertainmatch.view.category;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -23,6 +25,7 @@ import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.view.MainActivity;
+import io.github.entertainmatch.view.ParticipantList;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ public class VoteCategoryActivity extends AppCompatActivity
      * Subscription object used to notify view about poll changes.
      */
     private Subscription subscription;
-    private List<String> participants;
+    private ParticipantList participantList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,14 +87,9 @@ public class VoteCategoryActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.show_participants) {
-            View menuItemView = findViewById(R.id.show_participants);
-            PopupMenu popupMenu = new PopupMenu(this, menuItemView);
-            Menu menu = popupMenu.getMenu();
-            for (String participantId : participants) {
-                menu.add(participantId);
-            }
-            popupMenu.show();
+        if (item.getItemId() == R.id.show_participants && participantList != null) {
+            AlertDialog dialog = participantList.getDialog();
+            dialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -118,7 +116,8 @@ public class VoteCategoryActivity extends AppCompatActivity
     }
 
     private void subscribeCallback(FirebasePoll poll) {
-        participants = poll.getParticipants();
+        participantList = new ParticipantList(this, poll);
+        participantList.fetchNames();
         if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
             fragment.updateCategories(poll.getVoteCounts());
         } else {

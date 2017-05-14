@@ -4,11 +4,15 @@ import android.os.Bundle;
 import android.util.Log;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
+import com.facebook.HttpMethod;
 import io.github.entertainmatch.model.Person;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Bartlomiej Dach
@@ -21,6 +25,21 @@ public class FriendsProvider {
         Bundle params = new Bundle();
         params.putString("fields", "name,id,picture");
         return request;
+    }
+
+    public static List<GraphRequest> getFriendsById(List<String> ids, GraphRequest.Callback callback) {
+        List<GraphRequest> requests = new ArrayList<>();
+        for (String id : ids) {
+            GraphRequest request = new GraphRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    "/" + id,
+                    null,
+                    HttpMethod.GET,
+                    callback
+            );
+            requests.add(request);
+        }
+        return requests;
     }
 
     public static ArrayList<Person> arrayFromJson(JSONArray friends) {
