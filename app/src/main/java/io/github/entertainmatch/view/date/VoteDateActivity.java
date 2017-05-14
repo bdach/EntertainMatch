@@ -1,5 +1,6 @@
 package io.github.entertainmatch.view.date;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.hardware.camera2.params.Face;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.ListExt;
+import io.github.entertainmatch.view.ParticipantList;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -45,6 +47,7 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
 
     private String pollId;
     private DateFragment dateFragment;
+    private ParticipantList participantList;
 
     /**
      * Keeps track whether next stage is ready.
@@ -57,6 +60,8 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         super.onStart();
 
         changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
+            participantList = new ParticipantList(this, poll);
+            participantList.fetchNames();
             if (poll.getStage().equals(VoteResultStage.class.toString())) {
                 Snackbar.make(coordinatorLayout, R.string.results_stage_message, Snackbar.LENGTH_LONG)
                         .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -143,6 +148,11 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
             );
 
             Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG).show();
+            return true;
+        }
+        if (item.getItemId() == R.id.show_participants && participantList != null) {
+            AlertDialog dialog = participantList.getDialog();
+            dialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);

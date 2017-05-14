@@ -1,11 +1,15 @@
 package io.github.entertainmatch.view.result;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +29,7 @@ import io.github.entertainmatch.firebase.FirebaseLocationsController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.VoteResultStage;
+import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
 
@@ -46,6 +51,8 @@ public class VoteResultActivity extends AppCompatActivity {
 
     private String pollId;
     private String facebookId;
+
+    private ParticipantList participantList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,8 @@ public class VoteResultActivity extends AppCompatActivity {
 
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
         FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        participantList = new ParticipantList(this, poll);
+        participantList.fetchNames();
         FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
             eventPlace.setText(location.getPlace());
         });
@@ -119,6 +128,23 @@ public class VoteResultActivity extends AppCompatActivity {
                 finish();
             }
         }).show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.default_vote_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.show_participants && participantList != null) {
+            AlertDialog dialog = participantList.getDialog();
+            dialog.show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void bindData() {
