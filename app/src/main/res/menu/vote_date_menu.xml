@@ -5,4 +5,9 @@
           android:title="@string/confirm_vote"
           app:showAsAction="always" />
 
+    <item android:id="@+id/show_participants"
+          app:showAsAction="ifRoom"
+          android:title="@string/view_participants"
+          android:icon="@drawable/ic_group_black_24dp" />
+
 </menu>

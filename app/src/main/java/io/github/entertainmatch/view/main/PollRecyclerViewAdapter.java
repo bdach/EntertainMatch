@@ -1,7 +1,6 @@
 package io.github.entertainmatch.view.main;
 
 import android.content.res.Resources;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.login.widget.ProfilePictureView;
@@ -20,6 +18,7 @@ import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.view.CircularProfilePictureView;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +30,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
     /**
      * The list of polls to be displayed in the list.
      */
-    private final List<Poll> polls;
+    private final ArrayList<Poll> polls;
 
     /**
      * A {@link PollFragment.OnPollSelectedListener} to be notified of item selections.
@@ -52,7 +51,15 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
 
         holder.viewProgressButton.setOnClickListener(v -> {
             if (null != listener) {
-                listener.onPollSelected(holder.poll);
+                listener.viewPollProgress(holder.poll);
+            }
+        });
+        holder.deleteCompletedButton.setOnClickListener(v -> {
+            if (null != listener) {
+                listener.deletePoll(holder.poll);
+                int adapterPosition = holder.getAdapterPosition();
+                polls.remove(adapterPosition);
+                notifyItemRemoved(adapterPosition);
             }
         });
     }
@@ -66,6 +73,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
      * The {@link RecyclerView.ViewHolder} for {@link Poll} items.
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private static final int MAX_AVATARS = 3;
         /**
          * The root view of the item.
          */
@@ -84,6 +92,8 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         LinearLayout memberAvatarLayout;
         @BindView(R.id.poll_view_progress)
         Button viewProgressButton;
+        @BindView(R.id.poll_delete_completed)
+        Button deleteCompletedButton;
         /**
          * The backing {@link Poll} item.
          */
@@ -100,8 +110,21 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             nameView.setText(poll.getName());
             statusView.setText(poll.getPollStage().getStageStringId());
             memberAvatarLayout.removeAllViews();
-            for (Person person : poll.getMembers()) {
+            deleteCompletedButton.setVisibility(poll.getVotingComplete() ? View.VISIBLE : View.INVISIBLE);
+            Integer counter = 0;
+            Person[] members = poll.getMembers();
+            for (Person person : members) {
+                if (counter >= MAX_AVATARS) {
+                    PlusFragment plusFragment = PlusFragment.newInstance(members.length - MAX_AVATARS);
+                    listener.getContext()
+                            .getSupportFragmentManager()
+                            .beginTransaction()
+                            .add(R.id.member_avatars, plusFragment)
+                            .commit();
+                    break;
+                }
                 addMemberAvatar(person);
+                counter++;
             }
         }
 
@@ -109,6 +132,11 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             ProfilePictureView pictureView = new CircularProfilePictureView(listener.getContext());
             pictureView.setProfileId(personId.getFacebookId());
             pictureView.setPresetSize(ProfilePictureView.SMALL);
+            LinearLayout.LayoutParams params = getParamsWithMargin();
+            memberAvatarLayout.addView(pictureView, params);
+        }
+
+        private LinearLayout.LayoutParams getParamsWithMargin() {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
             Resources r = listener.getContext().getResources();
@@ -118,7 +146,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
                     r.getDisplayMetrics()
             );
             params.setMargins(px, px, px, px);
-            memberAvatarLayout.addView(pictureView, params);
+            return params;
         }
     }
 }

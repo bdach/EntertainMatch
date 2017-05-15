@@ -16,8 +16,6 @@ import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.MovieEvent;
 import io.github.entertainmatch.model.PlayEvent;
 import io.github.entertainmatch.model.StaffPickEvent;
-import io.github.entertainmatch.model.VoteCategoryStage;
-import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import rx.Observable;

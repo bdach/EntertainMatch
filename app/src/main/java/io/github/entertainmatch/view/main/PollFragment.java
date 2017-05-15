@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,6 +38,8 @@ public class PollFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // VERY ugly hack breaking shit at INCREDIBLY HIHG speed
+        setRetainInstance(true);
     }
 
     @Override
@@ -50,10 +53,10 @@ public class PollFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             adapter = new PollRecyclerViewAdapter(polls, listener);
             recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -98,7 +101,8 @@ public class PollFragment extends Fragment {
          *
          * @param poll The selected {@link Poll}.
          */
-        void onPollSelected(Poll poll);
-        Context getContext();
+        void viewPollProgress(Poll poll);
+        void deletePoll(Poll poll);
+        AppCompatActivity getContext();
     }
 }

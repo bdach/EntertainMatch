@@ -172,4 +172,8 @@ public class FirebasePoll {
         ListExt.zippedForeach(locationIds, selections, (l, s) -> FirebasePollController.chooseDate(pollId, l, facebookId, s));
         FirebasePollController.dateVotingFinished(pollId, facebookId);
     }
+
+    public boolean votingComplete(String userId) {
+        return going != null && going.containsKey(userId);
+    }
 }

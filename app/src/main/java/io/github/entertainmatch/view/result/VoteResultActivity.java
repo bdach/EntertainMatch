@@ -1,14 +1,17 @@
 package io.github.entertainmatch.view.result;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.*;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +28,7 @@ import io.github.entertainmatch.firebase.FirebaseLocationsController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.VoteResultStage;
+import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
 
@@ -47,6 +51,10 @@ public class VoteResultActivity extends AppCompatActivity {
     private String pollId;
     private String facebookId;
 
+    private RelativeLayout footer;
+
+    private ParticipantList participantList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,12 +74,19 @@ public class VoteResultActivity extends AppCompatActivity {
         buttonYes = (Button) findViewById(R.id.result_yes);
         buttonNo = (Button) findViewById(R.id.result_no);
 
+        footer = (RelativeLayout) findViewById(R.id.result_footer);
+
         //Intent intent = getIntent();
         //event = intent.getParcelableExtra(EVENT_KEY);
         //date = intent.getParcelableExtra(DATE_KEY);
 
+        facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+
+            footer.setVisibility(poll.votingComplete(facebookId) ? View.GONE : View.VISIBLE);
+            participantList = new ParticipantList(this, poll);
+            participantList.fetchNames();
 
             FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
                 eventPlace.setText(location.getPlace());
@@ -95,7 +110,6 @@ public class VoteResultActivity extends AppCompatActivity {
             });
         });
 
-        facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         buttonYes.setOnClickListener(v -> {
             buttonListener(true);
         });
@@ -123,6 +137,23 @@ public class VoteResultActivity extends AppCompatActivity {
                 }
             }).show();
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.default_vote_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.show_participants && participantList != null) {
+            AlertDialog dialog = participantList.getDialog();
+            dialog.show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void bindData() {

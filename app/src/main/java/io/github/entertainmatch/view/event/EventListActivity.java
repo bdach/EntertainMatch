@@ -1,5 +1,6 @@
 package io.github.entertainmatch.view.event;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,15 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
-import android.view.MenuItem;
 
 import com.squareup.picasso.Picasso;
 
@@ -34,6 +32,7 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.view.ParticipantList;
 import rx.Observable;
 import rx.Subscription;
 
@@ -76,6 +75,7 @@ public class EventListActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     private EventRecyclerViewAdapter adapter;
     private Subscription subscription;
+    private ParticipantList participantList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +114,8 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void stageFinishCallback(FirebasePoll firebasePoll) {
+        participantList = new ParticipantList(this, firebasePoll);
+        participantList.fetchNames();
         if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
             Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
                     .addCallback(new Snackbar.Callback() {
@@ -129,17 +131,22 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.default_vote_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. Use NavUtils to allow users
-            // to navigate up one level in the application structure. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
             NavUtils.navigateUpFromSameTask(this);
+            return true;
+        }
+        if (id == R.id.show_participants && participantList != null) {
+            AlertDialog dialog = participantList.getDialog();
+            dialog.show();
             return true;
         }
         return super.onOptionsItemSelected(item);

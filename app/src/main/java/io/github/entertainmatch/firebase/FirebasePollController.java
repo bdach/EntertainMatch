@@ -86,7 +86,7 @@ public class FirebasePollController {
 
         // return poll id
         String pollId = firebasePollRef.getKey();
-        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId);
+        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, false);
     }
 
     public static Observable<FirebasePoll> getPoll(String pollId) {

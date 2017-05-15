@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.utils.ListExt;
@@ -121,10 +123,11 @@ public class CategoryFragment extends Fragment {
 
         for (Category category : categories) {
             category.setVoteCount(categoryToCount.get(category.getId()));
-            category.setVotedFor(facebookId.equals(votedFor.get(category.getId())));
+            category.setVotedFor(category.getId().equals(votedFor.get(facebookId)));
         }
 
         if (!ListExt.any(categories, Category::isVotedFor)) {
+            Log.e("XDDD", String.valueOf(categories.size()));
             adapter.setCanVote(true);
         }
 
