@@ -1,49 +1,48 @@
 package io.github.entertainmatch.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.PollStageFactory;
+import io.github.entertainmatch.view.main.EventFragment;
 import io.github.entertainmatch.view.main.PollFragment;
+import io.github.entertainmatch.view.main.dummy.DummyContent;
+import io.github.entertainmatch.view.main.dummy.MainActivityPagerAdapter;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
 import rx.Observable;
+
+import java.util.Arrays;
 
 /**
  * The main screen of the application. Displays lists of events and polls.
  */
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-        PollFragment.OnPollSelectedListener {
+        implements PollFragment.OnPollSelectedListener,
+        EventFragment.OnEventSelectedListener {
 
     /**
      * Identification number for the request to start a new poll.
@@ -65,6 +64,10 @@ public class MainActivity extends AppCompatActivity
      */
     private PollFragment pollFragment;
     /**
+     * The fragment used to display the list of upcoming events.
+     */
+    private EventFragment eventFragment;
+    /**
      * The fragment used to display the settings menu.
      */
     private SettingsFragment settingsFragment;
@@ -81,17 +84,12 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    /**
-     * Drawer layout used to navigate between current polls and upcoming events.
-     */
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
 
-    /**
-     * The navigation view within the drawer layout.
-     */
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+    MainActivityPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,17 +99,16 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         FirebaseController.init();
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView.setNavigationItemSelectedListener(this);
-
-        settingsFragment = new SettingsFragment();
         pollFragment = new PollFragment();
-        setContentFragment(pollFragment);
-        populateUserData(FacebookUsers.getCurrentUser(this));
+        eventFragment = new EventFragment();
+        settingsFragment = new SettingsFragment();
+
+        pagerAdapter = new MainActivityPagerAdapter(
+                getSupportFragmentManager(),
+                Arrays.asList(pollFragment, eventFragment)
+        );
+        viewPager.setAdapter(pagerAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
         // grab user from firebase (initially to fetch polls)
         FirebaseUserController.getUserOnce(FacebookUsers.getCurrentUser(this).facebookId)
@@ -140,26 +137,12 @@ public class MainActivity extends AppCompatActivity
             });
     }
 
-    private void populateUserData(Person currentUser) {
-        LinearLayout headerView = (LinearLayout) navigationView.getHeaderView(0);
-        TextView userNameView = (TextView) headerView.findViewById(R.id.user_name);
-        ImageView avatarView = (ImageView) headerView.findViewById(R.id.user_avatar);
-        userNameView.setText(currentUser.getName());
-        Picasso.with(this)
-                .load(currentUser.getProfilePictureUrl())
-                .fit()
-                .into(avatarView);
-    }
-
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            fab.show();
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            super.onBackPressed();
-        }
+        fab.show();
+        tabLayout.setVisibility(View.VISIBLE);
+        viewPager.setVisibility(View.VISIBLE);
+        super.onBackPressed();
     }
 
     @Override
@@ -174,15 +157,18 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            fab.hide();
+            tabLayout.setVisibility(View.GONE);
+            viewPager.setVisibility(View.GONE);
             getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
                             android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                    .replace(R.id.content_frame, settingsFragment)
+                    .hide(pollFragment)
+                    .hide(eventFragment)
+                    .add(R.id.content_frame, settingsFragment)
                     .addToBackStack(SETTINGS_STACK_NAME)
                     .commit();
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            fab.hide();
             return true;
         }
         else if (id == R.id.logout) {
@@ -192,20 +178,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // TODO: handle content switch here
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.nav_ongoing_polls:
-
-        }
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     /**
@@ -269,23 +241,15 @@ public class MainActivity extends AppCompatActivity
         MainActivity.this.startActivityForResult(intent, NEW_POLL_REQUEST);
     }
 
-    /**
-     * Sets the contents of the main content {@link android.widget.FrameLayout} to the supplied {@link Fragment}.
-     *
-     * @param fragment The {@link Fragment} to set as the contents of the {@link android.widget.FrameLayout}.
-     */
-    private void setContentFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .replace(R.id.content_frame, fragment)
-                .commit();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
 
         pollFragment.updatePolls();
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+        // no-op
     }
 }

@@ -28,12 +28,14 @@ public class PollFragment extends Fragment {
      */
     private OnPollSelectedListener listener;
 
-    private ArrayList<Poll> polls = new ArrayList<>(Poll.mockData());
+    private ArrayList<Poll> polls = new ArrayList<>();
     private PollRecyclerViewAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // VERY ugly hack breaking shit at INCREDIBLY HIHG speed
+        setRetainInstance(true);
     }
 
     @Override
@@ -47,10 +49,10 @@ public class PollFragment extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             adapter = new PollRecyclerViewAdapter(polls, listener);
             recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -61,6 +63,7 @@ public class PollFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnPollSelectedListener");
         }
+        updatePolls();
     }
 
     @Override
@@ -71,14 +74,18 @@ public class PollFragment extends Fragment {
 
     public void addPoll(Poll poll) {
         polls.add(poll);
-        adapter.notifyItemInserted(polls.size() - 1);
+        if (adapter != null) {
+            adapter.notifyItemInserted(polls.size() - 1);
+        }
     }
 
     public void updatePolls() {
         for (Poll poll : polls) {
             poll.update();
         }
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     /**
