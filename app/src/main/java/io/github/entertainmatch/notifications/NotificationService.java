@@ -13,6 +13,8 @@ import com.google.firebase.database.ValueEventListener;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 
+import java.util.Map;
+
 /**
  * Created by Adrian Bednarz on 5/10/17.
  */
@@ -27,12 +29,12 @@ public class NotificationService extends IntentService {
             if (user == null)
                 return;
 
-            user.getPolls().forEach((pollId, isNew) -> {
-                if (isNew) {
-                    Log.d("NotificationsService", pollId);
-                    Notifications.notifyPollStarted(this, pollId);
+            for (Map.Entry<String, Boolean> entry : user.getPolls().entrySet()) {
+                if (entry.getValue()) {
+                    Log.d("NotificationsService", entry.getKey());
+                    Notifications.notifyPollStarted(this, entry.getKey());
                 }
-            });
+            }
 
             FirebaseUserController.makePollsOldForUser(facebookId, user);
         });

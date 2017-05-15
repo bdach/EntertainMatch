@@ -115,17 +115,18 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             Person[] members = poll.getMembers();
             for (Person person : members) {
                 if (counter >= MAX_AVATARS) {
-                    PlusFragment plusFragment = PlusFragment.newInstance(members.length - MAX_AVATARS);
-                    listener.getContext()
-                            .getSupportFragmentManager()
-                            .beginTransaction()
-                            .add(R.id.member_avatars, plusFragment)
-                            .commit();
+                    addPlus(members.length - MAX_AVATARS);
                     break;
                 }
                 addMemberAvatar(person);
                 counter++;
             }
+        }
+
+        private void addPlus(int count) {
+            PlusView plusView = new PlusView(listener.getContext(), count);
+            LinearLayout.LayoutParams params = getParamsWithMargin();
+            memberAvatarLayout.addView(plusView, params);
         }
 
         public void addMemberAvatar(Person personId) {

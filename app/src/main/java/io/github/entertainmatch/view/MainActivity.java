@@ -4,7 +4,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -33,6 +35,7 @@ import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.notifications.NotificationService;
+import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.main.EventFragment;
 import io.github.entertainmatch.view.main.PollFragment;
@@ -136,7 +139,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        subscriptions.forEach(Subscription::unsubscribe);
+        ListExt.forEach(subscriptions, Subscription::unsubscribe);
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
