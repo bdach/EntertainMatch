@@ -1,8 +1,6 @@
 package io.github.entertainmatch.view.main;
 
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.facebook.login.widget.ProfilePictureView;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
-import io.github.entertainmatch.view.CircularProfilePictureView;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A {@link RecyclerView.Adapter} for {@link Poll} objects.
@@ -115,39 +110,17 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             Person[] members = poll.getMembers();
             for (Person person : members) {
                 if (counter >= MAX_AVATARS) {
-                    addPlus(members.length - MAX_AVATARS);
+                    AvatarHelper.addPlus(
+                            members.length - MAX_AVATARS,
+                            memberAvatarLayout,
+                            listener.getContext()
+                    );
                     break;
                 }
-                addMemberAvatar(person);
+                AvatarHelper.addMemberAvatar(person.getFacebookId(), memberAvatarLayout, listener.getContext());
                 counter++;
             }
         }
 
-        private void addPlus(int count) {
-            PlusView plusView = new PlusView(listener.getContext(), count);
-            LinearLayout.LayoutParams params = getParamsWithMargin();
-            memberAvatarLayout.addView(plusView, params);
-        }
-
-        public void addMemberAvatar(Person personId) {
-            ProfilePictureView pictureView = new CircularProfilePictureView(listener.getContext());
-            pictureView.setProfileId(personId.getFacebookId());
-            pictureView.setPresetSize(ProfilePictureView.SMALL);
-            LinearLayout.LayoutParams params = getParamsWithMargin();
-            memberAvatarLayout.addView(pictureView, params);
-        }
-
-        private LinearLayout.LayoutParams getParamsWithMargin() {
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            Resources r = listener.getContext().getResources();
-            int px = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    8,
-                    r.getDisplayMetrics()
-            );
-            params.setMargins(px, px, px, px);
-            return params;
-        }
     }
 }

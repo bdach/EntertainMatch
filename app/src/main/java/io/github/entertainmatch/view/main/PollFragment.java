@@ -7,6 +7,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,7 @@ public class PollFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // VERY ugly hack breaking shit at INCREDIBLY HIHG speed
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
 
     @Override

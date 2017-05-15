@@ -122,14 +122,14 @@ public class MainActivity extends AppCompatActivity
         String facebookId = FacebookUsers.getCurrentUser(this).facebookId;
         // grab user from firebase (initially to fetch polls)
         subscriptions.add(FirebaseUserController.getPollsForUser(FacebookUsers.getCurrentUser(this).facebookId)
-            .subscribe(firebasePoll -> {
-                pollFragment.updatePoll(new Poll(
-                    firebasePoll.getName(),
-                    PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
-                    firebasePoll.getParticipants(),
-                    firebasePoll.getPollId(),
-                    firebasePoll.votingComplete(facebookId)));
-            })
+                .subscribe(firebasePoll -> {
+                    pollFragment.updatePoll(new Poll(
+                            firebasePoll.getName(),
+                            PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
+                            firebasePoll.getParticipants(),
+                            firebasePoll.getPollId(),
+                            firebasePoll.votingComplete(facebookId)));
+                })
         );
 
         if (!isMyServiceRunning(NotificationService.class))
