@@ -60,6 +60,10 @@ public class FirebaseUserController {
         }
     }
 
+    public static void removePoll(String pollId, String userId) {
+        ref.child(userId).child("polls").child(pollId).setValue(null);
+    }
+
     /**
      * Grabs user information stored in firebase by facebook id.
      * Initially used to fetch data about polls.

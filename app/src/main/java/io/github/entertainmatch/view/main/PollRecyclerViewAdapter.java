@@ -1,6 +1,5 @@
 package io.github.entertainmatch.view.main;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -19,6 +18,7 @@ import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.view.CircularProfilePictureView;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
     /**
      * The list of polls to be displayed in the list.
      */
-    private final List<Poll> polls;
+    private final ArrayList<Poll> polls;
 
     /**
      * A {@link PollFragment.OnPollSelectedListener} to be notified of item selections.
@@ -51,7 +51,15 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
 
         holder.viewProgressButton.setOnClickListener(v -> {
             if (null != listener) {
-                listener.onPollSelected(holder.poll);
+                listener.viewPollProgress(holder.poll);
+            }
+        });
+        holder.deleteCompletedButton.setOnClickListener(v -> {
+            if (null != listener) {
+                listener.deletePoll(holder.poll);
+                int adapterPosition = holder.getAdapterPosition();
+                polls.remove(adapterPosition);
+                notifyItemRemoved(adapterPosition);
             }
         });
     }
@@ -84,6 +92,8 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         LinearLayout memberAvatarLayout;
         @BindView(R.id.poll_view_progress)
         Button viewProgressButton;
+        @BindView(R.id.poll_delete_completed)
+        Button deleteCompletedButton;
         /**
          * The backing {@link Poll} item.
          */
@@ -100,6 +110,7 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             nameView.setText(poll.getName());
             statusView.setText(poll.getPollStage().getStageStringId());
             memberAvatarLayout.removeAllViews();
+            deleteCompletedButton.setVisibility(poll.getVotingComplete() ? View.VISIBLE : View.INVISIBLE);
             Integer counter = 0;
             Person[] members = poll.getMembers();
             for (Person person : members) {
@@ -115,20 +126,6 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
                 addMemberAvatar(person);
                 counter++;
             }
-        }
-
-        private void addPlusCircle(Integer plus) {
-            Context context = listener.getContext();
-            Resources resources = listener.getContext().getResources();
-            int dimensionPixelSize = resources.getDimensionPixelSize(R.dimen.com_facebook_profilepictureview_preset_size_small);
-            TextView textView = new TextView(context);
-            textView.setText("+" + plus.toString());
-            textView.setWidth(dimensionPixelSize);
-            textView.setHeight(dimensionPixelSize);
-            textView.setBackgroundResource(R.drawable.plus_circle);
-            textView.setTextColor(resources.getColor(R.color.colorTintPrimary));
-            LinearLayout.LayoutParams paramsWithMargin = getParamsWithMargin();
-            memberAvatarLayout.addView(textView, paramsWithMargin);
         }
 
         public void addMemberAvatar(Person personId) {

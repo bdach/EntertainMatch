@@ -43,6 +43,7 @@ public class Poll implements Parcelable {
      */
     @Setter
     private String pollId;
+    private final Boolean votingComplete;
 
     protected Poll(Parcel in) {
         name = in.readString();
@@ -50,6 +51,7 @@ public class Poll implements Parcelable {
         members = in.createTypedArray(Person.CREATOR);
         String stageName = in.readString();
         pollStage = PollStageFactory.get(stageName, pollId);
+        votingComplete = in.readInt() != 0;
     }
 
     public static final Creator<Poll> CREATOR = new Creator<Poll>() {
@@ -65,7 +67,7 @@ public class Poll implements Parcelable {
     };
 
     // TODO: Makeshift constructor. Here until we decide how to fetch participants.
-    public Poll(String name, PollStage pollStage, List<String> participants, String pollId) {
+    public Poll(String name, PollStage pollStage, List<String> participants, String pollId, Boolean votingComplete) {
         this.name = name;
         this.pollStage = pollStage;
         this.members = ListExt.map(participants, (s) -> {
@@ -74,6 +76,7 @@ public class Poll implements Parcelable {
             return person;
         }).toArray(new Person[participants.size()]);
         this.pollId = pollId;
+        this.votingComplete = votingComplete;
     }
 
     public static List<Poll> mockData() {
@@ -96,6 +99,7 @@ public class Poll implements Parcelable {
         dest.writeString(pollId);
         dest.writeTypedArray(members, 0);
         dest.writeString(stageName());
+        dest.writeInt(votingComplete ? 1 : 0);
     }
 
     public String stageName() {

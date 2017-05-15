@@ -4,17 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
@@ -110,8 +106,9 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+        String facebookId = FacebookUsers.getCurrentUser(this).facebookId;
         // grab user from firebase (initially to fetch polls)
-        FirebaseUserController.getUserOnce(FacebookUsers.getCurrentUser(this).facebookId)
+        FirebaseUserController.getUserOnce(facebookId)
             .subscribe(firebasePerson -> {
                 if (firebasePerson == null) return;
 
@@ -122,7 +119,8 @@ public class MainActivity extends AppCompatActivity
                                 firebasePoll.getName(),
                                 PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
                                 firebasePoll.getParticipants(), // decide if we should store every person or just ids
-                                firebasePoll.getPollId()));
+                                firebasePoll.getPollId(),
+                                firebasePoll.votingComplete(facebookId)));
 
                         FirebasePollController
                             .getPoll(firebasePoll.getPollId())
@@ -186,10 +184,15 @@ public class MainActivity extends AppCompatActivity
      * @param poll The selected {@link Poll}.
      */
     @Override
-    public void onPollSelected(Poll poll) {
+    public void viewPollProgress(Poll poll) {
         PollStage stage = poll.getPollStage();
         Intent intent = stage.getViewStageIntent(this);
         startActivity(intent);
+    }
+
+    @Override
+    public void deletePoll(Poll poll) {
+        FirebaseUserController.removePoll(poll.getPollId(), FacebookUsers.getCurrentUser(this).facebookId);
     }
 
     @Override
@@ -221,7 +224,8 @@ public class MainActivity extends AppCompatActivity
                 x.getName(),
                 new VoteCategoryStage(x.getPollId()),
                 poll.getMembers(),
-                x.getPollId()));
+                x.getPollId(),
+                false));
         });
 
         // subscribe for poll changes

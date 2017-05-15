@@ -97,7 +97,8 @@ public class PollFragment extends Fragment {
          *
          * @param poll The selected {@link Poll}.
          */
-        void onPollSelected(Poll poll);
+        void viewPollProgress(Poll poll);
+        void deletePoll(Poll poll);
         AppCompatActivity getContext();
     }
 }
