@@ -10,9 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.*;
 
 import com.squareup.picasso.Picasso;
 
@@ -52,6 +51,8 @@ public class VoteResultActivity extends AppCompatActivity {
     private String pollId;
     private String facebookId;
 
+    private RelativeLayout footer;
+
     private ParticipantList participantList;
 
     @Override
@@ -73,12 +74,16 @@ public class VoteResultActivity extends AppCompatActivity {
         buttonYes = (Button) findViewById(R.id.result_yes);
         buttonNo = (Button) findViewById(R.id.result_no);
 
+        footer = (RelativeLayout) findViewById(R.id.result_footer);
+
         //Intent intent = getIntent();
         //event = intent.getParcelableExtra(EVENT_KEY);
         //date = intent.getParcelableExtra(DATE_KEY);
 
+        facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
         FirebasePoll poll = FirebasePollController.polls.get(pollId);
+        footer.setVisibility(poll.votingComplete(facebookId) ? View.GONE : View.VISIBLE);
         participantList = new ParticipantList(this, poll);
         participantList.fetchNames();
         FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
@@ -102,7 +107,6 @@ public class VoteResultActivity extends AppCompatActivity {
             eventName.setText(firebaseEvent.getTitle());
         });
 
-        facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         buttonYes.setOnClickListener(v -> {
             buttonListener(true);
         });
