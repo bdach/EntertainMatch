@@ -58,5 +58,6 @@ public class EventFragment extends Fragment {
 
     public interface OnEventSelectedListener {
         void onListFragmentInteraction(DummyItem item);
+        Context getContext();
     }
 }

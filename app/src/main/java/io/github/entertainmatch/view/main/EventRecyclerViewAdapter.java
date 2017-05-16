@@ -4,20 +4,26 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.view.main.dummy.DummyContent.DummyItem;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
+    private static final int MAX_AVATARS = 3;
     private final List<DummyItem> mValues;
-    private final EventFragment.OnEventSelectedListener mListener;
+    private final EventFragment.OnEventSelectedListener listener;
 
     public EventRecyclerViewAdapter(List<DummyItem> items, EventFragment.OnEventSelectedListener listener) {
         mValues = items;
-        mListener = listener;
+        this.listener = listener;
     }
 
     @Override
@@ -29,13 +35,11 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.item = mValues.get(position);
 
-        holder.mView.setOnClickListener(v -> {
-            if (null != mListener) {
-                mListener.onListFragmentInteraction(holder.mItem);
+        holder.view.setOnClickListener(v -> {
+            if (null != listener) {
+                listener.onListFragmentInteraction(holder.item);
             }
         });
     }
@@ -46,21 +50,25 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final View view;
+        public DummyItem item;
+
+        @BindView(R.id.event_image)
+        ImageView eventImage;
+        @BindView(R.id.member_avatars)
+        LinearLayout avatarLayout;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
-        }
-
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            this.view = view;
+            ButterKnife.bind(this, view);
+            List<String> ids = Arrays.asList("111840479374488", "115131705719584");
+            for (String id : ids) {
+                AvatarHelper.addMemberAvatar(id, avatarLayout, listener.getContext());
+            }
+            Picasso.with(listener.getContext())
+                    .load("http://i.imgur.com/PLFkStW.jpg")
+                    .into(eventImage);
         }
     }
 }

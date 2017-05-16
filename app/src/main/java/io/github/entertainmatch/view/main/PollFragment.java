@@ -39,8 +39,7 @@ public class PollFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // VERY ugly hack breaking shit at INCREDIBLY HIHG speed
-        setRetainInstance(true);
+//        setRetainInstance(true);
     }
 
     @Override
