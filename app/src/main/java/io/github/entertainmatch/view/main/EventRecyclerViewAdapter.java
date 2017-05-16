@@ -6,23 +6,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
-import io.github.entertainmatch.view.main.dummy.DummyContent.DummyItem;
+import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventDateController;
+import io.github.entertainmatch.firebase.FirebaseLocationsController;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
 
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
     private static final int MAX_AVATARS = 3;
-    private final List<DummyItem> mValues;
+    private final List<FirebasePoll> values;
     private final EventFragment.OnEventSelectedListener listener;
 
-    public EventRecyclerViewAdapter(List<DummyItem> items, EventFragment.OnEventSelectedListener listener) {
-        mValues = items;
+    public EventRecyclerViewAdapter(List<FirebasePoll> items, EventFragment.OnEventSelectedListener listener) {
+        values = items;
         this.listener = listener;
     }
 
@@ -35,7 +41,26 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.item = mValues.get(position);
+        FirebasePoll poll = values.get(position);
+        holder.setItem(poll);
+        FirebaseController.getEventSingle(
+                poll.getChosenCategory(),
+                poll.getVictoriousEvent().substring(poll.getChosenCategory().length())
+        )
+                .subscribe(event -> {
+                    Picasso.with(listener.getContext())
+                            .load(event.getDrawableUri())
+                            .into(holder.eventImage);
+                    holder.eventName.setText(event.getTitle());
+                });
+        FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
+            holder.eventPlace.setText(location.getPlace());
+        });
+        FirebaseEventDateController.getEventSingle(poll.getChosenCategory(), poll.getVictoriousEvent(), poll.getChosenLocationId()).subscribe(eventDate -> {
+            String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
+                    .format(eventDate.getDate());
+            holder.eventDate.setText(date);
+        });
 
         holder.view.setOnClickListener(v -> {
             if (null != listener) {
@@ -46,29 +71,35 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return values.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
-        public DummyItem item;
+        public FirebasePoll item;
 
         @BindView(R.id.event_image)
         ImageView eventImage;
         @BindView(R.id.member_avatars)
         LinearLayout avatarLayout;
+        @BindView(R.id.event_name)
+        TextView eventName;
+        @BindView(R.id.event_date)
+        TextView eventDate;
+        @BindView(R.id.event_place)
+        TextView eventPlace;
 
         public ViewHolder(View view) {
             super(view);
             this.view = view;
             ButterKnife.bind(this, view);
-            List<String> ids = Arrays.asList("111840479374488", "115131705719584");
-            for (String id : ids) {
+        }
+
+        public void setItem(FirebasePoll item) {
+            this.item = item;
+            for (String id : item.getParticipants()) {
                 AvatarHelper.addMemberAvatar(id, avatarLayout, listener.getContext());
             }
-            Picasso.with(listener.getContext())
-                    .load("http://i.imgur.com/PLFkStW.jpg")
-                    .into(eventImage);
         }
     }
 }

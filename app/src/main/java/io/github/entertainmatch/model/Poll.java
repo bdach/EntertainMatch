@@ -67,16 +67,16 @@ public class Poll implements Parcelable {
     };
 
     // TODO: Makeshift constructor. Here until we decide how to fetch participants.
-    public Poll(String name, PollStage pollStage, List<String> participants, String pollId, Boolean votingComplete) {
-        this.name = name;
-        this.pollStage = pollStage;
-        this.members = ListExt.map(participants, (s) -> {
+    public Poll(FirebasePoll firebasePoll, String userId) {
+        this.name = firebasePoll.getName();
+        this.pollStage = PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId());
+        this.members = ListExt.map(firebasePoll.getParticipants(), (s) -> {
             Person person = new Person();
             person.facebookId = s;
             return person;
-        }).toArray(new Person[participants.size()]);
-        this.pollId = pollId;
-        this.votingComplete = votingComplete;
+        }).toArray(new Person[firebasePoll.getParticipants().size()]);
+        this.pollId = firebasePoll.getPollId();
+        this.votingComplete = firebasePoll.votingComplete(userId);
     }
 
     @Override

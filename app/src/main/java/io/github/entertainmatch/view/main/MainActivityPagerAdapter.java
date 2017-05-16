@@ -1,4 +1,4 @@
-package io.github.entertainmatch.view.main.dummy;
+package io.github.entertainmatch.view.main;
 
 import android.hardware.camera2.params.Face;
 import android.support.v4.app.Fragment;
@@ -11,9 +11,13 @@ import java.util.List;
 
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventController;
+import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.utils.PollStageFactory;
+import io.github.entertainmatch.view.main.EventFragment;
 import io.github.entertainmatch.view.main.PollFragment;
 import lombok.Getter;
 import rx.Subscription;
@@ -59,21 +63,18 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
 
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         // cancer
         if (position == 0) {
             PollFragment pollFragment = (PollFragment) fragment;
-            String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
             subscriptions.add(FirebaseUserController.getPollsForUser(facebookId)
-                .subscribe(firebasePoll -> {
-                    pollFragment.updatePoll(new Poll(
-                        firebasePoll.getName(),
-                        PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
-                        firebasePoll.getParticipants(),
-                        firebasePoll.getPollId(),
-                        firebasePoll.votingComplete(facebookId)));
-                })
-            );
+                .subscribe(firebasePoll -> pollFragment.updatePoll(new Poll(firebasePoll, facebookId))));
+        } else {
+            EventFragment eventFragment = (EventFragment) fragment;
+
+            subscriptions.add(FirebaseEventController.getEventsForUser(facebookId)
+                .subscribe(eventFragment::updatePoll));
         }
 
         fragments.set(position, fragment);
