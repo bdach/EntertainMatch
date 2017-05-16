@@ -20,18 +20,19 @@ import io.github.entertainmatch.view.category.CategoryFragment.OnCategorySelecte
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A {@link RecyclerView.Adapter} for {@link Category} items.
  */
-@RequiredArgsConstructor
 public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRecyclerViewAdapter.ViewHolder> {
 
     /**
      * The list of all {@link Category} items.
      */
-    private final List<Category> categories;
+    private List<Category> categories;
     /**
      * The {@link OnCategorySelectedListener} to be notified of {@link Category} selections.
      */
@@ -39,6 +40,11 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
     @Setter
     private boolean canVote = true;
+
+    public CategoryRecyclerViewAdapter(List<Category> categories, OnCategorySelectedListener listener) {
+        this.categories = categories;
+        this.listener = listener;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -73,6 +79,17 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
     @Override
     public int getItemCount() {
         return categories.size();
+    }
+
+    public void sortItemsByVotes() {
+        ArrayList<Category> sorted = new ArrayList<>(categories);
+        Collections.sort(sorted, (o1, o2) -> o2.getVoteCount().compareTo(o1.getVoteCount()));
+        List<Category> old = categories;
+        categories = sorted;
+        for (int newIndex = 0; newIndex < categories.size(); ++newIndex) {
+            int oldIndex = old.indexOf(categories.get(newIndex));
+            notifyItemMoved(oldIndex, newIndex);
+        }
     }
 
     /**

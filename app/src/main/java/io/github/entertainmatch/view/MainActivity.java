@@ -4,17 +4,11 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,15 +28,14 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
-import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.notifications.NotificationService;
 import io.github.entertainmatch.utils.ListExt;
-import io.github.entertainmatch.utils.PollStageFactory;
 import io.github.entertainmatch.view.main.EventFragment;
 import io.github.entertainmatch.view.main.PollFragment;
-import io.github.entertainmatch.view.main.dummy.DummyContent;
-import io.github.entertainmatch.view.main.dummy.MainActivityPagerAdapter;
+import io.github.entertainmatch.view.main.MainActivityPagerAdapter;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
+import io.github.entertainmatch.view.result.VoteResultActivity;
 import rx.Subscription;
 
 /**
@@ -189,11 +182,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void deletePoll(Poll poll) {
-        FirebaseUserController.removePoll(poll.getPollId(), FacebookUsers.getCurrentUser(this).facebookId);
-    }
-
-    @Override
     public AppCompatActivity getContext() {
         return this;
     }
@@ -227,7 +215,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        // no-op
+    public void onEventClicked(FirebasePoll item) {
+        Intent intent = new Intent(this, VoteResultActivity.class);
+        intent.putExtra(VoteResultStage.POLL_ID_KEY, item.getPollId());
+        startActivity(intent);
     }
 }

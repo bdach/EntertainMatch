@@ -39,8 +39,6 @@ public class PollFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // VERY ugly hack breaking shit at INCREDIBLY HIHG speed
-        setRetainInstance(true);
     }
 
     @Override
@@ -103,7 +101,6 @@ public class PollFragment extends Fragment {
          * @param poll The selected {@link Poll}.
          */
         void viewPollProgress(Poll poll);
-        void deletePoll(Poll poll);
         Context getContext();
     }
 }

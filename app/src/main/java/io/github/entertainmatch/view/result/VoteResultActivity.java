@@ -22,18 +22,11 @@ import java.util.Map;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.FirebaseController;
-import io.github.entertainmatch.firebase.FirebaseEventDateController;
-import io.github.entertainmatch.firebase.FirebaseLocationsController;
-import io.github.entertainmatch.firebase.FirebasePollController;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.firebase.*;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
-
-    public static final String EVENT_KEY = "event";
-    public static final String DATE_KEY = "date";
 
     private CoordinatorLayout coordinatorLayout;
 
@@ -128,6 +121,8 @@ public class VoteResultActivity extends AppCompatActivity {
                 return;
 
             FirebasePollController.setIsGoing(pollId, facebookId, going);
+            FirebaseUserController.removePollForUser(pollId, facebookId);
+            FirebaseEventController.addEventForUser(pollId, facebookId);
             Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override

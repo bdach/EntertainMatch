@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -79,7 +80,7 @@ public class CategoryFragment extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
-            recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
             adapter = new CategoryRecyclerViewAdapter(categories, listener);
             recyclerView.setAdapter(adapter);
         }
@@ -111,6 +112,7 @@ public class CategoryFragment extends Fragment {
     public void registerVote(Category item) {
         item.registerVote();
         adapter.disableVoting();
+        adapter.sortItemsByVotes();
         adapter.notifyDataSetChanged();
     }
 
@@ -132,7 +134,7 @@ public class CategoryFragment extends Fragment {
         }
 
         Set<String> existingIds = categoryToCount.keySet();
-        if (categories.removeIf(category -> !existingIds.contains(category.getId()))) {
+        if (ListExt.removeIf(categories, category -> !existingIds.contains(category.getId()))) {
             listener.onCategoryReduce();
         }
 

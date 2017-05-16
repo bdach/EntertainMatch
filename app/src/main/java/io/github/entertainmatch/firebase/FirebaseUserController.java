@@ -55,7 +55,7 @@ public class FirebaseUserController {
         }
     }
 
-    public static void removePoll(String pollId, String userId) {
+    public static void removePollForUser(String pollId, String userId) {
         ref.child(userId).child("polls").child(pollId).setValue(null);
     }
 

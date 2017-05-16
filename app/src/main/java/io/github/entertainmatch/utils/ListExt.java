@@ -1,9 +1,6 @@
 package io.github.entertainmatch.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import io.github.entertainmatch.model.Category;
 
@@ -59,5 +56,17 @@ public class ListExt {
             result.put(selector.apply(elem), elem);
         }
         return result;
+    }
+
+    public static <T> Boolean removeIf(ArrayList<T> list, Function<T, Boolean> predicate) {
+        boolean changed = false;
+        for (Iterator<T> iterator = list.iterator(); iterator.hasNext(); ) {
+            T item = iterator.next();
+            if (predicate.apply(item)) {
+                list.remove(item);
+                changed = true;
+            }
+        }
+        return changed;
     }
 }
