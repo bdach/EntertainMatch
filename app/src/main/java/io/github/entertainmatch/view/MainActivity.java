@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -67,14 +68,6 @@ public class MainActivity extends AppCompatActivity
     private final static String SETTINGS_STACK_NAME = "settings_stack";
 
     /**
-     * The fragment used to display the list of ongoing polls.
-     */
-    private PollFragment pollFragment;
-    /**
-     * The fragment used to display the list of upcoming events.
-     */
-    private EventFragment eventFragment;
-    /**
      * The fragment used to display the settings menu.
      */
     private SettingsFragment settingsFragment;
@@ -96,6 +89,7 @@ public class MainActivity extends AppCompatActivity
 
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+
     MainActivityPagerAdapter pagerAdapter;
 
     private List<Subscription> subscriptions = new ArrayList<>();
@@ -108,29 +102,16 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         FirebaseController.init();
 
-        pollFragment = new PollFragment();
-        eventFragment = new EventFragment();
         settingsFragment = new SettingsFragment();
 
         pagerAdapter = new MainActivityPagerAdapter(
                 getSupportFragmentManager(),
-                Arrays.asList(pollFragment, eventFragment)
+                Arrays.asList(new PollFragment(), new EventFragment()),
+                subscriptions
         );
+
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
-        String facebookId = FacebookUsers.getCurrentUser(this).facebookId;
-        // grab user from firebase (initially to fetch polls)
-        subscriptions.add(FirebaseUserController.getPollsForUser(FacebookUsers.getCurrentUser(this).facebookId)
-            .subscribe(firebasePoll -> {
-                pollFragment.updatePoll(new Poll(
-                    firebasePoll.getName(),
-                    PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId()),
-                    firebasePoll.getParticipants(),
-                    firebasePoll.getPollId(),
-                    firebasePoll.votingComplete(facebookId)));
-            })
-        );
 
         if (!isMyServiceRunning(NotificationService.class))
             startService(new Intent(this, NotificationService.class));
@@ -139,6 +120,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.e("XDDD", "Destroy");
         ListExt.forEach(subscriptions, Subscription::unsubscribe);
     }
 
@@ -176,14 +158,14 @@ public class MainActivity extends AppCompatActivity
             tabLayout.setVisibility(View.GONE);
             viewPager.setVisibility(View.GONE);
             getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
-                            android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                    .hide(pollFragment)
-                    .hide(eventFragment)
-                    .add(R.id.content_frame, settingsFragment)
-                    .addToBackStack(SETTINGS_STACK_NAME)
-                    .commit();
+                .beginTransaction()
+                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                        android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                .hide(pagerAdapter.getItem(0))
+                .hide(pagerAdapter.getItem(1))
+                .add(R.id.content_frame, settingsFragment)
+                .addToBackStack(SETTINGS_STACK_NAME)
+                .commit();
             return true;
         }
         else if (id == R.id.logout) {

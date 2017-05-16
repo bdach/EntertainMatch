@@ -7,6 +7,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,11 +48,13 @@ public class PollFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_poll_list, container, false);
 
+        Log.e("XDD", "lol1");
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             adapter = new PollRecyclerViewAdapter(polls, listener);
+            Log.e("XDD", this.toString());
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
@@ -80,6 +83,8 @@ public class PollFragment extends Fragment {
      * @param poll Updated or new poll
      */
     public void updatePoll(Poll poll) {
+        Log.e("XDD1", this.toString());
+
         if (pollMap.containsKey(poll.getPollId())) {
             Pair<Integer, Poll> pair = pollMap.get(poll.getPollId());
             pair.second.update(poll);
@@ -103,6 +108,6 @@ public class PollFragment extends Fragment {
          */
         void viewPollProgress(Poll poll);
         void deletePoll(Poll poll);
-        AppCompatActivity getContext();
+        Context getContext();
     }
 }
