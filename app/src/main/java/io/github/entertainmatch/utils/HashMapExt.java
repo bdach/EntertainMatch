@@ -37,14 +37,14 @@ public class HashMapExt {
         return max;
     }
 
-    public static <T, U> U mostFrequent(HashMap<T, U> that) {
-        int max = 0, counter = 0;
+    public static <T, U> List<U> mostFrequent(HashMap<T, U> that) {
+        List<U> result = new ArrayList<>();
+        int max = 1, counter = 1;
         U[] values = (U[]) that.values().toArray();
 
         if (values.length == 0)
             return null;
 
-        U mostFreq = values[0];
         Arrays.sort(values);
 
         for (int i = 0; i < values.length - 1; i++) {
@@ -54,12 +54,18 @@ public class HashMapExt {
                 counter = 1;
             }
 
+            if (counter > max)
+                result.clear();
+
             if (counter >= max) {
+                result.add(values[i]);
                 max = counter;
-                mostFreq = values[i];
             }
         }
 
-        return mostFreq;
+        if (values.length >= 2 && max == 1 && !values[values.length - 2].equals(values[values.length - 1]))
+            result.add(values[values.length - 1]);
+
+        return result;
     }
 }

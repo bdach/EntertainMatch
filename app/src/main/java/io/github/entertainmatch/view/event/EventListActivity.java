@@ -192,10 +192,13 @@ public class EventListActivity extends AppCompatActivity {
                 eventsObservable.subscribe(events -> {
                     values.clear();
                     Map<String, Boolean> userChoices = getUserChoices(poll);
+                    List<String> remainingIds = poll.getEventsToVote();
                     if (userChoices == null) {
-                        values.addAll(events);
                         for (Event event : events) {
-                            visible.put(event.getId(), true);
+                            if (remainingIds.contains(event.getId())) {
+                                values.add(event);
+                                visible.put(event.getId(), true);
+                            }
                         }
                     } else {
                         setVisible(userChoices, events);
@@ -242,7 +245,7 @@ public class EventListActivity extends AppCompatActivity {
             if (values.size() == 1) {
                 Snackbar.make(coordinatorLayout,
                         String.format("You've chosen %s!", values.get(0).getTitle()),
-                        Snackbar.LENGTH_INDEFINITE)
+                        Snackbar.LENGTH_LONG)
                         .show();
                 poll.voteEvent(values.get(0));
             }

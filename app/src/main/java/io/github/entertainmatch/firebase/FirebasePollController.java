@@ -116,7 +116,12 @@ public class FirebasePollController {
 
                     if (winningCategories.size() == 1) {
                         mutableData.child("stage").setValue(VoteEventStage.class.toString());
-                        mutableData.child("chosenCategory").setValue(getWinningCategory(voteCountsRef.getValue()).get(0));
+                        mutableData.child("chosenCategory").setValue(winningCategories.get(0));
+
+                        FirebaseController.getEventsSingle(winningCategories.get(0)).subscribe(events -> {
+                            ref.child(pollId).child("eventsToVote").setValue(ListExt.map(events, Event::getId));
+                        });
+
                     } else {
                         for (Category category : FirebaseCategoriesTemplatesController.getCached()) {
                             if (!winningCategories.contains(category.getId())) {
@@ -162,14 +167,25 @@ public class FirebasePollController {
                 eventVotes.put(facebookId, itemId);
                 eventVotesRef.setValue(eventVotes);
                 if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
-                    mutableData.child("stage").setValue(VoteDateStage.class.toString());
+                    List<String> candidates = HashMapExt.mostFrequent(eventVotes);
 
-                    mutableData.child("victoriousEvent").setValue(HashMapExt.mostFrequent(eventVotes));
+                    if (candidates.size() == 1) {
+                        mutableData.child("stage").setValue(VoteDateStage.class.toString());
+                        mutableData.child("victoriousEvent").setValue(candidates.get(0));
 
-                    // TODO: not sure
-                    FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                        FirebaseEventDateController.setup(poll, HashMapExt.mostFrequent(eventVotes));
-                    });
+                        // TODO: not sure
+                        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                            FirebaseEventDateController.setup(poll, candidates.get(0));
+                        });
+                    } else {
+                        mutableData.child("eventsToVote").setValue(candidates);
+                        mutableData.child("remainingEventChoices").setValue(null);
+                        for (String key : eventVotes.keySet()) {
+                            eventVotes.put(key, FirebasePoll.NO_USER_VOTE);
+                        }
+                        eventVotesRef.setValue(eventVotes);
+                    }
+
                 }
                 return Transaction.success(mutableData);
             }

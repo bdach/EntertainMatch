@@ -69,6 +69,12 @@ public class FirebaseController {
         return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
     }
 
+    public static Observable<List<? extends Event>> getEventsSingle(String chosenCategory) {
+        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
+
+        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
+    }
+
     public static Observable<? extends Event> getEventSingle(String chosenCategory, String victoriousEvent) {
         Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
         return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory).child(victoriousEvent), eventClass);
