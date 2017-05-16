@@ -117,6 +117,7 @@ public class FirebasePollController {
                     if (winningCategories.size() == 1) {
                         mutableData.child("stage").setValue(VoteEventStage.class.toString());
                         mutableData.child("chosenCategory").setValue(winningCategories.get(0));
+                        FirebaseUserController.setupEventStage(pollId, votedFor.keySet(), facebookId);
 
                         FirebaseController.getEventsSingle(winningCategories.get(0)).subscribe(events -> {
                             ref.child(pollId).child("eventsToVote").setValue(ListExt.map(events, Event::getId));

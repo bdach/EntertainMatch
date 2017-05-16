@@ -15,4 +15,6 @@ import lombok.NoArgsConstructor;
 public class FirebaseUser {
     @Getter
     private Map<String, Boolean> polls = new HashMap<>();
+    @Getter
+    private Map<String, Boolean> events = new HashMap<>();
 }

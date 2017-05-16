@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 
 import java.util.Map;
@@ -29,26 +30,24 @@ public class NotificationService extends IntentService {
             if (user == null)
                 return;
 
+            // category
             for (Map.Entry<String, Boolean> entry : user.getPolls().entrySet()) {
                 if (entry.getValue()) {
-                    Log.d("NotificationsService", entry.getKey());
+                    Log.d("NotificationsServiceC", entry.getKey());
                     Notifications.notifyPollStarted(this, entry.getKey());
                 }
             }
 
+            // event
+            for (Map.Entry<String, Boolean> entry : user.getEvents().entrySet()) {
+                if (entry.getValue()) {
+                    Log.d("NotificationsServiceE", entry.getKey());
+                    Notifications.notifyEventStageStarted(this, entry.getKey());
+                }
+            }
+
+
             FirebaseUserController.makePollsOldForUser(facebookId, user);
-        });
-
-        FirebaseDatabase.getInstance().getReference("user_polls").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.d("NotificationsService", "CHANGED");
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
         });
     }
 

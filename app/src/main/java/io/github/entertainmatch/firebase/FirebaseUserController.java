@@ -11,6 +11,7 @@ import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
@@ -98,11 +99,15 @@ public class FirebaseUserController {
      * @param user Firebase user representation to change. Should be paired with provided facebookId
      */
     public static void makePollsOldForUser(String facebookId, FirebaseUser user) {
-        ref.child(facebookId).child("polls").runTransaction(new Transaction.Handler() {
+        ref.child(facebookId).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 for (String pollId : user.getPolls().keySet()) {
-                    mutableData.child(pollId).setValue(false);
+                    mutableData.child("polls").child(pollId).setValue(false);
+                }
+
+                for (String pollId : user.getEvents().keySet()) {
+                    mutableData.child("events").child(pollId).setValue(false);
                 }
                 return Transaction.success(mutableData);
             }
@@ -112,5 +117,11 @@ public class FirebaseUserController {
 
             }
         });
+    }
+
+    public static void setupEventStage(String pollId, Set<String> facebookIds, String hostFacebookId) {
+        for (String facebookId : facebookIds) {
+            ref.child(facebookId).child("events").child(pollId).setValue(true);
+        }
     }
 }

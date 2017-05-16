@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.VoteEventStage;
 import io.github.entertainmatch.utils.PollStageFactory;
 
 /**
@@ -42,6 +43,31 @@ public class Notifications {
                 .setAutoCancel(true); // hide on click
 
         Intent intent = PollStageFactory.get(VoteCategoryStage.class.toString(), pollId).getViewStageIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent = taskStackBuilder
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notificationBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+    }
+
+    public static void notifyEventStageStarted(Context context, String pollId) {
+        String title = "Event stage started!";
+        String text = "Category has been selected! Come and vote for an event!";
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setAutoCancel(true); // hide on click
+
+        Intent intent = PollStageFactory.get(VoteEventStage.class.toString(), pollId).getViewStageIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);
