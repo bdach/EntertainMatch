@@ -28,12 +28,14 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
+import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.notifications.NotificationService;
 import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.main.EventFragment;
 import io.github.entertainmatch.view.main.PollFragment;
 import io.github.entertainmatch.view.main.MainActivityPagerAdapter;
 import io.github.entertainmatch.view.poll.CreatePollActivity;
+import io.github.entertainmatch.view.result.VoteResultActivity;
 import rx.Subscription;
 
 /**
@@ -180,11 +182,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void deletePoll(Poll poll) {
-        FirebaseUserController.removePoll(poll.getPollId(), FacebookUsers.getCurrentUser(this).facebookId);
-    }
-
-    @Override
     public AppCompatActivity getContext() {
         return this;
     }
@@ -218,7 +215,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(FirebasePoll item) {
-        // no-op
+    public void onEventClicked(FirebasePoll item) {
+        Intent intent = new Intent(this, VoteResultActivity.class);
+        intent.putExtra(VoteResultStage.POLL_ID_KEY, item.getPollId());
+        startActivity(intent);
     }
 }

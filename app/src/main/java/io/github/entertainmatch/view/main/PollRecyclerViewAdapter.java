@@ -49,14 +49,6 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
                 listener.viewPollProgress(holder.poll);
             }
         });
-        holder.deleteCompletedButton.setOnClickListener(v -> {
-            if (null != listener) {
-                listener.deletePoll(holder.poll);
-                int adapterPosition = holder.getAdapterPosition();
-                polls.remove(adapterPosition);
-                notifyItemRemoved(adapterPosition);
-            }
-        });
     }
 
     @Override
@@ -87,8 +79,6 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         LinearLayout memberAvatarLayout;
         @BindView(R.id.poll_view_progress)
         Button viewProgressButton;
-        @BindView(R.id.poll_delete_completed)
-        Button deleteCompletedButton;
         /**
          * The backing {@link Poll} item.
          */
@@ -105,7 +95,6 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
             nameView.setText(poll.getName());
             statusView.setText(poll.getPollStage().getStageStringId());
             memberAvatarLayout.removeAllViews();
-            deleteCompletedButton.setVisibility(poll.getVotingComplete() ? View.VISIBLE : View.INVISIBLE);
             Integer counter = 0;
             Person[] members = poll.getMembers();
             for (Person person : members) {

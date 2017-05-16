@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,9 +18,9 @@ import io.github.entertainmatch.firebase.FirebaseLocationsController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 
 import java.text.DateFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
@@ -62,9 +63,9 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
             holder.eventDate.setText(date);
         });
 
-        holder.view.setOnClickListener(v -> {
+        holder.detailButton.setOnClickListener(v -> {
             if (null != listener) {
-                listener.onListFragmentInteraction(holder.item);
+                listener.onEventClicked(holder.item);
             }
         });
     }
@@ -88,6 +89,8 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
         TextView eventDate;
         @BindView(R.id.event_place)
         TextView eventPlace;
+        @BindView(R.id.event_detail_button)
+        Button detailButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -97,8 +100,15 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
 
         public void setItem(FirebasePoll item) {
             this.item = item;
-            for (String id : item.getParticipants()) {
-                AvatarHelper.addMemberAvatar(id, avatarLayout, listener.getContext());
+            Integer counter = 0;
+            for (Map.Entry<String, Boolean> goingEntry : item.getGoing().entrySet()) {
+                if (!goingEntry.getValue()) continue;
+                counter++;
+                if (counter >= MAX_AVATARS) continue;
+                AvatarHelper.addMemberAvatar(goingEntry.getKey(), avatarLayout, listener.getContext());
+            }
+            if (counter >= MAX_AVATARS) {
+                AvatarHelper.addPlus(counter - MAX_AVATARS, avatarLayout, listener.getContext());
             }
         }
     }

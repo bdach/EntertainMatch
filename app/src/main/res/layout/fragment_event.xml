@@ -64,7 +64,7 @@
 
         </LinearLayout>
 
-        <Button android:id="@+id/poll_view_progress"
+        <Button android:id="@+id/event_detail_button"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

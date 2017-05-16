@@ -64,13 +64,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/poll_view_progress" />
 
-            <Button android:id="@+id/poll_delete_completed"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="invisible"
-                    android:text="@string/delete_completed" />
-
         </LinearLayout>
 
     </LinearLayout>

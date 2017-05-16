@@ -17,12 +17,16 @@ public class FirebaseEventController {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference ref = database.getReference("user_events");
 
-    public static final void addPerson(Person person) {
+    public static void addPerson(Person person) {
         ref.child(person.getFacebookId());
     }
 
-    public static final Observable<FirebasePoll> getEventsForUser(String facebookId) {
+    public static Observable<FirebasePoll> getEventsForUser(String facebookId) {
         return RxFirebaseDatabase.observeValueEvent(ref.child(facebookId), FirebaseUser.class)
                 .flatMap(user -> Observable.merge(FirebasePollController.getPollsForUser(user)));
+    }
+
+    public static void addEventForUser(String pollId, String userId) {
+        ref.child(userId).child("polls").child(pollId).setValue(true);
     }
 }

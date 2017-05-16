@@ -80,7 +80,7 @@ public class EventFragment extends Fragment {
     }
 
     public interface OnEventSelectedListener {
-        void onListFragmentInteraction(FirebasePoll item);
+        void onEventClicked(FirebasePoll item);
         Context getContext();
     }
 }

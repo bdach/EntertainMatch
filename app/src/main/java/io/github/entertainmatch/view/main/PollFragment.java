@@ -101,7 +101,6 @@ public class PollFragment extends Fragment {
          * @param poll The selected {@link Poll}.
          */
         void viewPollProgress(Poll poll);
-        void deletePoll(Poll poll);
         Context getContext();
     }
 }
