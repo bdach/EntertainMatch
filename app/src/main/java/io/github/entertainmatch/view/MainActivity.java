@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e("XDDD", "Destroy");
         ListExt.forEach(subscriptions, Subscription::unsubscribe);
     }
 

@@ -127,7 +127,6 @@ public class CategoryFragment extends Fragment {
         }
 
         if (!ListExt.any(categories, Category::isVotedFor)) {
-            Log.e("XDDD", String.valueOf(categories.size()));
             adapter.setCanVote(true);
         }
 

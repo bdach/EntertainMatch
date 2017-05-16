@@ -48,13 +48,11 @@ public class PollFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_poll_list, container, false);
 
-        Log.e("XDD", "lol1");
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             adapter = new PollRecyclerViewAdapter(polls, listener);
-            Log.e("XDD", this.toString());
             recyclerView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
@@ -83,8 +81,6 @@ public class PollFragment extends Fragment {
      * @param poll Updated or new poll
      */
     public void updatePoll(Poll poll) {
-        Log.e("XDD1", this.toString());
-
         if (pollMap.containsKey(poll.getPollId())) {
             Pair<Integer, Poll> pair = pollMap.get(poll.getPollId());
             pair.second.update(poll);

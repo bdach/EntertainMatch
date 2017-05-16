@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class NotificationService extends IntentService {
     public NotificationService() {
-        super("NotificationServiceXDDD");
+        super("NotificationService");
 
         String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
         FirebaseUserController.getUser(facebookId).subscribe(user -> {

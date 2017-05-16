@@ -36,7 +36,6 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Log.e("XDD GET" + position, String.valueOf(this));
         return fragments.get(position);
     }
 
