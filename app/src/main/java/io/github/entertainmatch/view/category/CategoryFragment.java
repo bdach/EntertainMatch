@@ -2,6 +2,7 @@ package io.github.entertainmatch.view.category;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -131,7 +132,9 @@ public class CategoryFragment extends Fragment {
         }
 
         Set<String> existingIds = categoryToCount.keySet();
-        categories.removeIf(category -> !existingIds.contains(category.getId()));
+        if (categories.removeIf(category -> !existingIds.contains(category.getId()))) {
+            listener.onCategoryReduce();
+        }
 
         adapter.notifyDataSetChanged();
     }
@@ -149,5 +152,11 @@ public class CategoryFragment extends Fragment {
          * @param item The selected {@link Category} item.
          */
         void onCategorySelected(Category item);
+
+        /**
+         * Called when one of the categories was removed from poll.
+         * This happens due to a tie after voting was finished.
+         */
+        void onCategoryReduce();
     }
 }

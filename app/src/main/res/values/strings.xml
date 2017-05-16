@@ -76,4 +76,5 @@
     <string name="going_positive">Have a great time!</string>
     <string name="going_negative">Sorry to hear that :(</string>
     <string name="delete_completed">Delete from list</string>
+    <string name="vote_category_tie">There was a tie. Vote for one of the remaining categories!</string>
 </resources>

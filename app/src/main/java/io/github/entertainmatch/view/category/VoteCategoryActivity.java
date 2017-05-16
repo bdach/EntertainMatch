@@ -177,11 +177,28 @@ public class VoteCategoryActivity extends AppCompatActivity
             return;
         }
         fragment.registerVote(item);
-        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-            poll.voteCategory(item);
 
-            Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
-                    .show();
-        });
+        Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
+            .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                        poll.voteCategory(item);
+
+                    });
+                    super.onDismissed(transientBottomBar, event);
+                }
+            })
+            .show();
+    }
+
+    /**
+     * Called when one of the categories was removed from poll.
+     * This happens due to a tie after voting was finished.
+     */
+    @Override
+    public void onCategoryReduce() {
+        Snackbar.make(layout, R.string.vote_category_tie, Snackbar.LENGTH_LONG)
+                .show();
     }
 }
