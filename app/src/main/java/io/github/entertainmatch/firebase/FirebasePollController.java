@@ -265,17 +265,20 @@ public class FirebasePollController {
 
                 // TODO: not sure
                 FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                    HashMap<String, Long> locationToCounts = new HashMap<>();
                     poll.getEventDatesStatus().forEach((locationId, facebookIdToChosen) -> {
-                        HashMap<String, Long> locationToCounts = new HashMap<>();
+                        if (locationId.equals("voted"))
+                            return;
+
                         long votes = 0L;
                         for (Boolean chosen : facebookIdToChosen.values()) {
                             votes += chosen ? 1 : 0;
                         }
 
                         locationToCounts.put(locationId, votes);
-                        ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
-                        FirebaseUserController.setupResultStage(pollId, facebookId);
                     });
+                    ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
+                    FirebaseUserController.setupResultStage(pollId, facebookId);
                 });
 
                 return Transaction.success(mutableData);

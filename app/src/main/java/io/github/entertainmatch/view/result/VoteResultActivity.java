@@ -1,6 +1,7 @@
 package io.github.entertainmatch.view.result;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,6 +25,7 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.*;
 import io.github.entertainmatch.model.VoteResultStage;
+import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
@@ -73,7 +75,7 @@ public class VoteResultActivity extends AppCompatActivity {
         //event = intent.getParcelableExtra(EVENT_KEY);
         //date = intent.getParcelableExtra(DATE_KEY);
 
-        facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
 
@@ -128,7 +130,8 @@ public class VoteResultActivity extends AppCompatActivity {
                 @Override
                 public void onDismissed(Snackbar transientBottomBar, int event) {
                     super.onDismissed(transientBottomBar, event);
-                    finish();
+
+                    onBackPressed();
                 }
             }).show();
         });
@@ -151,16 +154,13 @@ public class VoteResultActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void bindData() {
-//        Picasso.with(this)
-//                .load(event.getDrawableUri())
-//                .into(eventImage);
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
 
-//        eventName.setText(event.getTitle());
-//        eventPlace.setText(date.getPlace());
-//        String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
-//                .format(this.date.getDate());
-//        eventDate.setText(date);
+        if (getParent() != null)
+            startActivity(new Intent(this, LoginActivity.class));
+
+        finish();
     }
-
 }
