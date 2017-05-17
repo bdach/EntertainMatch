@@ -184,7 +184,6 @@ public class VoteCategoryActivity extends AppCompatActivity
                 public void onDismissed(Snackbar transientBottomBar, int event) {
                     FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                         poll.voteCategory(item);
-
                     });
                     super.onDismissed(transientBottomBar, event);
                 }

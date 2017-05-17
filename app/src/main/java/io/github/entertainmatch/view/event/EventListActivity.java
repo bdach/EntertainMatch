@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -86,7 +87,6 @@ public class EventListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
         pollId = getIntent().getStringExtra(PollStage.POLL_ID_KEY);
-        subscription = FirebasePollController.getPoll(pollId).subscribe(this::stageFinishCallback);
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
@@ -95,14 +95,15 @@ public class EventListActivity extends AppCompatActivity {
         }
 
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-            setupRecyclerView(recyclerView, poll.getChosenCategory());
-
-            Snackbar.make(coordinatorLayout,
-                    R.string.vote_event_start_tip,
-                    Snackbar.LENGTH_LONG)
-                    .show();
+            setupRecyclerView(recyclerView);
+            subscription = FirebasePollController.getPoll(pollId).subscribe(this::stageFinishCallback);
         });
 
+
+        Snackbar.make(coordinatorLayout,
+            R.string.vote_event_start_tip,
+            Snackbar.LENGTH_LONG)
+            .show();
 
         if (findViewById(R.id.event_detail_container) != null) {
             // The detail container view will be present only in the
@@ -127,6 +128,10 @@ public class EventListActivity extends AppCompatActivity {
                         }
                     })
                     .show();
+        } else {
+            FirebaseController.getEventsSingle(firebasePoll.getChosenCategory()).subscribe(events -> {
+                adapter.updateData(firebasePoll, events);
+            });
         }
     }
 
@@ -152,8 +157,8 @@ public class EventListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupRecyclerView(@NonNull RecyclerView recyclerView, String chosenCategory) {
-        adapter = new EventRecyclerViewAdapter(FirebaseController.getEventsObservable(chosenCategory));
+    private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
+        adapter = new EventRecyclerViewAdapter();
         recyclerView.setAdapter(adapter);
 
         ItemTouchHelper.SimpleCallback swipeCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -187,25 +192,21 @@ public class EventListActivity extends AppCompatActivity {
         private final List<Event> values = new ArrayList<>();
         private Map<String, Boolean> visible = new HashMap<>();
 
-        public EventRecyclerViewAdapter(Observable<List<? extends Event>> eventsObservable) {
-            FirebasePollController.getPoll(pollId).subscribe(poll ->
-                eventsObservable.subscribe(events -> {
-                    values.clear();
-                    Map<String, Boolean> userChoices = getUserChoices(poll);
-                    List<String> remainingIds = poll.getEventsToVote();
-                    if (userChoices == null) {
-                        for (Event event : events) {
-                            if (remainingIds.contains(event.getId())) {
-                                values.add(event);
-                                visible.put(event.getId(), true);
-                            }
-                        }
-                    } else {
-                        setVisible(userChoices, events);
+        public void updateData(FirebasePoll poll, List<? extends Event> events) {
+            values.clear();
+            Map<String, Boolean> userChoices = getUserChoices(poll);
+            List<String> remainingIds = poll.getEventsToVote();
+            if (userChoices == null) {
+                for (Event event : events) {
+                    if (remainingIds.contains(event.getId())) {
+                        values.add(event);
+                        visible.put(event.getId(), true);
                     }
-                    notifyDataSetChanged();
-                })
-            );
+                }
+            } else {
+                setVisible(userChoices, events);
+            }
+            notifyDataSetChanged();
         }
 
         private Map<String, Boolean> getUserChoices(FirebasePoll firebasePoll) {
@@ -246,8 +247,14 @@ public class EventListActivity extends AppCompatActivity {
                 Snackbar.make(coordinatorLayout,
                         String.format("You've chosen %s!", values.get(0).getTitle()),
                         Snackbar.LENGTH_LONG)
+                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+                                poll.voteEvent(values.get(0));
+                            }
+                        })
                         .show();
-                poll.voteEvent(values.get(0));
             }
         }
 

@@ -119,9 +119,9 @@ public class FirebaseUserController {
         });
     }
 
-    public static void setupEventStage(String pollId, Set<String> facebookIds, String hostFacebookId) {
+    public static void setupEventStage(String pollId, Set<String> facebookIds, String thisUserId) {
         for (String facebookId : facebookIds) {
-            ref.child(facebookId).child("events").child(pollId).setValue(true);
+            ref.child(facebookId).child("events").child(pollId).setValue(!facebookId.equals(thisUserId));
         }
     }
 }

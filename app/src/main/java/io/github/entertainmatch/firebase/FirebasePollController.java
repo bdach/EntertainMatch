@@ -271,7 +271,7 @@ public class FirebasePollController {
                         }
 
                         locationToCounts.put(locationId, votes);
-                        ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts));
+                        ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
                     });
                 });
 
