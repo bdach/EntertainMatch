@@ -233,11 +233,11 @@ public class EventListActivity extends AppCompatActivity {
             return new Snackbar.Callback() {
                 @Override
                 public void onDismissed(Snackbar transientBottomBar, int event) {
-                    if (event == DISMISS_EVENT_ACTION) return;
-                    FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                        poll.updateRemainingEvents(visible);
-                        checkOneChoiceLeft(poll);
-                    });
+                if (event == DISMISS_EVENT_ACTION) return;
+                FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+                    poll.updateRemainingEvents(visible);
+                    checkOneChoiceLeft(poll);
+                });
                 }
             };
         }
@@ -245,16 +245,16 @@ public class EventListActivity extends AppCompatActivity {
         private void checkOneChoiceLeft(FirebasePoll poll) {
             if (values.size() == 1) {
                 Snackbar.make(coordinatorLayout,
-                        String.format("You've chosen %s!", values.get(0).getTitle()),
-                        Snackbar.LENGTH_LONG)
-                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                super.onDismissed(transientBottomBar, event);
-                                poll.voteEvent(values.get(0));
-                            }
-                        })
-                        .show();
+                    String.format("You've chosen %s!", values.get(0).getTitle()),
+                    Snackbar.LENGTH_LONG)
+                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            poll.voteEvent(values.get(0));
+                        }
+                    })
+                    .show();
             }
         }
 

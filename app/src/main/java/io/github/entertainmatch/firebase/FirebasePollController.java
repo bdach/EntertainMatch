@@ -176,7 +176,7 @@ public class FirebasePollController {
 
                         // TODO: not sure
                         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                            FirebaseEventDateController.setup(poll, candidates.get(0));
+                            FirebaseEventDateController.setupDataStage(poll, candidates.get(0));
                         });
                     } else {
                         mutableData.child("eventsToVote").setValue(candidates);
@@ -213,6 +213,8 @@ public class FirebasePollController {
 
         eventDatesRef.child(locationId).child(participantId).setValue(false);
         eventDatesRef.child("voted").child(participantId).setValue(false);
+
+        FirebaseUserController.setupDateStage(pollId, participantId);
     }
 
     /**

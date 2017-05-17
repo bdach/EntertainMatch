@@ -37,7 +37,7 @@ public class FirebaseEventDateController {
      * @param poll Changed poll
      * @param victorious An event that has won event voting stage (it is not yet present in poll or might not me)
      */
-    public static void setup(FirebasePoll poll, String victorious) {
+    public static void setupDataStage(FirebasePoll poll, String victorious) {
         getEventDatesSingle(poll.getChosenCategory(), victorious).subscribe(events -> {
             for (FirebaseEventDate event : events.values()) {
                 for (String participantId : poll.getParticipants()) {

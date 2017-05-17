@@ -130,7 +130,15 @@ public class FirebaseUserController {
 
     public static void setupEventStage(String pollId, Set<String> facebookIds, String thisUserId) {
         for (String facebookId : facebookIds) {
-            ref.child(facebookId).child("events").child(pollId).setValue(!facebookId.equals(thisUserId));
+            ref.child(facebookId).child("events").child(pollId).setValue(true);
         }
+    }
+
+    public static void setupDateStage(String pollId, String facebookId) {
+        ref.child(facebookId).child("dates").child(pollId).setValue(true);
+    }
+
+    public static void setupResultStage(String pollId, String facebookId) {
+        ref.child(facebookId).child("finished").child(pollId).setValue(true);
     }
 }
