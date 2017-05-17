@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,6 +34,7 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.ParticipantList;
 import rx.Observable;
 import rx.Subscription;
@@ -122,9 +124,8 @@ public class EventListActivity extends AppCompatActivity {
                     .addCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar transientBottomBar, int event) {
-                            super.onDismissed(transientBottomBar, event);
-                            subscription.unsubscribe();
-                            finish();
+                        super.onDismissed(transientBottomBar, event);
+                        onBackPressed();
                         }
                     })
                     .show();
@@ -133,6 +134,25 @@ public class EventListActivity extends AppCompatActivity {
                 adapter.updateData(firebasePoll, events);
             });
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (getParent() == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        finish();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (subscription != null)
+            subscription.unsubscribe();
     }
 
     @Override
@@ -146,7 +166,7 @@ public class EventListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            NavUtils.navigateUpFromSameTask(this);
+            onBackPressed();
             return true;
         }
         if (id == R.id.show_participants && participantList != null) {
