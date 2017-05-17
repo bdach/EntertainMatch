@@ -23,6 +23,7 @@ import io.github.entertainmatch.model.EventDate;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.ListExt;
+import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.ParticipantList;
 import rx.Subscription;
 
@@ -64,7 +65,7 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
 
-                        finish();
+                        onBackPressed();
                     }
                 }).show();
             }
@@ -152,6 +153,20 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
             dialog.show();
             return true;
         }
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (getParent() == null)
+            startActivity(new Intent(this, LoginActivity.class));
+
+        finish();
     }
 }

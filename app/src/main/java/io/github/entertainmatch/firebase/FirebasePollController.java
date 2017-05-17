@@ -243,7 +243,7 @@ public class FirebasePollController {
             .child(facebookId)
             .setValue(true);
 
-        checkDateVotingMoveToNextStage(pollId);
+        checkDateVotingMoveToNextStage(pollId, facebookId);
     }
 
     /**
@@ -251,7 +251,7 @@ public class FirebasePollController {
      * TODO: not sure if there won't be any races between users
      * @param pollId Current poll
      */
-    private static void checkDateVotingMoveToNextStage(String pollId) {
+    private static void checkDateVotingMoveToNextStage(String pollId, String facebookId) {
         ref.child(pollId).child("eventDatesStatus").child("voted").runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -274,6 +274,7 @@ public class FirebasePollController {
 
                         locationToCounts.put(locationId, votes);
                         ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
+                        FirebaseUserController.setupResultStage(pollId, facebookId);
                     });
                 });
 

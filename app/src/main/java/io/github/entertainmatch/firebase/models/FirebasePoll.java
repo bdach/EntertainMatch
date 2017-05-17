@@ -5,6 +5,7 @@ import java.util.*;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.*;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
