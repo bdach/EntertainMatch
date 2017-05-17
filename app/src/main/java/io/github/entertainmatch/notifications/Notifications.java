@@ -10,7 +10,9 @@ import android.support.v4.content.ContextCompat;
 
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.VoteDateStage;
 import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.PollStageFactory;
 
 /**
@@ -68,6 +70,56 @@ public class Notifications {
                 .setAutoCancel(true); // hide on click
 
         Intent intent = PollStageFactory.get(VoteEventStage.class.toString(), pollId).getViewStageIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent = taskStackBuilder
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notificationBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+    }
+
+    public static void notifyDateStageStarted(Context context, String pollId) {
+        String title = "Choose event date!";
+        String text = "You and your friends have selected an event. It's time to decide on date!";
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setAutoCancel(true); // hide on click
+
+        Intent intent = PollStageFactory.get(VoteDateStage.class.toString(), pollId).getViewStageIntent(context);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(intent);
+        PendingIntent resultPendingIntent = taskStackBuilder
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notificationBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+    }
+
+    public static void notifyFinished(Context context, String pollId) {
+        String title = "Voting finished!";
+        String text = "Date has been established! Come and see the details!";
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setAutoCancel(true); // hide on click
+
+        Intent intent = PollStageFactory.get(VoteResultStage.class.toString(), pollId).getViewStageIntent(context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);

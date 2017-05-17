@@ -46,6 +46,21 @@ public class NotificationService extends IntentService {
                 }
             }
 
+            // date
+            for (Map.Entry<String, Boolean> entry : user.getDates().entrySet()) {
+                if (entry.getValue()) {
+                    Log.d("NotificationsServiceD", entry.getKey());
+                    Notifications.notifyDateStageStarted(this, entry.getKey());
+                }
+            }
+
+            // finish
+            for (Map.Entry<String, Boolean> entry : user.getFinished().entrySet()) {
+                if (entry.getValue()) {
+                    Log.d("NotificationsServiceF", entry.getKey());
+                    Notifications.notifyFinished(this, entry.getKey());
+                }
+            }
 
             FirebaseUserController.makePollsOldForUser(facebookId, user);
         });

@@ -109,6 +109,15 @@ public class FirebaseUserController {
                 for (String pollId : user.getEvents().keySet()) {
                     mutableData.child("events").child(pollId).setValue(false);
                 }
+
+                for (String pollId : user.getDates().keySet()) {
+                    mutableData.child("dates").child(pollId).setValue(false);
+                }
+
+                for (String pollId : user.getFinished().keySet()) {
+                    mutableData.child("finished").child(pollId).setValue(false);
+                }
+
                 return Transaction.success(mutableData);
             }
 
