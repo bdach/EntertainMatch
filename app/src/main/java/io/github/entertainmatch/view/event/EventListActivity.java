@@ -60,7 +60,6 @@ public class EventListActivity extends AppCompatActivity {
      */
     private boolean twoPane;
     private String pollId;
-    private Subscription poll;
 
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout coordinatorLayout;
@@ -120,12 +119,13 @@ public class EventListActivity extends AppCompatActivity {
         participantList = new ParticipantList(this, firebasePoll);
         participantList.fetchNames();
         if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
+            subscription.unsubscribe();
             Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
                     .addCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-                        onBackPressed();
+                        back();
                         }
                     })
                     .show();
@@ -139,7 +139,10 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        back();
+    }
 
+    public void back() {
         if (getParent() == null) {
             startActivity(new Intent(this, LoginActivity.class));
         }

@@ -85,11 +85,12 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         ArrayList<Category> sorted = new ArrayList<>(categories);
         Collections.sort(sorted, (o1, o2) -> o2.getVoteCount().compareTo(o1.getVoteCount()));
         List<Category> old = categories;
-        categories = sorted;
         for (int newIndex = 0; newIndex < categories.size(); ++newIndex) {
             int oldIndex = old.indexOf(categories.get(newIndex));
             notifyItemMoved(oldIndex, newIndex);
         }
+        categories.clear();
+        categories.addAll(sorted);
     }
 
     /**

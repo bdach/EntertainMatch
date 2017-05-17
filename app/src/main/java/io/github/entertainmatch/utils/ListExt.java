@@ -60,13 +60,17 @@ public class ListExt {
 
     public static <T> Boolean removeIf(ArrayList<T> list, Function<T, Boolean> predicate) {
         boolean changed = false;
+        List<T> filtered = new ArrayList<>();
         for (Iterator<T> iterator = list.iterator(); iterator.hasNext(); ) {
             T item = iterator.next();
-            if (predicate.apply(item)) {
-                list.remove(item);
+            if (!predicate.apply(item)) {
+                filtered.add(item);
+            } else {
                 changed = true;
             }
         }
+        list.clear();
+        list.addAll(filtered);
         return changed;
     }
 }

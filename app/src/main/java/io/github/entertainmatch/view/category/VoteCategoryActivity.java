@@ -139,12 +139,14 @@ public class VoteCategoryActivity extends AppCompatActivity
         if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
             fragment.updateCategories(poll.getVoteCounts(), poll.getVotedFor());
         } else {
+            subscription.unsubscribe();
             Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-                        onBackPressed();
+                        Log.e("XDDD", "Test");
+                        back();
                     }
                 })
                 .show();
@@ -153,8 +155,14 @@ public class VoteCategoryActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        if (getParent() == null)
+        super.onBackPressed();
+        back();
+    }
+
+    public void back() {
+        if (getParent() == null) {
             startActivity(new Intent(this, LoginActivity.class));
+        }
 
         finish();
     }
