@@ -2,10 +2,7 @@ package io.github.entertainmatch.utils;
 
 import android.text.TextUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Adrian Bednarz on 5/6/17.
@@ -67,5 +64,11 @@ public class HashMapExt {
             result.add(values[values.length - 1]);
 
         return result;
+    }
+
+    public static <T, U> void forEach(Map<T, U> map, Action2<T, U> action) {
+        for (Map.Entry<T, U> entry : map.entrySet()) {
+            action.perform(entry.getKey(), entry.getValue());
+        }
     }
 }

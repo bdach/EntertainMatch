@@ -266,7 +266,7 @@ public class FirebasePollController {
                 // TODO: not sure
                 FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                     HashMap<String, Long> locationToCounts = new HashMap<>();
-                    poll.getEventDatesStatus().forEach((locationId, facebookIdToChosen) -> {
+                    HashMapExt.forEach(poll.getEventDatesStatus(), (locationId, facebookIdToChosen) -> {
                         if (locationId.equals("voted"))
                             return;
 
