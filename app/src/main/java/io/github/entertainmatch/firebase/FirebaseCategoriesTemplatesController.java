@@ -13,6 +13,7 @@ import java.util.Map;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.utils.HashMapExt;
+import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import lombok.Setter;
 import rx.Observable;
@@ -54,5 +55,12 @@ public class FirebaseCategoriesTemplatesController {
         return RxFirebaseDatabase.observeSingleValueEvent(
             ref,
             DataSnapshotMapper.listOf(FirebaseCategoryTemplate.class));
+    }
+
+    public static Observable<Map<String, FirebaseCategoryTemplate>> getMap() {
+        return RxFirebaseDatabase.observeSingleValueEvent(
+                ref,
+                DataSnapshotMapper.listOf(FirebaseCategoryTemplate.class)
+        ).map(templates -> ListExt.toMap(templates, FirebaseCategoryTemplate::getId));
     }
 }

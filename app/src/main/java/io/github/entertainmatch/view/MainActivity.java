@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     public final static String FINISHED_POLL_ID_KEY = "poll_id";
 
     /**
-     * Name of the fragment back stack used to display settings.
+     * Name of the fragment backCleanup stack used to display settings.
      */
     private final static String SETTINGS_STACK_NAME = "settings_stack";
 
@@ -197,6 +198,13 @@ public class MainActivity extends AppCompatActivity
                 checkPollStatus(resultCode, data);
                 break;
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FacebookInitializer.init(getApplicationContext());
     }
 
     private void checkPollStatus(int resultCode, Intent data) {

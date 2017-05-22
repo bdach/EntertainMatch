@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 
+import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
@@ -140,15 +141,23 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        back();
+        backCleanup();
     }
 
-    public void back() {
-        if (getParent() == null) {
+    public void backCleanup() {
+        if (getCallingActivity() != null) {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
+        // no actions
+
         finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FacebookInitializer.init(getApplicationContext());
     }
 
     @Override

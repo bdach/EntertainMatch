@@ -17,6 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.model.EventDate;
@@ -55,6 +56,8 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @Override
     protected void onStart() {
         super.onStart();
+
+        FacebookInitializer.init(getApplicationContext());
 
         changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
             participantList = new ParticipantList(this, poll);
@@ -163,9 +166,15 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        backCleanup();
+    }
 
-        if (getParent() == null)
+    public void backCleanup() {
+        if (getCallingActivity() != null) {
             startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        // no actions
 
         finish();
     }

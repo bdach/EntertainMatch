@@ -25,6 +25,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.Person;
 import org.json.JSONObject;
@@ -51,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initFacebook();
 
         if (FacebookUsers.isUserLoggedIn(this)) {
             goToApp();
@@ -81,6 +81,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        FacebookInitializer.init(getApplicationContext());
+
         mAuth.addAuthStateListener(mAuthListener);
     }
 
@@ -194,9 +196,5 @@ public class LoginActivity extends AppCompatActivity {
     private void performFacebookLogin() {
         loginButton.performClick();
         loginButton.registerCallback(callbackManager, loginCallback);
-    }
-
-    private void initFacebook() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
     }
 }

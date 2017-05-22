@@ -8,19 +8,22 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebaseCategory;
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
@@ -62,6 +65,12 @@ public class VoteCategoryActivity extends AppCompatActivity
      */
     private Subscription subscription;
     private ParticipantList participantList;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FacebookInitializer.init(getApplicationContext());
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,16 +129,18 @@ public class VoteCategoryActivity extends AppCompatActivity
 
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                 for (String category : poll.getVoteCounts().keySet()) {
-                    Category template = FirebaseCategoriesTemplatesController.getCachedMap().get(category);
-                    categories.add(new Category(
-                            template.getName(),
-                            poll.getVoteCounts().get(template.getId()),
-                            poll.getVotedFor().get(facebookId).equals(template.getId()),
-                            template.getImageUrl(),
-                            template.getId()
-                        ));
+                    FirebaseCategoriesTemplatesController.getMap().subscribe(templates -> {
+                        FirebaseCategoryTemplate template = templates.get(category);
+                        categories.add(new Category(
+                                template.getName(),
+                                poll.getVoteCounts().get(template.getId()),
+                                poll.getVotedFor().get(facebookId).equals(template.getId()),
+                                template.getImageUrl(),
+                                template.getId()
+                            ));
+                        fragment.categoriesChanged();
+                    });
                 }
-                fragment.categoriesChanged();
         });
     }
 
@@ -145,7 +156,6 @@ public class VoteCategoryActivity extends AppCompatActivity
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-                        Log.e("XDDD", "Test");
                         NavigationHelper.back(VoteCategoryActivity.this, pollId);
                     }
                 })
@@ -156,13 +166,16 @@ public class VoteCategoryActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        back();
+        backCleanup();
     }
 
-    public void back() {
-        if (getParent() == null) {
+    public void backCleanup() {
+        if (getCallingActivity() != null) {
             startActivity(new Intent(this, LoginActivity.class));
         }
+
+        // no actions
+
         finish();
     }
 
