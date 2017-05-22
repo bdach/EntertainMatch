@@ -12,9 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
@@ -25,8 +22,11 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.view.LoginActivity;
+import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
 import rx.Subscription;
+
+import java.util.ArrayList;
 
 /**
  * Activity used for voting on an event category.
@@ -146,7 +146,7 @@ public class VoteCategoryActivity extends AppCompatActivity
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         Log.e("XDDD", "Test");
-                        back();
+                        NavigationHelper.back(VoteCategoryActivity.this, pollId);
                     }
                 })
                 .show();
@@ -163,7 +163,6 @@ public class VoteCategoryActivity extends AppCompatActivity
         if (getParent() == null) {
             startActivity(new Intent(this, LoginActivity.class));
         }
-
         finish();
     }
 

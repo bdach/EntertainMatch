@@ -35,6 +35,7 @@ import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteEventStage;
 import io.github.entertainmatch.view.LoginActivity;
+import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
 import rx.Observable;
 import rx.Subscription;
@@ -124,8 +125,8 @@ public class EventListActivity extends AppCompatActivity {
                     .addCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        back();
+                            super.onDismissed(transientBottomBar, event);
+                            NavigationHelper.back(EventListActivity.this, firebasePoll.getPollId());
                         }
                     })
                     .show();

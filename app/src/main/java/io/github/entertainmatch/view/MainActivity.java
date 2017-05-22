@@ -23,7 +23,6 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseController;
 import io.github.entertainmatch.firebase.FirebasePollController;
-import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
@@ -54,6 +53,8 @@ public class MainActivity extends AppCompatActivity
      * Key indicating that a poll has been created from within another activity.
      */
     public final static String NEW_POLL_RESPONSE_KEY = "new_poll";
+    public final static int FINISHED_POLL = 2;
+    public final static String FINISHED_POLL_ID_KEY = "poll_id";
 
     /**
      * Name of the fragment back stack used to display settings.
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity
     public void viewPollProgress(Poll poll) {
         PollStage stage = poll.getPollStage();
         Intent intent = stage.getViewStageIntent(this);
-        startActivity(intent);
+        MainActivity.this.startActivityForResult(intent, FINISHED_POLL);
     }
 
     @Override
@@ -192,7 +193,18 @@ public class MainActivity extends AppCompatActivity
             case NEW_POLL_REQUEST:
                 handleNewPoll(resultCode, data);
                 break;
+            case FINISHED_POLL:
+                checkPollStatus(resultCode, data);
+                break;
         }
+    }
+
+    private void checkPollStatus(int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) return;
+        String pollId = data.getStringExtra(FINISHED_POLL_ID_KEY);
+        FirebasePollController.getPollOnce(pollId)
+                .map(poll -> new Poll(poll, FacebookUsers.getCurrentUser(this).facebookId))
+                .subscribe(this::viewPollProgress);
     }
 
     private void handleNewPoll(int resultCode, Intent data) {

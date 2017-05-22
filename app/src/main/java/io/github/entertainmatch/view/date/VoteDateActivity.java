@@ -24,6 +24,7 @@ import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.LoginActivity;
+import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
 import rx.Subscription;
 
@@ -64,8 +65,7 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
-
-                        onBackPressed();
+                        NavigationHelper.back(VoteDateActivity.this, pollId);
                     }
                 }).show();
             }
