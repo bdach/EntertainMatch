@@ -129,7 +129,7 @@ public class FirebasePollController {
                         mutableData.child("drawableUri").setValue(imageUri);
                         FirebaseUserController.setupEventStage(pollId, votedFor.keySet(), facebookId);
 
-                        FirebaseController.getEventsSingle(winningCategories.get(0)).subscribe(events -> {
+                        FirebaseEventController.getEventsSingle(winningCategories.get(0)).subscribe(events -> {
                             ref.child(pollId).child("eventsToVote").setValue(ListExt.map(events, Event::getId));
                         });
 
@@ -182,6 +182,7 @@ public class FirebasePollController {
 
                     if (candidates.size() == 1) {
                         mutableData.child("stage").setValue(VoteDateStage.class.toString());
+                        mutableData.child("victoriousEvent").setValue(item.getId());
                         mutableData.child("drawableUri").setValue(item.getDrawableUri());
                         // TODO: not sure
                         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
@@ -287,6 +288,7 @@ public class FirebasePollController {
                         locationToCounts.put(locationId, votes);
                     });
                     ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
+                    FirebaseCompletedPollController.pollCompleted(poll);
                     FirebaseUserController.setupResultStage(pollId, facebookId);
                 });
 

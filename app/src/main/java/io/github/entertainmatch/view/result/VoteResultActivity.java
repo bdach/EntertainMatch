@@ -95,7 +95,7 @@ public class VoteResultActivity extends AppCompatActivity {
                 this.eventDate.setText(date);
             });
 
-            FirebaseController.getEventSingle(
+            FirebaseEventController.getEventSingle(
                     poll.getChosenCategory(),
                     poll.getVictoriousEvent()
                             .substring(poll.getChosenCategory().length())
@@ -126,7 +126,7 @@ public class VoteResultActivity extends AppCompatActivity {
 
             FirebasePollController.setIsGoing(pollId, facebookId, going);
             FirebaseUserController.removePollForUser(pollId, facebookId);
-            FirebaseEventController.addEventForUser(pollId, facebookId);
+            FirebaseUserEventController.addEventForUser(pollId, facebookId);
             notifyPollEnded();
             Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {

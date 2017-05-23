@@ -13,12 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 
 import com.squareup.picasso.Picasso;
@@ -29,7 +27,7 @@ import io.github.entertainmatch.R;
 
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Event;
@@ -38,7 +36,6 @@ import io.github.entertainmatch.model.VoteEventStage;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
-import rx.Observable;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -132,7 +129,7 @@ public class EventListActivity extends AppCompatActivity {
                     })
                     .show();
         } else {
-            FirebaseController.getEventsSingle(firebasePoll.getChosenCategory()).subscribe(events -> {
+            FirebaseEventController.getEventsSingle(firebasePoll.getChosenCategory()).subscribe(events -> {
                 adapter.updateData(firebasePoll, events);
             });
         }

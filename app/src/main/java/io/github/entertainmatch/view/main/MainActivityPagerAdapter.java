@@ -1,24 +1,16 @@
 package io.github.entertainmatch.view.main;
 
-import android.hardware.camera2.params.Face;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.FirebaseController;
-import io.github.entertainmatch.firebase.FirebaseEventController;
-import io.github.entertainmatch.firebase.FirebaseEventDateController;
+import io.github.entertainmatch.firebase.FirebaseUserEventController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.Poll;
-import io.github.entertainmatch.utils.PollStageFactory;
-import io.github.entertainmatch.view.main.EventFragment;
-import io.github.entertainmatch.view.main.PollFragment;
 import lombok.Getter;
 import rx.Subscription;
 
@@ -73,7 +65,7 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter {
         } else {
             EventFragment eventFragment = (EventFragment) fragment;
 
-            subscriptions.add(FirebaseEventController.getEventsForUser(facebookId)
+            subscriptions.add(FirebaseUserEventController.getEventsForUser(facebookId)
                 .subscribe(eventFragment::updatePoll));
         }
 

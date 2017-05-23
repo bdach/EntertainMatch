@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
-import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebaseLocationsController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
@@ -44,7 +44,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
     public void onBindViewHolder(final ViewHolder holder, int position) {
         FirebasePoll poll = values.get(position);
         holder.setItem(poll);
-        FirebaseController.getEventSingle(
+        FirebaseEventController.getEventSingle(
                 poll.getChosenCategory(),
                 poll.getVictoriousEvent().substring(poll.getChosenCategory().length())
         )
