@@ -126,7 +126,11 @@ public class CategoryFragment extends Fragment {
 
         for (Category category : categories) {
             category.setVoteCount(categoryToCount.get(category.getId()));
-            category.setVotedFor(category.getId().equals(votedFor.get(facebookId)));
+            // A vote can never be undone. This should prevent object graph updates
+            // from other users losing user selection
+            if (!category.isVotedFor()) {
+                category.setVotedFor(category.getId().equals(votedFor.get(facebookId)));
+            }
         }
 
         if (!ListExt.any(categories, Category::isVotedFor)) {

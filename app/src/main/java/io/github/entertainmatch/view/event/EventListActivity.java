@@ -99,6 +99,9 @@ public class EventListActivity extends AppCompatActivity {
 
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
             setupRecyclerView(recyclerView);
+            FirebaseController.getEventsSingle(poll.getChosenCategory()).subscribe(events -> {
+                adapter.updateData(poll, events);
+            });
             subscription = FirebasePollController.getPoll(pollId).subscribe(this::stageFinishCallback);
         });
 
@@ -131,10 +134,6 @@ public class EventListActivity extends AppCompatActivity {
                         }
                     })
                     .show();
-        } else {
-            FirebaseController.getEventsSingle(firebasePoll.getChosenCategory()).subscribe(events -> {
-                adapter.updateData(firebasePoll, events);
-            });
         }
     }
 
