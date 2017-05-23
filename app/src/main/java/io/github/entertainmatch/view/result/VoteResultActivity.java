@@ -27,6 +27,7 @@ import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.*;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.view.LoginActivity;
+import io.github.entertainmatch.view.MainActivity;
 import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
@@ -126,6 +127,7 @@ public class VoteResultActivity extends AppCompatActivity {
             FirebasePollController.setIsGoing(pollId, facebookId, going);
             FirebaseUserController.removePollForUser(pollId, facebookId);
             FirebaseEventController.addEventForUser(pollId, facebookId);
+            notifyPollEnded();
             Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                 @Override
@@ -136,6 +138,12 @@ public class VoteResultActivity extends AppCompatActivity {
                 }
             }).show();
         });
+    }
+
+    private void notifyPollEnded() {
+        Intent intent = new Intent();
+        intent.putExtra(MainActivity.POLL_FINISHED_ID_KEY, pollId);
+        setResult(RESULT_OK, intent);
     }
 
     @Override

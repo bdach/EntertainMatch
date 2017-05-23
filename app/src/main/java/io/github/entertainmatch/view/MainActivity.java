@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -55,7 +56,8 @@ public class MainActivity extends AppCompatActivity
      */
     public final static String NEW_POLL_RESPONSE_KEY = "new_poll";
     public final static int FINISHED_POLL = 2;
-    public final static String FINISHED_POLL_ID_KEY = "poll_id";
+    public final static String STAGE_FINISHED_POLL_ID_KEY = "stage_finished_poll_id";
+    public final static String POLL_FINISHED_ID_KEY = "finished_poll_id";
 
     /**
      * Name of the fragment backCleanup stack used to display settings.
@@ -209,10 +211,20 @@ public class MainActivity extends AppCompatActivity
 
     private void checkPollStatus(int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
-        String pollId = data.getStringExtra(FINISHED_POLL_ID_KEY);
-        FirebasePollController.getPollOnce(pollId)
-                .map(poll -> new Poll(poll, FacebookUsers.getCurrentUser(this).facebookId))
-                .subscribe(this::viewPollProgress);
+        Bundle extras = data.getExtras();
+
+        if (extras.containsKey(STAGE_FINISHED_POLL_ID_KEY)) {
+            String pollId = data.getStringExtra(STAGE_FINISHED_POLL_ID_KEY);
+            FirebasePollController.getPollOnce(pollId)
+                    .map(poll -> new Poll(poll, FacebookUsers.getCurrentUser(this).facebookId))
+                    .subscribe(this::viewPollProgress);
+        }
+
+        if (extras.containsKey(POLL_FINISHED_ID_KEY)) {
+            String pollId = data.getStringExtra(POLL_FINISHED_ID_KEY);
+            PollFragment fragment = (PollFragment) pagerAdapter.getItem(0);
+            fragment.deletePoll(pollId);
+        }
     }
 
     private void handleNewPoll(int resultCode, Intent data) {
