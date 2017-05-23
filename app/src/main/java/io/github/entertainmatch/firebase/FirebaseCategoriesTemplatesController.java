@@ -6,6 +6,7 @@ import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.utils.ListExt;
 import lombok.Getter;
 import lombok.Setter;
 import rx.Observable;
@@ -56,5 +57,12 @@ public class FirebaseCategoriesTemplatesController {
 
     public static String getDrawableForCategory(String categoryId) {
         return cachedMap.get(categoryId).getImageUrl();
+    }
+
+    public static Observable<Map<String, FirebaseCategoryTemplate>> getMap() {
+        return RxFirebaseDatabase.observeSingleValueEvent(
+                ref,
+                DataSnapshotMapper.listOf(FirebaseCategoryTemplate.class)
+        ).map(templates -> ListExt.toMap(templates, FirebaseCategoryTemplate::getId));
     }
 }

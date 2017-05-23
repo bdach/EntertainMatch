@@ -22,6 +22,7 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.*;
 import io.github.entertainmatch.model.VoteResultStage;
@@ -155,11 +156,23 @@ public class VoteResultActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        FacebookInitializer.init(getApplicationContext());
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
+        backCleanup();
+    }
 
-        if (getParent() != null)
+    public void backCleanup() {
+        if (getCallingActivity() != null) {
             startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        // no actions
 
         finish();
     }
