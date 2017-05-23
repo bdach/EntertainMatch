@@ -7,6 +7,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.models.FirebaseEventDate;
+import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.firebase.models.FirebaseUser;
+import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.model.Event;
+import io.github.entertainmatch.model.EventDate;
+import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.PollStub;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.VoteDateStage;
+import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.model.VoteResultStage;
+import io.github.entertainmatch.utils.HashMapExt;
+import io.github.entertainmatch.utils.ListExt;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,16 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.models.FirebaseEventDate;
-import io.github.entertainmatch.firebase.models.FirebaseUser;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.*;
-import io.github.entertainmatch.utils.HashMapExt;
-import io.github.entertainmatch.utils.ListExt;
-import rx.Observable;
-import rx.subjects.PublishSubject;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -86,7 +93,7 @@ public class FirebasePollController {
 
         // return poll id
         String pollId = firebasePollRef.getKey();
-        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, false);
+        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, false, null);
     }
 
     public static Observable<FirebasePoll> getPoll(String pollId) {
@@ -116,7 +123,10 @@ public class FirebasePollController {
 
                     if (winningCategories.size() == 1) {
                         mutableData.child("stage").setValue(VoteEventStage.class.toString());
-                        mutableData.child("chosenCategory").setValue(winningCategories.get(0));
+                        String winningCategory = winningCategories.get(0);
+                        mutableData.child("chosenCategory").setValue(winningCategory);
+                        String imageUri = FirebaseCategoriesTemplatesController.getDrawableForCategory(winningCategory);
+                        mutableData.child("drawableUri").setValue(imageUri);
                         FirebaseUserController.setupEventStage(pollId, votedFor.keySet(), facebookId);
 
                         FirebaseController.getEventsSingle(winningCategories.get(0)).subscribe(events -> {
@@ -159,21 +169,20 @@ public class FirebasePollController {
                 .setValue(selections);
     }
 
-    public static void voteEvent(String pollId, String facebookId, String itemId) {
+    public static void voteEvent(String pollId, String facebookId, Event item) {
         ref.child(pollId).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
                 MutableData eventVotesRef = mutableData.child("eventVotes");
                 HashMap<String, String> eventVotes = (HashMap<String, String>) eventVotesRef.getValue();
-                eventVotes.put(facebookId, itemId);
+                eventVotes.put(facebookId, item.getId());
                 eventVotesRef.setValue(eventVotes);
                 if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
                     List<String> candidates = HashMapExt.mostFrequent(eventVotes);
 
                     if (candidates.size() == 1) {
                         mutableData.child("stage").setValue(VoteDateStage.class.toString());
-                        mutableData.child("victoriousEvent").setValue(candidates.get(0));
-
+                        mutableData.child("drawableUri").setValue(item.getDrawableUri());
                         // TODO: not sure
                         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                             FirebaseEventDateController.setupDataStage(poll, candidates.get(0));

@@ -2,10 +2,7 @@ package io.github.entertainmatch.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import io.github.entertainmatch.firebase.FirebaseController;
-import io.github.entertainmatch.firebase.FirebasePollController;
+import android.support.annotation.Nullable;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.utils.PollStageFactory;
@@ -13,10 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Bartlomiej Dach
@@ -44,6 +37,8 @@ public class Poll implements Parcelable {
     @Setter
     private String pollId;
     private final Boolean votingComplete;
+    @Nullable
+    private String drawableUri = null;
 
     protected Poll(Parcel in) {
         name = in.readString();
@@ -77,6 +72,7 @@ public class Poll implements Parcelable {
         }).toArray(new Person[firebasePoll.getParticipants().size()]);
         this.pollId = firebasePoll.getPollId();
         this.votingComplete = firebasePoll.votingComplete(userId);
+        this.drawableUri = firebasePoll.getDrawableUri();
     }
 
     @Override

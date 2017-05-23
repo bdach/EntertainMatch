@@ -4,18 +4,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
+import io.github.entertainmatch.model.Category;
+import lombok.Getter;
+import lombok.Setter;
+import rx.Observable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
-import io.github.entertainmatch.model.Category;
-import io.github.entertainmatch.utils.HashMapExt;
-import lombok.Getter;
-import lombok.Setter;
-import rx.Observable;
 
 /**
  * Created by Adrian Bednarz on 5/5/17.
@@ -54,5 +52,9 @@ public class FirebaseCategoriesTemplatesController {
         return RxFirebaseDatabase.observeSingleValueEvent(
             ref,
             DataSnapshotMapper.listOf(FirebaseCategoryTemplate.class));
+    }
+
+    public static String getDrawableForCategory(String categoryId) {
+        return cachedMap.get(categoryId).getImageUrl();
     }
 }

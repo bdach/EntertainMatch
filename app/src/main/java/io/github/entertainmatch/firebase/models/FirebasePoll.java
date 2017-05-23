@@ -1,16 +1,24 @@
 package io.github.entertainmatch.firebase.models;
 
-import java.util.*;
-
+import android.support.annotation.Nullable;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
-import io.github.entertainmatch.firebase.FirebaseUserController;
-import io.github.entertainmatch.model.*;
+import io.github.entertainmatch.model.Category;
+import io.github.entertainmatch.model.Event;
+import io.github.entertainmatch.model.Person;
+import io.github.entertainmatch.model.PollStub;
+import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -55,9 +63,9 @@ public class FirebasePoll {
     private Map<String, String> votedFor = new HashMap<>();
     private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
     private Map<String, String> eventVotes = new HashMap<>();
-    private String chosenCategory;
+    private String chosenCategory = "";
 
-    private String victoriousEvent;
+    private String victoriousEvent = "";
     /**
      * Maps location id to user selection status (facebookId to boolean mapping)
      * Additionally under votes key keeps information about users that already voted.
@@ -72,13 +80,15 @@ public class FirebasePoll {
     /**
      * Location that has been chosen in event date stage
      */
-    private String chosenLocationId;
+    private String chosenLocationId = "";
 
     /**
      * List of event ids to vote.
      * Reduced when tie occur.
      */
     private List<String> eventsToVote;
+    @Nullable
+    private String drawableUri = null;
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
@@ -86,28 +96,32 @@ public class FirebasePoll {
      * @return FirebasePoll used in the cloud
      */
     public static FirebasePoll fromPoll(String hostFacebookId, PollStub pollStub, String pollId) {
-        List<String> membersFacebookIds = ListExt.map(Arrays.asList(pollStub.getMembers()), Person::getFacebookId);
-        membersFacebookIds.add(hostFacebookId);
+        return new FirebasePoll(hostFacebookId, pollStub, pollId);
+    }
 
-        HashMap<String, Integer> voteCounts = new HashMap<>();
-        HashMap<String, String> votedFor = new HashMap<>();
-        HashMap<String, String> eventVotes = new HashMap<>();
-        HashMap<String, HashMap<String, Boolean>> eventDatesStatus = new HashMap<>();
-        HashMap<String, Boolean> going = new HashMap<>();
+    public FirebasePoll(String hostFacebookId, PollStub pollStub, String pollId) {
+        participants = ListExt.map(Arrays.asList(pollStub.getMembers()), Person::getFacebookId);
+        participants.add(hostFacebookId);
+
+        voteCounts = new HashMap<>();
+        votedFor = new HashMap<>();
+        eventVotes = new HashMap<>();
+        eventDatesStatus = new HashMap<>();
+        going = new HashMap<>();
 
         for (Category category : FirebaseCategoriesTemplatesController.getCached()) {
             voteCounts.put(category.getId(), 0);
         }
 
-        for (String facebookId : membersFacebookIds)
+        for (String facebookId : participants)
         {
             votedFor.put(facebookId, NO_USER_VOTE);
             eventVotes.put(facebookId, NO_USER_VOTE);
         }
-
-        return new FirebasePoll(membersFacebookIds, pollStub.getName(), pollId,
-            VoteCategoryStage.class.toString(), voteCounts, votedFor, null,
-            eventVotes, "", "", eventDatesStatus, going, "", new ArrayList<>());
+        name = pollStub.getName();
+        this.pollId = pollId;
+        stage = VoteCategoryStage.class.toString();
+        eventsToVote = Collections.emptyList();
     }
 
     /**
@@ -147,6 +161,7 @@ public class FirebasePoll {
         victoriousEvent = updatedPoll.victoriousEvent;
         eventDatesStatus = updatedPoll.eventDatesStatus;
         going = updatedPoll.going;
+        drawableUri = updatedPoll.drawableUri;
     }
 
     /**
@@ -164,9 +179,8 @@ public class FirebasePoll {
      * @param event Event voted for by current user
      */
     public void voteEvent(Event event) {
-        String eventId = event.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
-        FirebasePollController.voteEvent(pollId, facebookId, eventId);
+        FirebasePollController.voteEvent(pollId, facebookId, event);
     }
 
     /**

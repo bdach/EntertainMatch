@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
@@ -79,6 +81,8 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
         LinearLayout memberAvatarLayout;
         @BindView(R.id.poll_view_progress)
         Button viewProgressButton;
+        @BindView(R.id.poll_image)
+        ImageView pollImage;
         /**
          * The backing {@link Poll} item.
          */
@@ -108,6 +112,14 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
                 }
                 AvatarHelper.addMemberAvatar(person.getFacebookId(), memberAvatarLayout, listener.getContext());
                 counter++;
+            }
+            String uri = poll.getDrawableUri();
+            if (uri != null) {
+                Picasso.with(listener.getContext())
+                        .load(uri)
+                        .into(pollImage);
+            } else {
+                pollImage.setImageDrawable(null);
             }
         }
 
