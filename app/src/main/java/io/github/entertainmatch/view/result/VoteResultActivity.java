@@ -25,6 +25,7 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.*;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.MainActivity;
@@ -38,9 +39,6 @@ public class VoteResultActivity extends AppCompatActivity {
     private TextView eventName;
     private TextView eventPlace;
     private TextView eventDate;
-
-    //private Event event;
-    //private EventDate date;
 
     private Button buttonYes;
     private Button buttonNo;
@@ -73,38 +71,23 @@ public class VoteResultActivity extends AppCompatActivity {
 
         footer = (RelativeLayout) findViewById(R.id.result_footer);
 
-        //Intent intent = getIntent();
-        //event = intent.getParcelableExtra(EVENT_KEY);
-        //date = intent.getParcelableExtra(DATE_KEY);
-
         facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
         pollId = getIntent().getStringExtra(VoteResultStage.POLL_ID_KEY);
-        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-
+        FirebaseCompletedPollController.getCompletedPollOnce(pollId).subscribe(poll -> {
             footer.setVisibility(poll.votingComplete(facebookId) ? View.GONE : View.VISIBLE);
+
             participantList = new ParticipantList(this, poll);
             participantList.fetchNames();
 
-            FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
-                eventPlace.setText(location.getPlace());
-            });
+            eventPlace.setText(poll.getLocation().getPlace());
+            String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
+                    .format(poll.getEventDate().getDate());
+            eventDate.setText(date);
 
-            FirebaseEventDateController.getEventSingle(poll.getChosenCategory(), poll.getVictoriousEvent(), poll.getChosenLocationId()).subscribe(eventDate -> {
-                String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
-                        .format(eventDate.getDate());
-                this.eventDate.setText(date);
-            });
-
-            FirebaseEventController.getEventSingle(
-                    poll.getChosenCategory(),
-                    poll.getVictoriousEvent()
-                            .substring(poll.getChosenCategory().length())
-            ).subscribe(firebaseEvent -> {
-                Picasso.with(this)
-                        .load(firebaseEvent.getDrawableUri())
-                        .into(eventImage);
-                eventName.setText(firebaseEvent.getTitle());
-            });
+            Picasso.with(this)
+                    .load(poll.getEvent().getDrawableUri())
+                    .into(eventImage);
+            eventName.setText(poll.getEvent().getTitle());
         });
 
         buttonYes.setOnClickListener(v -> {
@@ -114,17 +97,15 @@ public class VoteResultActivity extends AppCompatActivity {
         buttonNo.setOnClickListener(v -> {
             buttonListener(false);
         });
-
-        //bindData();
     }
 
     private void buttonListener(boolean going) {
-        FirebasePollController.getPoll(pollId).subscribe(poll -> {
+        FirebaseCompletedPollController.getCompletedPoll(pollId).subscribe(poll -> {
             Map<String, Boolean> goingMap = poll.getGoing();
             if (goingMap != null && goingMap.containsKey(facebookId))
                 return;
 
-            FirebasePollController.setIsGoing(pollId, facebookId, going);
+            FirebaseCompletedPollController.setIsGoing(pollId, facebookId, going);
             FirebaseUserController.removePollForUser(pollId, facebookId);
             FirebaseUserEventController.addEventForUser(pollId, facebookId);
             notifyPollEnded();

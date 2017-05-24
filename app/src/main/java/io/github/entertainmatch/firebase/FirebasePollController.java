@@ -93,7 +93,7 @@ public class FirebasePollController {
 
         // return poll id
         String pollId = firebasePollRef.getKey();
-        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, false, null);
+        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, null);
     }
 
     public static Observable<FirebasePoll> getPoll(String pollId) {
@@ -337,9 +337,5 @@ public class FirebasePollController {
             return observable;
         });
         });
-    }
-
-    public static void setIsGoing(String pollId, String facebookId, boolean going) {
-        ref.child(pollId).child("going").child(facebookId).setValue(going);
     }
 }

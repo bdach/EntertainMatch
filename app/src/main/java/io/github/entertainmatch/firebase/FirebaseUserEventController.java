@@ -3,6 +3,7 @@ package io.github.entertainmatch.firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.model.Person;
@@ -21,9 +22,9 @@ public class FirebaseUserEventController {
         ref.child(person.getFacebookId());
     }
 
-    public static Observable<FirebasePoll> getEventsForUser(String facebookId) {
+    public static Observable<FirebaseCompletedPoll> getEventsForUser(String facebookId) {
         return RxFirebaseDatabase.observeValueEvent(ref.child(facebookId), FirebaseUser.class)
-                .flatMap(user -> Observable.merge(FirebasePollController.getPollsForUser(user)));
+                .flatMap(user -> Observable.merge(FirebaseCompletedPollController.getPollsForUser(user)));
     }
 
     public static void addEventForUser(String pollId, String userId) {

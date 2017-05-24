@@ -24,6 +24,7 @@ import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
@@ -246,9 +247,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onEventClicked(FirebasePoll item) {
+    public void onEventClicked(FirebaseCompletedPoll item) {
         Intent intent = new Intent(this, VoteResultActivity.class);
-        intent.putExtra(VoteResultStage.POLL_ID_KEY, item.getPollId());
+        intent.putExtra(VoteResultStage.POLL_ID_KEY, item.getId());
         startActivity(intent);
     }
 }

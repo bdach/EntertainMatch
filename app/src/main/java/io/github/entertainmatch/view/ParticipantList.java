@@ -6,12 +6,15 @@ import android.util.Log;
 import com.facebook.GraphRequest;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FriendsProvider;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.utils.HashMapExt;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Bartlomiej Dach
@@ -25,6 +28,12 @@ public class ParticipantList {
     public ParticipantList(Context context, FirebasePoll poll) {
         this.context = context;
         this.idList = poll.getParticipants();
+        this.nameList = new ArrayList<>();
+    }
+
+    public ParticipantList(Context context, FirebaseCompletedPoll completedPoll) {
+        this.context = context;
+        this.idList = completedPoll.goingList();
         this.nameList = new ArrayList<>();
     }
 

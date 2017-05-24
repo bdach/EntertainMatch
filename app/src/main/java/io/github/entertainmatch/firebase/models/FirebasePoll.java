@@ -73,11 +73,6 @@ public class FirebasePoll {
     private Map<String, HashMap<String, Boolean>> eventDatesStatus;
 
     /**
-     * Maps users with their going choices.
-     */
-    private Map<String, Boolean> going;
-
-    /**
      * Location that has been chosen in event date stage
      */
     private String chosenLocationId = "";
@@ -107,7 +102,6 @@ public class FirebasePoll {
         votedFor = new HashMap<>();
         eventVotes = new HashMap<>();
         eventDatesStatus = new HashMap<>();
-        going = new HashMap<>();
 
         for (Category category : FirebaseCategoriesTemplatesController.getCached()) {
             voteCounts.put(category.getId(), 0);
@@ -160,7 +154,6 @@ public class FirebasePoll {
         chosenCategory = updatedPoll.chosenCategory;
         victoriousEvent = updatedPoll.victoriousEvent;
         eventDatesStatus = updatedPoll.eventDatesStatus;
-        going = updatedPoll.going;
         drawableUri = updatedPoll.drawableUri;
     }
 
@@ -192,9 +185,5 @@ public class FirebasePoll {
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         ListExt.zippedForeach(locationIds, selections, (l, s) -> FirebasePollController.chooseDate(pollId, l, facebookId, s));
         FirebasePollController.dateVotingFinished(pollId, facebookId);
-    }
-
-    public boolean votingComplete(String userId) {
-        return going != null && going.containsKey(userId);
     }
 }

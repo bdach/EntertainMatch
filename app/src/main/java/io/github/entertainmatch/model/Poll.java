@@ -36,7 +36,6 @@ public class Poll implements Parcelable {
      */
     @Setter
     private String pollId;
-    private final Boolean votingComplete;
     @Nullable
     private String drawableUri = null;
 
@@ -46,7 +45,6 @@ public class Poll implements Parcelable {
         members = in.createTypedArray(Person.CREATOR);
         String stageName = in.readString();
         pollStage = PollStageFactory.get(stageName, pollId);
-        votingComplete = in.readInt() != 0;
     }
 
     public static final Creator<Poll> CREATOR = new Creator<Poll>() {
@@ -71,7 +69,6 @@ public class Poll implements Parcelable {
             return person;
         }).toArray(new Person[firebasePoll.getParticipants().size()]);
         this.pollId = firebasePoll.getPollId();
-        this.votingComplete = firebasePoll.votingComplete(userId);
         this.drawableUri = firebasePoll.getDrawableUri();
     }
 
@@ -86,7 +83,6 @@ public class Poll implements Parcelable {
         dest.writeString(pollId);
         dest.writeTypedArray(members, 0);
         dest.writeString(stageName());
-        dest.writeInt(votingComplete ? 1 : 0);
     }
 
     public String stageName() {

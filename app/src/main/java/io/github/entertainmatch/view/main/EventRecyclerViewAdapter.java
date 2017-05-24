@@ -15,6 +15,7 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebaseEventDateController;
 import io.github.entertainmatch.firebase.FirebaseLocationsController;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 
 import java.text.DateFormat;
@@ -25,10 +26,10 @@ import java.util.Map;
 public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecyclerViewAdapter.ViewHolder> {
 
     private static final int MAX_AVATARS = 3;
-    private final List<FirebasePoll> values;
+    private final List<FirebaseCompletedPoll> values;
     private final EventFragment.OnEventSelectedListener listener;
 
-    public EventRecyclerViewAdapter(List<FirebasePoll> items, EventFragment.OnEventSelectedListener listener) {
+    public EventRecyclerViewAdapter(List<FirebaseCompletedPoll> items, EventFragment.OnEventSelectedListener listener) {
         values = items;
         this.listener = listener;
     }
@@ -42,26 +43,8 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        FirebasePoll poll = values.get(position);
+        FirebaseCompletedPoll poll = values.get(position);
         holder.setItem(poll);
-        FirebaseEventController.getEventSingle(
-                poll.getChosenCategory(),
-                poll.getVictoriousEvent().substring(poll.getChosenCategory().length())
-        )
-                .subscribe(event -> {
-                    Picasso.with(listener.getContext())
-                            .load(event.getDrawableUri())
-                            .into(holder.eventImage);
-                    holder.eventName.setText(event.getTitle());
-                });
-        FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId()).subscribe(location -> {
-            holder.eventPlace.setText(location.getPlace());
-        });
-        FirebaseEventDateController.getEventSingle(poll.getChosenCategory(), poll.getVictoriousEvent(), poll.getChosenLocationId()).subscribe(eventDate -> {
-            String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
-                    .format(eventDate.getDate());
-            holder.eventDate.setText(date);
-        });
 
         holder.detailButton.setOnClickListener(v -> {
             if (null != listener) {
@@ -77,7 +60,7 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View view;
-        public FirebasePoll item;
+        public FirebaseCompletedPoll item;
 
         @BindView(R.id.event_image)
         ImageView eventImage;
@@ -98,14 +81,23 @@ public class EventRecyclerViewAdapter extends RecyclerView.Adapter<EventRecycler
             ButterKnife.bind(this, view);
         }
 
-        public void setItem(FirebasePoll item) {
+        public void setItem(FirebaseCompletedPoll item) {
             this.item = item;
+
+            Picasso.with(listener.getContext())
+                    .load(item.getEvent().getDrawableUri())
+                    .into(eventImage);
+            eventName.setText(item.getEvent().getTitle());
+            eventPlace.setText(item.getLocation().getPlace());
+            String date = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, Locale.ENGLISH)
+                    .format(item.getEventDate().getDate());
+            eventDate.setText(date);
+
             Integer counter = 0;
-            for (Map.Entry<String, Boolean> goingEntry : item.getGoing().entrySet()) {
-                if (!goingEntry.getValue()) continue;
+            for (String participant : item.goingList()) {
                 counter++;
                 if (counter >= MAX_AVATARS) continue;
-                AvatarHelper.addMemberAvatar(goingEntry.getKey(), avatarLayout, listener.getContext());
+                AvatarHelper.addMemberAvatar(participant, avatarLayout, listener.getContext());
             }
             if (counter >= MAX_AVATARS) {
                 AvatarHelper.addPlus(counter - MAX_AVATARS, avatarLayout, listener.getContext());

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import lombok.NoArgsConstructor;
@@ -23,8 +24,8 @@ import java.util.Map;
 public class EventFragment extends Fragment {
 
     private OnEventSelectedListener listener;
-    private Map<String, Pair<Integer, FirebasePoll>> pollMap = new HashMap<>();
-    private ArrayList<FirebasePoll> polls = new ArrayList<>();
+    private Map<String, Pair<Integer, FirebaseCompletedPoll>> pollMap = new HashMap<>();
+    private ArrayList<FirebaseCompletedPoll> polls = new ArrayList<>();
     private EventRecyclerViewAdapter adapter;
 
     @Override
@@ -66,21 +67,21 @@ public class EventFragment extends Fragment {
         listener = null;
     }
 
-    public void updatePoll(FirebasePoll poll) {
-        if (pollMap.containsKey(poll.getPollId())) {
-            Pair<Integer, FirebasePoll> pair = pollMap.get(poll.getPollId());
+    public void updatePoll(FirebaseCompletedPoll poll) {
+        if (pollMap.containsKey(poll.getId())) {
+            Pair<Integer, FirebaseCompletedPoll> pair = pollMap.get(poll.getId());
             pair.second.update(poll);
             adapter.notifyItemChanged(pair.first);
         } else {
-            Pair<Integer, FirebasePoll> pair = Pair.create(polls.size(), poll);
-            pollMap.put(poll.getPollId(), pair);
+            Pair<Integer, FirebaseCompletedPoll> pair = Pair.create(polls.size(), poll);
+            pollMap.put(poll.getId(), pair);
             polls.add(poll);
             adapter.notifyItemInserted(polls.size() - 1);
         }
     }
 
     public interface OnEventSelectedListener {
-        void onEventClicked(FirebasePoll item);
+        void onEventClicked(FirebaseCompletedPoll item);
         Context getContext();
     }
 }

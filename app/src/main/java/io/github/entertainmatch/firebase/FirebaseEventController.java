@@ -80,7 +80,7 @@ public class FirebaseEventController {
         return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory).child(victoriousEvent), eventClass);
     }
 
-    private static Class<? extends Event> getClassForCategory(String category) {
+    static Class<? extends Event> getClassForCategory(String category) {
         Class<? extends Event> eventClass;
         switch (category) {
             case "movies":
