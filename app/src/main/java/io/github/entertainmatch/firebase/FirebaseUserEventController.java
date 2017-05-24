@@ -30,4 +30,8 @@ public class FirebaseUserEventController {
     public static void addEventForUser(String pollId, String userId) {
         ref.child(userId).child("polls").child(pollId).setValue(true);
     }
+
+    public static void removeEventForUser(String pollId, String userId) {
+        ref.child(userId).child("polls").child(pollId).setValue(null);
+    }
 }

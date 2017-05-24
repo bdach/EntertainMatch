@@ -6,14 +6,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import io.github.entertainmatch.R;
+import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.firebase.FirebaseUserEventController;
 import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
-import io.github.entertainmatch.firebase.models.FirebasePoll;
-import io.github.entertainmatch.model.Poll;
+import io.github.entertainmatch.model.Person;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -68,6 +68,26 @@ public class EventFragment extends Fragment {
     }
 
     public void updatePoll(FirebaseCompletedPoll poll) {
+        long time = System.currentTimeMillis();
+        Long eventTime = poll.getEventDate().getDate();
+        if (time < eventTime) {
+            updateUpcomingPoll(poll);
+        } else {
+            deleteOutdatedPoll(poll);
+        }
+    }
+
+    private void deleteOutdatedPoll(FirebaseCompletedPoll poll) {
+        if (pollMap.containsKey(poll.getId())) {
+            Pair<Integer, FirebaseCompletedPoll> pair = pollMap.get(poll.getId());
+            pollMap.remove(poll.getId());
+            adapter.notifyItemRemoved(pair.first);
+        }
+        Person person = FacebookUsers.getCurrentUser(listener.getContext());
+        FirebaseUserEventController.removeEventForUser(poll.getId(), person.facebookId);
+    }
+
+    private void updateUpcomingPoll(FirebaseCompletedPoll poll) {
         if (pollMap.containsKey(poll.getId())) {
             Pair<Integer, FirebaseCompletedPoll> pair = pollMap.get(poll.getId());
             pair.second.update(poll);
