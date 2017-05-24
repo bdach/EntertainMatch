@@ -287,8 +287,9 @@ public class FirebasePollController {
 
                         locationToCounts.put(locationId, votes);
                     });
-                    ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
-                    FirebaseCompletedPollController.pollCompleted(poll);
+                    String locationId = HashMapExt.getMax(locationToCounts).get(0);
+                    ref.child(pollId).child("chosenLocationId").setValue(locationId);
+                    FirebaseCompletedPollController.pollCompleted(poll, locationId);
                     FirebaseUserController.setupResultStage(pollId, facebookId);
                 });
 

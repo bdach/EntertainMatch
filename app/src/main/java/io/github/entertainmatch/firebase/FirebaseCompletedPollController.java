@@ -19,7 +19,6 @@ import rx.Observable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,7 @@ public class FirebaseCompletedPollController {
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference ref = database.getReference("completed");
 
-    public static void pollCompleted(FirebasePoll poll) {
+    public static void pollCompleted(FirebasePoll poll, String locationId) {
         Observable<? extends Event> eventSingle = FirebaseEventController.getEventSingle(
                 poll.getChosenCategory(),
                 poll.getVictoriousEvent().substring(poll.getChosenCategory().length())
@@ -40,9 +39,9 @@ public class FirebaseCompletedPollController {
         Observable<FirebaseEventDate> eventDateSingle = FirebaseEventDateController.getEventSingle(
                 poll.getChosenCategory(),
                 poll.getVictoriousEvent(),
-                poll.getChosenLocationId()
+                locationId
         );
-        Observable<FirebaseLocation> locationSingle = FirebaseLocationsController.getLocationOnce(poll.getChosenLocationId());
+        Observable<FirebaseLocation> locationSingle = FirebaseLocationsController.getLocationOnce(locationId);
         Observable.zip(eventSingle, eventDateSingle, locationSingle,
                 (event, eventDate, location) -> {
                     Map<String, Object> node = new HashMap<>();

@@ -39,6 +39,7 @@ public class ParticipantList {
 
     public void fetchNames() {
         nameList.clear();
+        if (idList.isEmpty()) return;
         List<GraphRequest> requests = FriendsProvider.getFriendsById(idList, response -> {
             try {
                 JSONObject responseObject = response.getJSONObject();
