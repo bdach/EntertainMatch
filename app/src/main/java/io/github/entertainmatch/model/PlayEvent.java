@@ -17,7 +17,6 @@ public class PlayEvent extends Event {
     private String cast;
     private String costumes;
     private String scenography;
-    private Integer duration;
     private String youtubeTrailerUrl;
 
     public static final Creator<PlayEvent> CREATOR = new Creator<PlayEvent>() {

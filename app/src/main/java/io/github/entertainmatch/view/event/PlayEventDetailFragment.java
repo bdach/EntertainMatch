@@ -101,7 +101,7 @@ public class PlayEventDetailFragment extends EventDetailFragment {
         castText.setText(event.getCast());
         costumesText.setText(event.getCostumes());
         scenographyText.setText(event.getScenography());
-        durationText.setText(event.getDuration().toString());
+        durationText.setText(event.getDuration());
     }
 
     @Override

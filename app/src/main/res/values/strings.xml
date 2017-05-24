@@ -77,4 +77,9 @@
     <string name="going_negative">Sorry to hear that :(</string>
     <string name="delete_completed">Delete from list</string>
     <string name="vote_category_tie">There was a tie. Vote for one of the remaining categories!</string>
+
+    <string name="no_calendar_permissions">Cannot add an event to a calendar - no permissions granted</string>
+    <string name="calendar_event_title" type="id">%1$s in %2$s</string>
+    <string name="calendar_event_description">Don\'t forget about an Entertain-Matched event</string>
+    <string name="calendar_failed">Failed to add an event to a calendar</string>
 </resources>
