@@ -27,6 +27,7 @@ import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
+import io.github.entertainmatch.view.UserPreferences;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -204,7 +205,7 @@ public class VoteCategoryActivity extends AppCompatActivity
                 @Override
                 public void onDismissed(Snackbar transientBottomBar, int event) {
                     FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                        poll.voteCategory(item);
+                        poll.voteCategory(item, UserPreferences.getCity(fragment.getContext()));
                     });
                     super.onDismissed(transientBottomBar, event);
                 }

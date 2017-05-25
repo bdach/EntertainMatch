@@ -61,7 +61,7 @@ public class FirebasePoll {
      * Maps facebookId to categoryId that given user voted for.
      */
     private Map<String, String> votedFor = new HashMap<>();
-    private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
+    private Map<String, List<String>> remainingEventChoices = new HashMap<>();
     private Map<String, String> eventVotes = new HashMap<>();
     private String chosenCategory = "";
 
@@ -122,11 +122,11 @@ public class FirebasePoll {
      * Registers vote for category in firebase
      * @param category Category voted for by current user
      */
-    public void voteCategory(Category category) {
+    public void voteCategory(Category category, String city) {
         String itemId = category.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
-        FirebasePollController.vote(pollId, facebookId, itemId);
+        FirebasePollController.vote(pollId, facebookId, itemId, city);
     }
 
     /**

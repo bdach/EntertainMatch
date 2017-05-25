@@ -14,8 +14,6 @@ import io.github.entertainmatch.firebase.FirebaseCityController;
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
 
-    public static final String PREF_LOCATION_KEY = "pref_location";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +28,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         screen.addPreference(category);
 
         ListPreference locationPreference = new ListPreference(context);
-        locationPreference.setKey(PREF_LOCATION_KEY);
+        locationPreference.setKey(UserPreferences.PREF_LOCATION_KEY);
         locationPreference.setTitle(R.string.pref_location_label);
         locationPreference.setSummary(R.string.pref_location_summary);
         FirebaseCityController.getCitiesOnce()
