@@ -77,4 +77,7 @@
     <string name="going_negative">Sorry to hear that :(</string>
     <string name="delete_completed">Delete from list</string>
     <string name="vote_category_tie">There was a tie. Vote for one of the remaining categories!</string>
+    <string name="location_settings_category">Location settings</string>
+    <string name="pref_location_label">Your location</string>
+    <string name="pref_location_summary">Choose which location to use when searching for events</string>
 </resources>
