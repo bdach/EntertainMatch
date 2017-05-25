@@ -1,0 +1,1422 @@
+{
+  "categories" : [ {
+    "id" : "movies",
+    "imageUrl" : "http://i.imgur.com/ZJX2ghA.png",
+    "name" : "Movies"
+  }, {
+    "id" : "concerts",
+    "imageUrl" : "http://i.imgur.com/eQdl8hk.jpg",
+    "name" : "Concerts"
+  }, {
+    "id" : "plays",
+    "imageUrl" : "http://i.imgur.com/dF85vKN.jpg",
+    "name" : "Plays"
+  }, {
+    "id" : "staffpicks",
+    "imageUrl" : "http://i.imgur.com/UaCIXqk.jpg",
+    "name" : "Staff Picks"
+  } ],
+  "cities" : [ "Warsaw", "Poznań" ],
+  "completed" : {
+    "-Kkqto69IXaj1bURZolx" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "eventDate" : {
+        "categoryId" : "movies",
+        "date" : 1494358800000,
+        "eventId" : "movies2",
+        "locationId" : "_1"
+      },
+      "going" : {
+        "101257200447439" : true
+      },
+      "id" : "-Kkqto69IXaj1bURZolx",
+      "location" : {
+        "id" : "_1",
+        "lat" : 52.18735,
+        "lon" : 21.061075,
+        "place" : "Cinema City Warszawa, Sadyba"
+      },
+      "participants" : [ "111840479374488", "101257200447439" ]
+    },
+    "-Kku7Jw2zKmAizh9LQTk" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-Kku7Jw2zKmAizh9LQTk",
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-Kku9oyKQej-oh_pX6wu" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "eventDate" : {
+        "categoryId" : "movies",
+        "date" : 1496351600000,
+        "eventId" : "movies2",
+        "locationId" : "_0"
+      },
+      "id" : "-Kku9oyKQej-oh_pX6wu",
+      "location" : {
+        "id" : "_0",
+        "lat" : 52.179182,
+        "lon" : 21.004422,
+        "place" : "Cinema City Warszawa, Galeria Mokotów"
+      },
+      "participants" : [ "111840479374488", "101257200447439" ]
+    },
+    "-KkuBlYwyImYTTMkO0zr" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-KkuBlYwyImYTTMkO0zr",
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-KkuCZHoXl2uzFEvZz9b" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-KkuCZHoXl2uzFEvZz9b",
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-KkuDijf_kiKw86kecgk" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-KkuDijf_kiKw86kecgk",
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-KkuFXmb7wwt8LCGGlQa" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Scarlett Johanssn, Pilou Asbaek, Takeshi Kitano",
+        "description" : "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
+        "director" : "Rupert Sanders",
+        "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+        "id" : "movies0",
+        "rottenTomatoesScore" : 42,
+        "title" : "Ghost in the Shell",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=G4VmJcZR0Yg"
+      },
+      "eventDate" : {
+        "categoryId" : "movies",
+        "date" : 1496351600000,
+        "eventId" : "movies0",
+        "locationId" : "_0"
+      },
+      "id" : "-KkuFXmb7wwt8LCGGlQa",
+      "location" : {
+        "id" : "_0",
+        "lat" : 52.179182,
+        "lon" : 21.004422,
+        "place" : "Cinema City Warszawa, Galeria Mokotów"
+      },
+      "participants" : [ "111840479374488", "101257200447439" ]
+    },
+    "-KkuG7ciDG-RtGJGe3xe" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-KkuG7ciDG-RtGJGe3xe",
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-KkuGPAtEKgMEd4N0n46" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
+        "description" : "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
+        "director" : "Rupert Sanders",
+        "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+        "id" : "movies1",
+        "rottenTomatoesScore" : 42,
+        "title" : "Ghost in the Shell",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=G4VmJcZR0Yg"
+      },
+      "id" : "-KkuGPAtEKgMEd4N0n46",
+      "participants" : [ "111840479374488", "101257200447439" ]
+    },
+    "-KkuHE0ee8pkxxIHqc0S" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-KkuHE0ee8pkxxIHqc0S",
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-KkuIaFDqKAjo_Dg9CK-" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "id" : "-KkuIaFDqKAjo_Dg9CK-",
+      "participants" : [ "110405752860783", "101257200447439" ]
+    },
+    "-KkuJbJ9rsfxP1K86mRg" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
+        "description" : "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
+        "director" : "Rupert Sanders",
+        "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+        "id" : "movies1",
+        "rottenTomatoesScore" : 42,
+        "title" : "Ghost in the Shell",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=G4VmJcZR0Yg"
+      },
+      "eventDate" : {
+        "categoryId" : "movies",
+        "date" : 1496351600000,
+        "eventId" : "movies1",
+        "locationId" : "_0"
+      },
+      "id" : "-KkuJbJ9rsfxP1K86mRg",
+      "location" : {
+        "id" : "_0",
+        "lat" : 52.179182,
+        "lon" : 21.004422,
+        "place" : "Cinema City Warszawa, Galeria Mokotów"
+      },
+      "participants" : [ "111840479374488", "101257200447439" ]
+    },
+    "-KkuMJvnxbBA1D7gKG0t" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "duration" : 2137,
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "eventDate" : {
+        "categoryId" : "movies",
+        "date" : 1496351600000,
+        "eventId" : "movies2",
+        "locationId" : "_0"
+      },
+      "going" : {
+        "110405752860783" : true
+      },
+      "id" : "-KkuMJvnxbBA1D7gKG0t",
+      "location" : {
+        "id" : "_0",
+        "lat" : 52.179182,
+        "lon" : 21.004422,
+        "place" : "Cinema City Warszawa, Galeria Mokotów"
+      },
+      "participants" : [ "101257200447439", "110405752860783" ]
+    },
+    "-KkudnMOIGfO8Urww9HO" : {
+      "category" : "movies",
+      "event" : {
+        "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+        "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+        "director" : "F. Gary Gray",
+        "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+        "duration" : 100,
+        "id" : "movies2",
+        "rottenTomatoesScore" : 67,
+        "title" : "The Fate of the Furious",
+        "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+      },
+      "eventDate" : {
+        "categoryId" : "movies",
+        "date" : 1496351600000,
+        "eventId" : "movies2",
+        "locationId" : "_0"
+      },
+      "going" : {
+        "110405752860783" : true
+      },
+      "id" : "-KkudnMOIGfO8Urww9HO",
+      "location" : {
+        "id" : "_0",
+        "lat" : 52.179182,
+        "lon" : 21.004422,
+        "place" : "Cinema City Warszawa, Galeria Mokotów"
+      },
+      "participants" : [ "101257200447439", "110405752860783" ]
+    }
+  },
+  "event_dates" : {
+    "movies" : {
+      "movies0" : {
+        "_0" : {
+          "categoryId" : "movies",
+          "date" : 1496351600000,
+          "eventId" : "movies0",
+          "locationId" : "_0"
+        },
+        "_1" : {
+          "categoryId" : "movies",
+          "date" : 149635880000,
+          "eventId" : "movies0",
+          "locationId" : "_1"
+        }
+      },
+      "movies1" : {
+        "_0" : {
+          "categoryId" : "movies",
+          "date" : 1496351600000,
+          "eventId" : "movies1",
+          "locationId" : "_0"
+        },
+        "_1" : {
+          "categoryId" : "movies",
+          "date" : 1496358800000,
+          "eventId" : "movies1",
+          "locationId" : "_1"
+        }
+      },
+      "movies2" : {
+        "_0" : {
+          "categoryId" : "movies",
+          "date" : 1496351600000,
+          "eventId" : "movies2",
+          "locationId" : "_0"
+        },
+        "_1" : {
+          "categoryId" : "movies",
+          "date" : 1496358800000,
+          "eventId" : "movies2",
+          "locationId" : "_1"
+        }
+      }
+    }
+  },
+  "events" : {
+    "concerts" : [ {
+      "bandMembers" : "Thom Yorke (lead vocals, guitar, piano, keyboards), Jonny Greenwood (lead guitar, keyboards, other instruments), Ed O'Brien (guitar, backing vocals), Colin Greenwood (bass), and Phil Selway (drums, percussion, backing vocals)",
+      "description" : "One of Britain's most popular alternative bands, Radiohead were formed in Oxford in 1989. Their debut album Pablo Honey contained the smash hit Creep, which became their live anthem.  Follow-up albums The Bends and OK Computer were hugely successful, making the band the most popular British rock band at the time.  The recent records Kid A, Amnesiac and Hail to the Thief have taken a more experimental note, showcasing the band's versatility while maintaining the classic Radiohead sound.",
+      "drawableUri" : "https://radioheadassets.s3.amazonaws.com/deadairspace/img/088055831.jpg",
+      "id" : "concerts0",
+      "lastAlbum" : "A Moon Shaped Pool",
+      "title" : "Radiohead",
+      "youtubePlaylistUrl" : "https://www.youtube.com/watch?v=1uYWYWPc9HU&list=PL2972775435A2A8BE"
+    } ],
+    "movies" : [ {
+      "cast" : "Scarlett Johanssn, Pilou Asbaek, Takeshi Kitano",
+      "description" : "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
+      "director" : "Rupert Sanders",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "duration" : 88,
+      "id" : "movies0",
+      "rottenTomatoesScore" : 42,
+      "title" : "Ghost in the Shell",
+      "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=G4VmJcZR0Yg"
+    }, {
+      "cast" : "Scarlett Johansson, Pilou Asbaek, Takeshi Kitano",
+      "description" : "In the near future, Major is the first of her kind: A human saved from a terrible crash, who is cyber-enhanced to be a perfect soldier devoted to stopping the world's most dangerous criminals.",
+      "director" : "Rupert Sanders",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "duration" : 127,
+      "id" : "movies1",
+      "rottenTomatoesScore" : 42,
+      "title" : "Ghost in the Shell",
+      "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=G4VmJcZR0Yg"
+    }, {
+      "cast" : "Vin Diesel, Jason Statham, Dwayne Johnson",
+      "description" : "When a mysterious woman seduces Dom into the world of terrorism and a betrayal of those closest to him, the crew face trials that will test them as never before. ",
+      "director" : "F. Gary Gray",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "duration" : 100,
+      "id" : "movies2",
+      "rottenTomatoesScore" : 67,
+      "title" : "The Fate of the Furious",
+      "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=JwMKRevYa_M"
+    } ],
+    "plays" : [ {
+      "cast" : "some dudes and gals",
+      "costumes" : "another person",
+      "description" : "From its opening in London in 1999 and on Broadway in 2001 the musical MAMMA MIA! has been performed in 16 languages (Poland will be 17th) – from 2001 it has gained spectacular success reaching as far as China!  The musical’s finale scene has become quite the staple, together with the audience the whole cast performs a medley of hits: “Mamma Mia!”, “Dancing Queen” and “Waterloo” – musical audiences have never before had so much fun! Of course we hope that ROMA Musical Theatres’ wonderful audiences will also join in and sing in chorus with us!  MAMMA MIA! has been performed in over 40 countries on every continent and counts over 54 million happy audiences worldwide! The time has come for Poland!",
+      "director" : "a person",
+      "drawableUri" : "http://www.teatrroma.pl/wp-content/uploads/2015/09/mamma-mia-roma-9dodanetlo3-e1446343445694.jpg",
+      "duration" : 120,
+      "id" : "plays0",
+      "scenography" : "yet another dude",
+      "title" : "Mamma Mia!",
+      "youtubeTrailerUrl" : "https://www.youtube.com/watch?v=sBvy1SpTJ28"
+    } ],
+    "staffpicks" : [ {
+      "description" : "Majsternia to nowe miejsce, w którym każdy z odwiedzających, niezależnie od wieku, wiedzy i umiejętności, przekona się, że „myśli lepiej, niż myśli”. Przy stołach warsztatowych można tu samodzielnie podejmować wyzwania inżynieryjne, naukowe, logiczne, mając do dyspozycji przedmioty codziennego użytku – słomki, papier, spinacze, kulki, gumki. Bez dokładnych instrukcji, bez ocen, bez limitów czasowych. Każdy ma szansę na odkrycie.  Otwieramy szklane drzwi i z gwarnych wystaw Kopernika przenosimy się w zupełnie nowe miejsce. Widzimy drewniany bar z wysokimi stołkami. Solidne duże stoły, które można rozsunąć w kameralne, mniejsze stoliki. Przed nami menu pełne eksperymentów. Czas na wybór zadania. Spróbujmy zbudować konstrukcję latającą. Na stole pojawiają się słomki, pianka izolacyjna, nożyczki, papier.  Można zaczynać, czas nieokreślony, dokładnych instrukcji brak, rozwiązanie – nieznane. Rezultat jest wyłącznie w naszych rękach. Zależy od pomysłowości, sprawności i wytrwałości. Tutaj odkrywamy coś dla siebie samych – zaczynamy rozumieć prawa nauki, przekonujemy się, że potrafimy myśleć nieszablonowo, ćwiczymy cierpliwość, determinację, gotowość podejmowania wyzwań.",
+      "detailsUrl" : "http://www.kopernik.org.pl/",
+      "drawableUri" : "http://www.kulturalna.warszawa.pl/pi/109453_0478be675_w180.jpg",
+      "duration" : 180,
+      "id" : "staffpicks0",
+      "title" : "Majsternia w Centrum Nauki Kopernik"
+    } ]
+  },
+  "locations" : {
+    "_0" : {
+      "id" : "_0",
+      "lat" : 52.179182,
+      "lon" : 21.004422,
+      "place" : "Cinema City Warszawa, Galeria Mokotów"
+    },
+    "_1" : {
+      "id" : "_1",
+      "lat" : 52.18735,
+      "lon" : 21.061075,
+      "place" : "Cinema City Warszawa, Sadyba"
+    }
+  },
+  "polls" : {
+    "-KkpV-X7d6pIgettHEWf" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : false,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "-1",
+        "111840479374488" : "movie2"
+      },
+      "eventsToVote" : [ "movie0", "movie1", "movie2" ],
+      "going" : {
+        "101257200447439" : true
+      },
+      "name" : "drawable test",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-KkpV-X7d6pIgettHEWf",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : true,
+          "movies1" : true,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteDateStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-Kkqto69IXaj1bURZolx" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_1",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "-1",
+        "111840479374488" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "denormalization test",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-Kkqto69IXaj1bURZolx",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-Kku7Jw2zKmAizh9LQTk" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "Poll 1",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-Kku7Jw2zKmAizh9LQTk",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-Kku9oyKQej-oh_pX6wu" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "111840479374488" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "test end-to-end",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-Kku9oyKQej-oh_pX6wu",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-KkuBlYwyImYTTMkO0zr" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "Poll 2",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkuBlYwyImYTTMkO0zr",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkuCZHoXl2uzFEvZz9b" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "poll3",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkuCZHoXl2uzFEvZz9b",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkuDijf_kiKw86kecgk" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "poll4",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkuDijf_kiKw86kecgk",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkuFXmb7wwt8LCGGlQa" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies0",
+        "111840479374488" : "movies0"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "another one",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-KkuFXmb7wwt8LCGGlQa",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : true,
+          "movies1" : false,
+          "movies2" : false
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies0",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-KkuG7ciDG-RtGJGe3xe" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_1",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "110405752860783" : false
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "ok",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkuG7ciDG-RtGJGe3xe",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkuGPAtEKgMEd4N0n46" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies1",
+        "111840479374488" : "movies1"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "wtf",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-KkuGPAtEKgMEd4N0n46",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : true,
+          "movies2" : false
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies1",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-KkuHE0ee8pkxxIHqc0S" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_1",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "110405752860783" : false
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "gg",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkuHE0ee8pkxxIHqc0S",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkuHow54zqBF1xdIDwB" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies1",
+        "111840479374488" : "movies1"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "u stupid fuk",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-KkuHow54zqBF1xdIDwB",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : true,
+          "movies2" : false
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies1",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-KkuIW27hCKEsiR3xKsX" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies0",
+        "111840479374488" : "movies0"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "Firebase is the best ever",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-KkuIW27hCKEsiR3xKsX",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : true,
+          "movies1" : false,
+          "movies2" : false
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies0",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-KkuIaFDqKAjo_Dg9CK-" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "xd",
+      "participants" : [ "110405752860783", "101257200447439" ],
+      "pollId" : "-KkuIaFDqKAjo_Dg9CK-",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkuJbJ9rsfxP1K86mRg" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://i.imgur.com/PLFkStW.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "111840479374488" : false
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "111840479374488" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "111840479374488" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies1",
+        "111840479374488" : "movies1"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "i am very dumb",
+      "participants" : [ "111840479374488", "101257200447439" ],
+      "pollId" : "-KkuJbJ9rsfxP1K86mRg",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : true,
+          "movies2" : false
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies1",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 1,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "111840479374488" : "movies"
+      }
+    },
+    "-KkuMJvnxbBA1D7gKG0t" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : false,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "poll",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkuMJvnxbBA1D7gKG0t",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    },
+    "-KkudnMOIGfO8Urww9HO" : {
+      "chosenCategory" : "movies",
+      "chosenLocationId" : "_0",
+      "drawableUri" : "http://cdn2-www.comingsoon.net/assets/uploads/gallery/fast-8_1/fate_of_the_furious_ver3_xlg.jpg",
+      "eventDatesStatus" : {
+        "_0" : {
+          "101257200447439" : false,
+          "110405752860783" : true
+        },
+        "_1" : {
+          "101257200447439" : true,
+          "110405752860783" : false
+        },
+        "voted" : {
+          "101257200447439" : true,
+          "110405752860783" : true
+        }
+      },
+      "eventVotes" : {
+        "101257200447439" : "movies2",
+        "110405752860783" : "movies2"
+      },
+      "eventsToVote" : [ "movies0", "movies1", "movies2" ],
+      "name" : "oooo",
+      "participants" : [ "101257200447439", "110405752860783" ],
+      "pollId" : "-KkudnMOIGfO8Urww9HO",
+      "remainingEventChoices" : {
+        "101257200447439" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        },
+        "110405752860783" : {
+          "movies0" : false,
+          "movies1" : false,
+          "movies2" : true
+        }
+      },
+      "stage" : "class io.github.entertainmatch.model.VoteResultStage",
+      "victoriousEvent" : "movies2",
+      "voteCounts" : {
+        "concerts" : 0,
+        "movies" : 2,
+        "plays" : 0,
+        "staffpicks" : 0
+      },
+      "votedFor" : {
+        "101257200447439" : "movies",
+        "110405752860783" : "movies"
+      }
+    }
+  },
+  "user_events" : {
+    "110405752860783" : {
+      "polls" : {
+        "-KkuMJvnxbBA1D7gKG0t" : true,
+        "-KkudnMOIGfO8Urww9HO" : true
+      }
+    }
+  },
+  "user_polls" : {
+    "101257200447439" : {
+      "dates" : {
+        "-KkpV-X7d6pIgettHEWf" : false,
+        "-Kkqto69IXaj1bURZolx" : false,
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-Kku9oyKQej-oh_pX6wu" : false,
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuFXmb7wwt8LCGGlQa" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuGPAtEKgMEd4N0n46" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuHow54zqBF1xdIDwB" : false,
+        "-KkuIW27hCKEsiR3xKsX" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false,
+        "-KkuJbJ9rsfxP1K86mRg" : false,
+        "-KkuMJvnxbBA1D7gKG0t" : false,
+        "-KkudnMOIGfO8Urww9HO" : false
+      },
+      "events" : {
+        "-Kkqto69IXaj1bURZolx" : false,
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-Kku9oyKQej-oh_pX6wu" : false,
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuFXmb7wwt8LCGGlQa" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuGPAtEKgMEd4N0n46" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuHow54zqBF1xdIDwB" : false,
+        "-KkuIW27hCKEsiR3xKsX" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false,
+        "-KkuJbJ9rsfxP1K86mRg" : false,
+        "-KkuMJvnxbBA1D7gKG0t" : false,
+        "-KkudnMOIGfO8Urww9HO" : false
+      },
+      "finished" : {
+        "-KkpV-X7d6pIgettHEWf" : false,
+        "-Kkqto69IXaj1bURZolx" : false,
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-Kku9oyKQej-oh_pX6wu" : false,
+        "-KkuFXmb7wwt8LCGGlQa" : false,
+        "-KkuGPAtEKgMEd4N0n46" : false,
+        "-KkuHow54zqBF1xdIDwB" : false,
+        "-KkuIW27hCKEsiR3xKsX" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false,
+        "-KkuJbJ9rsfxP1K86mRg" : false,
+        "-KkuMJvnxbBA1D7gKG0t:" : false,
+        "-KkudnMOIGfO8Urww9HO" : false
+      },
+      "polls" : {
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-Kku9oyKQej-oh_pX6wu" : false,
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuFXmb7wwt8LCGGlQa" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuGPAtEKgMEd4N0n46" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuHow54zqBF1xdIDwB" : false,
+        "-KkuIW27hCKEsiR3xKsX" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false,
+        "-KkuJbJ9rsfxP1K86mRg" : false,
+        "-KkuMJvnxbBA1D7gKG0t" : false,
+        "-KkudnMOIGfO8Urww9HO" : false
+      }
+    },
+    "110405752860783" : {
+      "dates" : {
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false,
+        "-KkuMJvnxbBA1D7gKG0t" : false,
+        "-KkudnMOIGfO8Urww9HO" : false
+      },
+      "events" : {
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false,
+        "-KkuMJvnxbBA1D7gKG0t" : false,
+        "-KkudnMOIGfO8Urww9HO" : false
+      },
+      "finished" : {
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuMJvnxbBA1D7gKG0t" : false
+      },
+      "polls" : {
+        "-Kku7Jw2zKmAizh9LQTk" : false,
+        "-KkuBlYwyImYTTMkO0zr" : false,
+        "-KkuCZHoXl2uzFEvZz9b" : false,
+        "-KkuDijf_kiKw86kecgk" : false,
+        "-KkuG7ciDG-RtGJGe3xe" : false,
+        "-KkuHE0ee8pkxxIHqc0S" : false,
+        "-KkuIaFDqKAjo_Dg9CK-" : false
+      }
+    },
+    "111840479374488" : {
+      "dates" : {
+        "-KkpV-X7d6pIgettHEWf" : true,
+        "-Kkqto69IXaj1bURZolx" : true,
+        "-Kku9oyKQej-oh_pX6wu" : true,
+        "-KkuFXmb7wwt8LCGGlQa" : true,
+        "-KkuGPAtEKgMEd4N0n46" : true,
+        "-KkuHow54zqBF1xdIDwB" : true,
+        "-KkuIW27hCKEsiR3xKsX" : true,
+        "-KkuJbJ9rsfxP1K86mRg" : true
+      },
+      "events" : {
+        "-KkpV-X7d6pIgettHEWf" : true,
+        "-Kkqto69IXaj1bURZolx" : true,
+        "-Kku9oyKQej-oh_pX6wu" : true,
+        "-KkuFXmb7wwt8LCGGlQa" : true,
+        "-KkuGPAtEKgMEd4N0n46" : true,
+        "-KkuHow54zqBF1xdIDwB" : true,
+        "-KkuIW27hCKEsiR3xKsX" : true,
+        "-KkuJbJ9rsfxP1K86mRg" : true
+      },
+      "polls" : {
+        "-KkpV-X7d6pIgettHEWf" : true,
+        "-Kkqto69IXaj1bURZolx" : true,
+        "-Kku9oyKQej-oh_pX6wu" : true,
+        "-KkuFXmb7wwt8LCGGlQa" : true,
+        "-KkuGPAtEKgMEd4N0n46" : true,
+        "-KkuHow54zqBF1xdIDwB" : true,
+        "-KkuIW27hCKEsiR3xKsX" : true,
+        "-KkuJbJ9rsfxP1K86mRg" : true
+      }
+    }
+  }
+}
