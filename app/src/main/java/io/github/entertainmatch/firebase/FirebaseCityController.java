@@ -19,4 +19,8 @@ public class FirebaseCityController {
     public static Observable<List<String>> getCitiesOnce() {
         return RxFirebaseDatabase.observeSingleValueEvent(ref, DataSnapshotMapper.listOf(String.class));
     }
+
+    public static Observable<List<String>> getCities() {
+        return RxFirebaseDatabase.observeValueEvent(ref, DataSnapshotMapper.listOf(String.class));
+    }
 }

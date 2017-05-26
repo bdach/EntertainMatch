@@ -1,5 +1,6 @@
 package io.github.entertainmatch.view.poll;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +26,7 @@ import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
+import io.github.entertainmatch.view.LocationChecker;
 import io.github.entertainmatch.view.MainActivity;
 
 import java.util.ArrayList;
@@ -34,6 +37,7 @@ import java.util.HashSet;
  */
 public class CreatePollActivity extends AppCompatActivity implements PersonFragment.OnPersonSelectedListener {
 
+    public static final int RESULT_NO_CITY_SET = 2;
     /**
      * Fragment used to display list of people.
      */
@@ -64,6 +68,7 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
     TextView pollName;
 
     private final HashSet<Person> selectedPeople = new HashSet<>();
+    private LocationChecker locationChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +86,27 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
         });
         friendsListRequest.executeAsync();
 
+        locationChecker = new LocationChecker(
+                this,
+                coordinatorLayout,
+                this::removeAddOption,
+                this::goToSettings
+        );
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.person_list, personFragment)
                 .commit();
+    }
+
+    private void goToSettings() {
+        setResult(RESULT_NO_CITY_SET);
+        finish();
+    }
+
+    private void removeAddOption() {
+        View addPollMenuItem = findViewById(R.id.action_create_poll);
+        addPollMenuItem.setEnabled(false);
     }
 
     @Override
