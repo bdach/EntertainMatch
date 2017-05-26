@@ -28,6 +28,7 @@ import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.view.LocationChecker;
 import io.github.entertainmatch.view.MainActivity;
+import io.github.entertainmatch.view.UserPreferences;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -132,7 +133,8 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
     private Intent constructPoll() {
         PollStub poll = new PollStub(
                 pollName.getText().toString(),
-                selectedPeople.toArray(new Person[selectedPeople.size()])
+                selectedPeople.toArray(new Person[selectedPeople.size()]),
+                UserPreferences.getCity(this)
         );
 
         Intent intent = new Intent();

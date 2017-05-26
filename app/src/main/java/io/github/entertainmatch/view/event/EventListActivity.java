@@ -131,7 +131,7 @@ public class EventListActivity extends AppCompatActivity {
                     .show();
         } else {
             FirebaseEventController.getEventsSingle(
-                    UserPreferences.getCity(this),
+                    firebasePoll.getCity(),
                     firebasePoll.getChosenCategory()
             ).subscribe(events -> {
                 adapter.updateData(firebasePoll, events);

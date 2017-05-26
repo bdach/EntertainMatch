@@ -84,6 +84,7 @@ public class FirebasePoll {
     private List<String> eventsToVote;
     @Nullable
     private String drawableUri = null;
+    private String city;
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
@@ -116,6 +117,7 @@ public class FirebasePoll {
         this.pollId = pollId;
         stage = VoteCategoryStage.class.toString();
         eventsToVote = Collections.emptyList();
+        city = pollStub.getCity();
     }
 
     /**
@@ -155,6 +157,7 @@ public class FirebasePoll {
         victoriousEvent = updatedPoll.victoriousEvent;
         eventDatesStatus = updatedPoll.eventDatesStatus;
         drawableUri = updatedPoll.drawableUri;
+        city = updatedPoll.city;
     }
 
     /**
