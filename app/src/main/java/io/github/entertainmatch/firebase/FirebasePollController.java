@@ -327,7 +327,7 @@ public class FirebasePollController {
 
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
-        return FirebaseEventDateController.getEventDatesSingle(poll.getChosenCategory(), poll.getVictoriousEvent()).flatMap(eventDates -> {
+        return FirebaseEventDateController.getEventDatesSingle(poll.getVictoriousEvent()).flatMap(eventDates -> {
             List<EventDate> results = new ArrayList<>();
             PublishSubject<List<EventDate>> observable = PublishSubject.create();
 
