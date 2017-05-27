@@ -38,7 +38,7 @@ public class FirebaseEventDateController {
      * @param victorious An event that has won event voting stage (it is not yet present in poll or might not me)
      */
     public static void setupDataStage(FirebasePoll poll, String victorious) {
-        getEventDatesSingle(poll.getChosenCategory(), victorious).subscribe(events -> {
+        getEventDatesSingle(victorious).subscribe(events -> {
             for (FirebaseEventDate event : events.values()) {
                 for (String participantId : poll.getParticipants()) {
                     FirebasePollController.setupDateStageForUser(poll.getPollId(), event.getLocationId(), participantId);
@@ -49,32 +49,20 @@ public class FirebaseEventDateController {
 
     /**
      * Retrieves mapping from locationId to event dates from database
-     * @param category Category of an event
      * @param eventId Event id within category
      * @return Returns mapping from locationId to event dates that notifies only once.
      */
-    public static Observable<Map<String, FirebaseEventDate>> getEventDatesSingle(String category, String eventId) {
-        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(category).child(eventId), DataSnapshotMapper.mapOf(FirebaseEventDate.class));
-    }
-
-    /**
-     * Retrieves mapping from locationId to event dates from database
-     * @param category Category of an event
-     * @param eventId Event id within category
-     * @return Returns mapping from locationId to event dates.
-     */
-    public static Observable<Map<String, FirebaseEventDate>> getEventDates(String category, String eventId) {
-        return RxFirebaseDatabase.observeValueEvent(ref.child(category).child(eventId), DataSnapshotMapper.mapOf(FirebaseEventDate.class));
+    public static Observable<Map<String, FirebaseEventDate>> getEventDatesSingle(String eventId) {
+        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(eventId), DataSnapshotMapper.mapOf(FirebaseEventDate.class));
     }
 
     /**
      * One time observable for fetching specific event date
-     * @param category Category of an event
      * @param eventId Identifier of an event
      * @param locationId Location identifier of event's venue
      * @return One-time observable with {@code FirebaseEventDate} asked for
      */
-    public static Observable<FirebaseEventDate> getEventSingle(String category, String eventId, String locationId) {
-        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(category).child(eventId).child(locationId), FirebaseEventDate.class);
+    public static Observable<FirebaseEventDate> getEventSingle(String eventId, String locationId) {
+        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(eventId).child(locationId), FirebaseEventDate.class);
     }
 }

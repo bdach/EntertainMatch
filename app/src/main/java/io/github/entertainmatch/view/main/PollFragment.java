@@ -95,6 +95,7 @@ public class PollFragment extends Fragment {
         Poll poll = pollMap.get(pollId).second;
         polls.remove(poll);
         pollMap.remove(pollId);
+        adapter.notifyDataSetChanged();
     }
 
     /**

@@ -82,4 +82,10 @@
     <string name="calendar_event_title" type="id">%1$s in %2$s</string>
     <string name="calendar_event_description">Don\'t forget about an Entertain-Matched event</string>
     <string name="calendar_failed">Failed to add an event to a calendar</string>
+    <string name="location_settings_category">Location settings</string>
+    
+    <string name="pref_location_label">Your location</string>
+    <string name="pref_location_summary">Choose which location to use when searching for events</string>
+    <string name="no_city_set_snackbar">You haven\'t chosen your city yet. Choose one to start adding polls!</string>
+    <string name="no_city_set_snackbar_action">Set city</string>
 </resources>

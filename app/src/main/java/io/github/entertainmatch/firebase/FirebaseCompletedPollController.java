@@ -34,10 +34,9 @@ public class FirebaseCompletedPollController {
     public static void pollCompleted(FirebasePoll poll, String locationId) {
         Observable<? extends Event> eventSingle = FirebaseEventController.getEventSingle(
                 poll.getChosenCategory(),
-                poll.getVictoriousEvent().substring(poll.getChosenCategory().length())
+                poll.getVictoriousEvent()
         );
         Observable<FirebaseEventDate> eventDateSingle = FirebaseEventDateController.getEventSingle(
-                poll.getChosenCategory(),
                 poll.getVictoriousEvent(),
                 locationId
         );

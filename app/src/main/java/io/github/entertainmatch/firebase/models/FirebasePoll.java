@@ -61,7 +61,7 @@ public class FirebasePoll {
      * Maps facebookId to categoryId that given user voted for.
      */
     private Map<String, String> votedFor = new HashMap<>();
-    private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
+    private Map<String, List<String>> remainingEventChoices = new HashMap<>();
     private Map<String, String> eventVotes = new HashMap<>();
     private String chosenCategory = "";
 
@@ -84,6 +84,7 @@ public class FirebasePoll {
     private List<String> eventsToVote;
     @Nullable
     private String drawableUri = null;
+    private String city;
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
@@ -116,17 +117,18 @@ public class FirebasePoll {
         this.pollId = pollId;
         stage = VoteCategoryStage.class.toString();
         eventsToVote = Collections.emptyList();
+        city = pollStub.getCity();
     }
 
     /**
      * Registers vote for category in firebase
      * @param category Category voted for by current user
      */
-    public void voteCategory(Category category) {
+    public void voteCategory(Category category, String city) {
         String itemId = category.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
-        FirebasePollController.vote(pollId, facebookId, itemId);
+        FirebasePollController.vote(pollId, facebookId, itemId, city);
     }
 
     /**
@@ -155,6 +157,7 @@ public class FirebasePoll {
         victoriousEvent = updatedPoll.victoriousEvent;
         eventDatesStatus = updatedPoll.eventDatesStatus;
         drawableUri = updatedPoll.drawableUri;
+        city = updatedPoll.city;
     }
 
     /**

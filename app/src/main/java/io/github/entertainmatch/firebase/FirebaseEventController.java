@@ -8,6 +8,7 @@ import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
 
 import java.util.List;
+import java.util.Map;
 
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.model.Category;
@@ -63,21 +64,18 @@ public class FirebaseEventController {
         });
     }
 
-    public static Observable<List<? extends Event>> getEventsObservable(String chosenCategory) {
-        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
+    public static Observable<Map<String, ? extends Event>> getEventsSingle(String city, String category) {
+        Class<? extends Event> eventClass = getClassForCategory(category);
 
-        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
-    }
-
-    public static Observable<List<? extends Event>> getEventsSingle(String chosenCategory) {
-        Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
-
-        return RxFirebaseDatabase.observeSingleValueEvent(ref.child(chosenCategory), DataSnapshotMapper.listOf(eventClass));
+        return RxFirebaseDatabase.observeSingleValueEvent(
+                ref.child(city).child(category),
+                DataSnapshotMapper.mapOf(eventClass)
+        );
     }
 
     public static Observable<? extends Event> getEventSingle(String chosenCategory, String victoriousEvent) {
         Class<? extends Event> eventClass = getClassForCategory(chosenCategory);
-        return RxFirebaseDatabase.observeValueEvent(ref.child(chosenCategory).child(victoriousEvent), eventClass);
+        return RxFirebaseDatabase.observeValueEvent(ref.child(victoriousEvent), eventClass);
     }
 
     static Class<? extends Event> getClassForCategory(String category) {

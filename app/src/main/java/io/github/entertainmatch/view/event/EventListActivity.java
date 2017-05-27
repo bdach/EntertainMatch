@@ -36,6 +36,7 @@ import io.github.entertainmatch.model.VoteEventStage;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
+import io.github.entertainmatch.view.UserPreferences;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -129,7 +130,10 @@ public class EventListActivity extends AppCompatActivity {
                     })
                     .show();
         } else {
-            FirebaseEventController.getEventsSingle(firebasePoll.getChosenCategory()).subscribe(events -> {
+            FirebaseEventController.getEventsSingle(
+                    firebasePoll.getCity(),
+                    firebasePoll.getChosenCategory()
+            ).subscribe(events -> {
                 adapter.updateData(firebasePoll, events);
             });
         }
@@ -222,27 +226,39 @@ public class EventListActivity extends AppCompatActivity {
         private final List<Event> values = new ArrayList<>();
         private Map<String, Boolean> visible = new HashMap<>();
 
-        public void updateData(FirebasePoll poll, List<? extends Event> events) {
+        public void updateData(FirebasePoll poll, Map<String, ? extends Event> events) {
             values.clear();
             Map<String, Boolean> userChoices = getUserChoices(poll);
             List<String> remainingIds = poll.getEventsToVote();
             if (userChoices == null) {
-                for (Event event : events) {
+                for (Event event : events.values()) {
                     if (remainingIds.contains(event.getId())) {
                         values.add(event);
                         visible.put(event.getId(), true);
                     }
                 }
             } else {
-                setVisible(userChoices, events);
+                setVisible(userChoices, new ArrayList<>(events.values()));
             }
             notifyDataSetChanged();
         }
 
         private Map<String, Boolean> getUserChoices(FirebasePoll firebasePoll) {
-            Map<String, Map<String, Boolean>> remainingChoices = firebasePoll.getRemainingEventChoices();
+            Map<String, List<String>> remainingChoices = firebasePoll.getRemainingEventChoices();
             String facebookId = FacebookUsers.getCurrentUser(EventListActivity.this).getFacebookId();
-            return remainingChoices.get(facebookId);
+            List<String> choices = remainingChoices.get(facebookId);
+            List<String> eventsToVote = firebasePoll.getEventsToVote();
+            Map<String, Boolean> result = new HashMap<>();
+            boolean noChoices = choices == null;
+            for (String id : eventsToVote) {
+                result.put(id, noChoices);
+            }
+            if (!noChoices) {
+                for (String choice : choices) {
+                    result.put(choice, true);
+                }
+            }
+            return result;
         }
 
         public void removeItem(RecyclerView.ViewHolder viewHolder) {
