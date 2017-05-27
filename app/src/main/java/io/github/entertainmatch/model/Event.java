@@ -19,4 +19,5 @@ public abstract class Event implements Parcelable {
     protected String drawableUri;
     protected String description;
     protected List<String> locationIds;
+    protected int duration;
 }

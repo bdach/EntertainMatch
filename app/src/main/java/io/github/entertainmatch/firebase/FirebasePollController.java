@@ -93,14 +93,14 @@ public class FirebasePollController {
 
         // return poll id
         String pollId = firebasePollRef.getKey();
-        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, false, null);
+        return new Poll(newPoll.getName(), new VoteCategoryStage(pollId), newPoll.getMembers(), pollId, null);
     }
 
     public static Observable<FirebasePoll> getPoll(String pollId) {
         return RxFirebaseDatabase.observeValueEvent(ref.child(pollId), FirebasePoll.class);
     }
 
-    public static void vote(String pollId, String facebookId, String itemId) {
+    public static void vote(String pollId, String facebookId, String itemId, String city) {
         ref.child(pollId).runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
@@ -129,8 +129,15 @@ public class FirebasePollController {
                         mutableData.child("drawableUri").setValue(imageUri);
                         FirebaseUserController.setupEventStage(pollId, votedFor.keySet(), facebookId);
 
-                        FirebaseController.getEventsSingle(winningCategories.get(0)).subscribe(events -> {
-                            ref.child(pollId).child("eventsToVote").setValue(ListExt.map(events, Event::getId));
+                        FirebaseEventController.getEventsSingle(
+                                city,
+                                winningCategories.get(0)
+                        ).subscribe(events -> {
+                            ArrayList<String> eventIds = new ArrayList<>();
+                            for (Event event : events.values()) {
+                                eventIds.add(event.getId());
+                            }
+                            ref.child(pollId).child("eventsToVote").setValue(eventIds);
                         });
 
                     } else {
@@ -163,10 +170,16 @@ public class FirebasePollController {
     }
 
     public static void updateRemainingEvents(String pollId, String facebookId, Map<String, Boolean> selections) {
+        ArrayList<String> eventIds = new ArrayList<>();
+        for (Map.Entry<String, Boolean> selection : selections.entrySet()) {
+            if (selection.getValue()) {
+                eventIds.add(selection.getKey());
+            }
+        }
         ref.child(pollId)
                 .child("remainingEventChoices")
                 .child(facebookId)
-                .setValue(selections);
+                .setValue(eventIds);
     }
 
     public static void voteEvent(String pollId, String facebookId, Event item) {
@@ -182,6 +195,7 @@ public class FirebasePollController {
 
                     if (candidates.size() == 1) {
                         mutableData.child("stage").setValue(VoteDateStage.class.toString());
+                        mutableData.child("victoriousEvent").setValue(item.getId());
                         mutableData.child("drawableUri").setValue(item.getDrawableUri());
                         // TODO: not sure
                         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
@@ -286,7 +300,9 @@ public class FirebasePollController {
 
                         locationToCounts.put(locationId, votes);
                     });
-                    ref.child(pollId).child("chosenLocationId").setValue(HashMapExt.getMax(locationToCounts).get(0));
+                    String locationId = HashMapExt.getMax(locationToCounts).get(0);
+                    ref.child(pollId).child("chosenLocationId").setValue(locationId);
+                    FirebaseCompletedPollController.pollCompleted(poll, locationId);
                     FirebaseUserController.setupResultStage(pollId, facebookId);
                 });
 
@@ -311,7 +327,7 @@ public class FirebasePollController {
 
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
-        return FirebaseEventDateController.getEventDatesSingle(poll.getChosenCategory(), poll.getVictoriousEvent()).flatMap(eventDates -> {
+        return FirebaseEventDateController.getEventDatesSingle(poll.getVictoriousEvent()).flatMap(eventDates -> {
             List<EventDate> results = new ArrayList<>();
             PublishSubject<List<EventDate>> observable = PublishSubject.create();
 
@@ -335,9 +351,5 @@ public class FirebasePollController {
             return observable;
         });
         });
-    }
-
-    public static void setIsGoing(String pollId, String facebookId, boolean going) {
-        ref.child(pollId).child("going").child(facebookId).setValue(going);
     }
 }

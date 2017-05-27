@@ -16,7 +16,7 @@ public class NavigationHelper {
     public static void back(AppCompatActivity context, String pollId) {
         if (context.getCallingActivity() != null) {
             Intent intent = new Intent();
-            intent.putExtra(MainActivity.FINISHED_POLL_ID_KEY, pollId);
+            intent.putExtra(MainActivity.STAGE_FINISHED_POLL_ID_KEY, pollId);
             context.setResult(RESULT_OK, intent);
         } else {
             // ??

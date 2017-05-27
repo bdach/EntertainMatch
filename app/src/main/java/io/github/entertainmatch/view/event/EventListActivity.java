@@ -13,12 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 
 import com.squareup.picasso.Picasso;
@@ -29,7 +27,7 @@ import io.github.entertainmatch.R;
 
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Event;
@@ -38,7 +36,7 @@ import io.github.entertainmatch.model.VoteEventStage;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
-import rx.Observable;
+import io.github.entertainmatch.view.UserPreferences;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -99,7 +97,7 @@ public class EventListActivity extends AppCompatActivity {
 
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
             setupRecyclerView(recyclerView);
-            FirebaseController.getEventsSingle(poll.getChosenCategory()).subscribe(events -> {
+            FirebaseEventController.getEventsSingle(poll.getCity(), poll.getChosenCategory()).subscribe(events -> {
                 adapter.updateData(poll, events);
             });
             subscription = FirebasePollController.getPoll(pollId).subscribe(this::stageFinishCallback);
@@ -224,27 +222,39 @@ public class EventListActivity extends AppCompatActivity {
         private final List<Event> values = new ArrayList<>();
         private Map<String, Boolean> visible = new HashMap<>();
 
-        public void updateData(FirebasePoll poll, List<? extends Event> events) {
+        public void updateData(FirebasePoll poll, Map<String, ? extends Event> events) {
             values.clear();
             Map<String, Boolean> userChoices = getUserChoices(poll);
             List<String> remainingIds = poll.getEventsToVote();
             if (userChoices == null) {
-                for (Event event : events) {
+                for (Event event : events.values()) {
                     if (remainingIds.contains(event.getId())) {
                         values.add(event);
                         visible.put(event.getId(), true);
                     }
                 }
             } else {
-                setVisible(userChoices, events);
+                setVisible(userChoices, new ArrayList<>(events.values()));
             }
             notifyDataSetChanged();
         }
 
         private Map<String, Boolean> getUserChoices(FirebasePoll firebasePoll) {
-            Map<String, Map<String, Boolean>> remainingChoices = firebasePoll.getRemainingEventChoices();
+            Map<String, List<String>> remainingChoices = firebasePoll.getRemainingEventChoices();
             String facebookId = FacebookUsers.getCurrentUser(EventListActivity.this).getFacebookId();
-            return remainingChoices.get(facebookId);
+            List<String> choices = remainingChoices.get(facebookId);
+            List<String> eventsToVote = firebasePoll.getEventsToVote();
+            Map<String, Boolean> result = new HashMap<>();
+            boolean noChoices = choices == null;
+            for (String id : eventsToVote) {
+                result.put(id, noChoices);
+            }
+            if (!noChoices) {
+                for (String choice : choices) {
+                    result.put(choice, true);
+                }
+            }
+            return result;
         }
 
         public void removeItem(RecyclerView.ViewHolder viewHolder) {

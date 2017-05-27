@@ -56,6 +56,7 @@ public class MovieEvent extends Event implements Parcelable {
         cast = in.readString();
         youtubeTrailerUrl = in.readString();
         rottenTomatoesScore = in.readInt();
+        duration = in.readInt();
     }
 
     public static final Creator<MovieEvent> CREATOR = new Creator<MovieEvent>() {
@@ -110,5 +111,6 @@ public class MovieEvent extends Event implements Parcelable {
         dest.writeString(cast);
         dest.writeString(youtubeTrailerUrl);
         dest.writeInt(rottenTomatoesScore);
+        dest.writeInt(duration);
     }
 }

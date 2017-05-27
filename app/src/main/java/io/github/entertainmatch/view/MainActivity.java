@@ -4,7 +4,9 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,14 +18,17 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Observable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
-import io.github.entertainmatch.firebase.FirebaseController;
+import io.github.entertainmatch.firebase.FirebaseCityController;
+import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebasePollController;
+import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Poll;
 import io.github.entertainmatch.model.PollStage;
@@ -55,7 +60,8 @@ public class MainActivity extends AppCompatActivity
      */
     public final static String NEW_POLL_RESPONSE_KEY = "new_poll";
     public final static int FINISHED_POLL = 2;
-    public final static String FINISHED_POLL_ID_KEY = "poll_id";
+    public final static String STAGE_FINISHED_POLL_ID_KEY = "stage_finished_poll_id";
+    public final static String POLL_FINISHED_ID_KEY = "finished_poll_id";
 
     /**
      * Name of the fragment backCleanup stack used to display settings.
@@ -66,6 +72,11 @@ public class MainActivity extends AppCompatActivity
      * The fragment used to display the settings menu.
      */
     private SettingsFragment settingsFragment;
+
+    private MainActivityPagerAdapter pagerAdapter;
+
+    @BindView(R.id.coordinator_layout)
+    CoordinatorLayout coordinatorLayout;
 
     /**
      * The view toolbar, containing the menu toggle and options bar.
@@ -85,9 +96,9 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    MainActivityPagerAdapter pagerAdapter;
-
     private List<Subscription> subscriptions = new ArrayList<>();
+    private LocationChecker locationChecker;
+    private boolean settingsRequested;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        FirebaseController.init();
+        FirebaseEventController.init();
 
         settingsFragment = new SettingsFragment();
 
@@ -108,14 +119,30 @@ public class MainActivity extends AppCompatActivity
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+        locationChecker = new LocationChecker(
+                this,
+                coordinatorLayout,
+                () -> fab.hide(),
+                this::navigateToSettings
+        );
+
         if (!isMyServiceRunning(NotificationService.class))
             startService(new Intent(this, NotificationService.class));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (settingsRequested) {
+            navigateToSettings();
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ListExt.forEach(subscriptions, Subscription::unsubscribe);
+        locationChecker.unsubscribe();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {
@@ -131,6 +158,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         fab.show();
+        locationChecker.recheckCities();
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
         super.onBackPressed();
@@ -148,18 +176,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_settings && getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            fab.hide();
-            tabLayout.setVisibility(View.GONE);
-            viewPager.setVisibility(View.GONE);
-            getSupportFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
-                        android.R.anim.slide_in_left, android.R.anim.slide_out_right)
-                .hide(pagerAdapter.getItem(0))
-                .hide(pagerAdapter.getItem(1))
-                .add(R.id.content_frame, settingsFragment)
-                .addToBackStack(SETTINGS_STACK_NAME)
-                .commit();
+            navigateToSettings();
             return true;
         }
         else if (id == R.id.logout) {
@@ -169,6 +186,21 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void navigateToSettings() {
+        fab.hide();
+        tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+        getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,
+                    android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+            .hide(pagerAdapter.getItem(0))
+            .hide(pagerAdapter.getItem(1))
+            .add(R.id.content_frame, settingsFragment)
+            .addToBackStack(SETTINGS_STACK_NAME)
+            .commit();
     }
 
     /**
@@ -209,19 +241,37 @@ public class MainActivity extends AppCompatActivity
 
     private void checkPollStatus(int resultCode, Intent data) {
         if (resultCode != RESULT_OK) return;
-        String pollId = data.getStringExtra(FINISHED_POLL_ID_KEY);
-        FirebasePollController.getPollOnce(pollId)
-                .map(poll -> new Poll(poll, FacebookUsers.getCurrentUser(this).facebookId))
-                .subscribe(this::viewPollProgress);
+        Bundle extras = data.getExtras();
+
+        if (extras.containsKey(STAGE_FINISHED_POLL_ID_KEY)) {
+            String pollId = data.getStringExtra(STAGE_FINISHED_POLL_ID_KEY);
+            FirebasePollController.getPollOnce(pollId)
+                    .map(poll -> new Poll(poll, FacebookUsers.getCurrentUser(this).facebookId))
+                    .subscribe(this::viewPollProgress);
+        }
+
+        if (extras.containsKey(POLL_FINISHED_ID_KEY)) {
+            String pollId = data.getStringExtra(POLL_FINISHED_ID_KEY);
+            PollFragment fragment = (PollFragment) pagerAdapter.getItem(0);
+            fragment.deletePoll(pollId);
+        }
     }
 
     private void handleNewPoll(int resultCode, Intent data) {
-        if (resultCode != RESULT_OK) return;
-        PollStub pollStub = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
+        switch (resultCode) {
+            case RESULT_OK:
+                PollStub pollStub = data.getParcelableExtra(NEW_POLL_RESPONSE_KEY);
 
-        // add poll to firebase, once added it should vote views of all users involved
-        // and show notifications to them
-        FirebasePollController.addPoll(FacebookUsers.getCurrentUser(this).facebookId, pollStub);
+                // add poll to firebase, once added it should vote views of all users involved
+                // and show notifications to them
+                FirebasePollController.addPoll(
+                        FacebookUsers.getCurrentUser(this).facebookId, pollStub
+                );
+                break;
+            case CreatePollActivity.RESULT_NO_CITY_SET:
+                settingsRequested = true;
+                break;
+        }
     }
 
     /**
@@ -235,9 +285,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onEventClicked(FirebasePoll item) {
+    public void onEventClicked(FirebaseCompletedPoll item) {
         Intent intent = new Intent(this, VoteResultActivity.class);
-        intent.putExtra(VoteResultStage.POLL_ID_KEY, item.getPollId());
+        intent.putExtra(VoteResultStage.POLL_ID_KEY, item.getId());
         startActivity(intent);
     }
 }

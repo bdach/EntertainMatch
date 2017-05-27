@@ -28,6 +28,7 @@ public class ConcertEvent extends Event {
         youtubePlaylistUrl = src.readString();
         bandMembers = src.readString();
         lastAlbum = src.readString();
+        duration = src.readInt();
     }
 
     public static final Creator<ConcertEvent> CREATOR = new Creator<ConcertEvent>() {
@@ -56,5 +57,6 @@ public class ConcertEvent extends Event {
         dest.writeString(youtubePlaylistUrl);
         dest.writeString(bandMembers);
         dest.writeString(lastAlbum);
+        dest.writeInt(duration);
     }
 }

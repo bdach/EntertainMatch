@@ -91,6 +91,13 @@ public class PollFragment extends Fragment {
         }
     }
 
+    public void deletePoll(String pollId) {
+        Poll poll = pollMap.get(pollId).second;
+        polls.remove(poll);
+        pollMap.remove(pollId);
+        adapter.notifyDataSetChanged();
+    }
+
     /**
      * Interface allowing activities containing this fragment type to be notified of a selection.
      */

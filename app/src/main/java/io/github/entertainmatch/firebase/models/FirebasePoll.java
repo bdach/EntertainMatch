@@ -61,7 +61,7 @@ public class FirebasePoll {
      * Maps facebookId to categoryId that given user voted for.
      */
     private Map<String, String> votedFor = new HashMap<>();
-    private Map<String, Map<String, Boolean>> remainingEventChoices = new HashMap<>();
+    private Map<String, List<String>> remainingEventChoices = new HashMap<>();
     private Map<String, String> eventVotes = new HashMap<>();
     private String chosenCategory = "";
 
@@ -71,11 +71,6 @@ public class FirebasePoll {
      * Additionally under votes key keeps information about users that already voted.
      */
     private Map<String, HashMap<String, Boolean>> eventDatesStatus;
-
-    /**
-     * Maps users with their going choices.
-     */
-    private Map<String, Boolean> going;
 
     /**
      * Location that has been chosen in event date stage
@@ -89,6 +84,7 @@ public class FirebasePoll {
     private List<String> eventsToVote;
     @Nullable
     private String drawableUri = null;
+    private String city;
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
@@ -107,7 +103,6 @@ public class FirebasePoll {
         votedFor = new HashMap<>();
         eventVotes = new HashMap<>();
         eventDatesStatus = new HashMap<>();
-        going = new HashMap<>();
 
         for (Category category : FirebaseCategoriesTemplatesController.getCached()) {
             voteCounts.put(category.getId(), 0);
@@ -122,17 +117,18 @@ public class FirebasePoll {
         this.pollId = pollId;
         stage = VoteCategoryStage.class.toString();
         eventsToVote = Collections.emptyList();
+        city = pollStub.getCity();
     }
 
     /**
      * Registers vote for category in firebase
      * @param category Category voted for by current user
      */
-    public void voteCategory(Category category) {
+    public void voteCategory(Category category, String city) {
         String itemId = category.getId();
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
-        FirebasePollController.vote(pollId, facebookId, itemId);
+        FirebasePollController.vote(pollId, facebookId, itemId, city);
     }
 
     /**
@@ -160,8 +156,8 @@ public class FirebasePoll {
         chosenCategory = updatedPoll.chosenCategory;
         victoriousEvent = updatedPoll.victoriousEvent;
         eventDatesStatus = updatedPoll.eventDatesStatus;
-        going = updatedPoll.going;
         drawableUri = updatedPoll.drawableUri;
+        city = updatedPoll.city;
     }
 
     /**
@@ -192,9 +188,5 @@ public class FirebasePoll {
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         ListExt.zippedForeach(locationIds, selections, (l, s) -> FirebasePollController.chooseDate(pollId, l, facebookId, s));
         FirebasePollController.dateVotingFinished(pollId, facebookId);
-    }
-
-    public boolean votingComplete(String userId) {
-        return going != null && going.containsKey(userId);
     }
 }
