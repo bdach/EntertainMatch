@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -33,10 +34,10 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteEventStage;
+import io.github.entertainmatch.utils.HashMapExt;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
-import io.github.entertainmatch.view.UserPreferences;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -119,6 +120,8 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void stageFinishCallback(FirebasePoll firebasePoll) {
+        String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
+
         participantList = new ParticipantList(this, firebasePoll);
         participantList.fetchNames();
         if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
@@ -132,6 +135,15 @@ public class EventListActivity extends AppCompatActivity {
                         }
                     })
                     .show();
+        } else if (firebasePoll.getAgain() != null && firebasePoll.getAgain().get(facebookId)) {
+            FirebasePollController.removeVoteEventAgainFlag(pollId, facebookId);
+            FirebaseEventController.getEventsSingle(
+                    firebasePoll.getCity(),
+                    firebasePoll.getChosenCategory()
+            ).subscribe(events -> {
+                adapter.updateData(firebasePoll, events);
+                Snackbar.make(coordinatorLayout, R.string.message_tie, Snackbar.LENGTH_LONG).show();
+            });
         }
     }
 
@@ -225,17 +237,8 @@ public class EventListActivity extends AppCompatActivity {
         public void updateData(FirebasePoll poll, Map<String, ? extends Event> events) {
             values.clear();
             Map<String, Boolean> userChoices = getUserChoices(poll);
-            List<String> remainingIds = poll.getEventsToVote();
-            if (userChoices == null) {
-                for (Event event : events.values()) {
-                    if (remainingIds.contains(event.getId())) {
-                        values.add(event);
-                        visible.put(event.getId(), true);
-                    }
-                }
-            } else {
-                setVisible(userChoices, new ArrayList<>(events.values()));
-            }
+
+            setVisible(userChoices, new ArrayList<>(events.values()));
             notifyDataSetChanged();
         }
 
@@ -254,6 +257,7 @@ public class EventListActivity extends AppCompatActivity {
                     result.put(choice, true);
                 }
             }
+
             return result;
         }
 
@@ -263,21 +267,23 @@ public class EventListActivity extends AppCompatActivity {
             values.remove(adapterPosition);
             visible.put(item.getId(), false);
             notifyItemRemoved(adapterPosition);
+
+            Map<String, Boolean> visibleCopy = HashMapExt.shallowCopy(visible);
             Snackbar.make(coordinatorLayout,
                     String.format(getString(R.string.vote_event_item_discarded), item.getTitle()),
                     Snackbar.LENGTH_LONG)
-                    .addCallback(snackbarCallback())
+                    .addCallback(snackbarCallback(visibleCopy))
                     .setAction("Undo", v -> undoRemoval(item, adapterPosition))
                     .show();
         }
 
-        private Snackbar.Callback snackbarCallback() {
+        private Snackbar.Callback snackbarCallback(Map<String, Boolean> visibleCopy) {
             return new Snackbar.Callback() {
                 @Override
                 public void onDismissed(Snackbar transientBottomBar, int event) {
                 if (event == DISMISS_EVENT_ACTION) return;
                 FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                    poll.updateRemainingEvents(visible);
+                    poll.updateRemainingEvents(visibleCopy);
                     checkOneChoiceLeft(poll);
                 });
                 }
@@ -310,7 +316,7 @@ public class EventListActivity extends AppCompatActivity {
             this.visible = visible;
             for (Event event : movieEvents) {
                 if (!visible.containsKey(event.getId())) {
-                    visible.put(event.getId(), true);
+                    visible.put(event.getId(), false);
                 }
                 if (visible.get(event.getId())) {
                     values.add(event);

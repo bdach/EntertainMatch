@@ -1,6 +1,8 @@
 package io.github.entertainmatch.firebase.models;
 
 import android.support.annotation.Nullable;
+
+import bolts.Bolts;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
@@ -85,6 +87,8 @@ public class FirebasePoll {
     @Nullable
     private String drawableUri = null;
     private String city;
+
+    private Map<String, Boolean> again;
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.

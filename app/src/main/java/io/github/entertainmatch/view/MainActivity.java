@@ -142,7 +142,9 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         ListExt.forEach(subscriptions, Subscription::unsubscribe);
-        locationChecker.unsubscribe();
+
+        if (locationChecker != null)
+            locationChecker.unsubscribe();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

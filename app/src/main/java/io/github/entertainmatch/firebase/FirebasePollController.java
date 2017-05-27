@@ -1,5 +1,7 @@
 package io.github.entertainmatch.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +27,7 @@ import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -176,6 +179,8 @@ public class FirebasePollController {
                 eventIds.add(selection.getKey());
             }
         }
+
+        // maybe transaction, maybe not
         ref.child(pollId)
                 .child("remainingEventChoices")
                 .child(facebookId)
@@ -188,12 +193,14 @@ public class FirebasePollController {
             public Transaction.Result doTransaction(MutableData mutableData) {
                 MutableData eventVotesRef = mutableData.child("eventVotes");
                 HashMap<String, String> eventVotes = (HashMap<String, String>) eventVotesRef.getValue();
+                List<String> eventsToVote = (ArrayList<String>) mutableData.child("eventsToVote").getValue();
+
                 eventVotes.put(facebookId, item.getId());
-                eventVotesRef.setValue(eventVotes);
+                eventVotesRef.child(facebookId).setValue(item.getId());
                 if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
                     List<String> candidates = HashMapExt.mostFrequent(eventVotes);
 
-                    if (candidates.size() == 1) {
+                    if (candidates.size() == 1 || eventsToVote.size() == 2) {
                         mutableData.child("stage").setValue(VoteDateStage.class.toString());
                         mutableData.child("victoriousEvent").setValue(item.getId());
                         mutableData.child("drawableUri").setValue(item.getDrawableUri());
@@ -204,8 +211,10 @@ public class FirebasePollController {
                     } else {
                         mutableData.child("eventsToVote").setValue(candidates);
                         mutableData.child("remainingEventChoices").setValue(null);
-                        for (String key : eventVotes.keySet()) {
-                            eventVotes.put(key, FirebasePoll.NO_USER_VOTE);
+                        for (String facebookId : eventVotes.keySet()) {
+                            eventVotes.put(facebookId, FirebasePoll.NO_USER_VOTE);
+                            // vote again flag
+                            mutableData.child("again").child(facebookId).setValue(true);
                         }
                         eventVotesRef.setValue(eventVotes);
                     }
@@ -351,5 +360,14 @@ public class FirebasePollController {
             return observable;
         });
         });
+    }
+
+    /**
+     * Removes again flag - used to indicate that event voting runs again
+     * @param pollId Poll to remove flag in
+     * @param facebookId User to remove flag for
+     */
+    public static void removeVoteEventAgainFlag(String pollId, String facebookId) {
+        ref.child(pollId).child("again").child(facebookId).setValue(false);
     }
 }

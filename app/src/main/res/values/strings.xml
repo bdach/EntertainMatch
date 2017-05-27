@@ -88,4 +88,5 @@
     <string name="pref_location_summary">Choose which location to use when searching for events</string>
     <string name="no_city_set_snackbar">You haven\'t chosen your city yet. Choose one to start adding polls!</string>
     <string name="no_city_set_snackbar_action">Set city</string>
+    <string name="message_tie">There was a tie! Choose from remaining events!</string>
 </resources>

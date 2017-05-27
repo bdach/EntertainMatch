@@ -142,7 +142,6 @@ public class CategoryFragment extends Fragment {
             listener.onCategoryReduce();
         }
 
-        Log.e("XDDD", String.valueOf(categories.size()));
         adapter.notifyDataSetChanged();
     }
 

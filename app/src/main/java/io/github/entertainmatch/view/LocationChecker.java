@@ -67,7 +67,9 @@ public class LocationChecker {
     }
 
     public void unsubscribe() {
-        citiesSubscription.unsubscribe();
-        snackbar.dismiss();
+        if (citiesSubscription != null)
+            citiesSubscription.unsubscribe();
+        if (snackbar != null)
+            snackbar.dismiss();
     }
 }
