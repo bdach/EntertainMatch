@@ -4,15 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
+import io.github.entertainmatch.model.Person;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-
-import android.util.Log;
-import com.facebook.AccessToken;
-import io.github.entertainmatch.model.Person;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Class responsible for managing Facebook users.
@@ -20,6 +17,7 @@ import lombok.Setter;
  * @author Adrian Bednarz
  * @since 4/5/17
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FacebookUsers {
     /**
      * Key for the {@link SharedPreferences} containing user data.

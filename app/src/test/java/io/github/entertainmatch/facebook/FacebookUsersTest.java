@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.HashMap;
 
@@ -45,20 +45,20 @@ public class FacebookUsersTest {
         backingMap = new HashMap<>();
         Mockito.when(editor.putString(Mockito.anyString(), Mockito.anyString()))
                 .then(invocation -> {
-                    String key = invocation.getArgument(0);
-                    String value = invocation.getArgument(1);
+                    String key = (String) invocation.getArguments()[0];
+                    String value = (String) invocation.getArguments()[1];
                     backingMap.put(key, value);
                     return editor;
                 });
         Mockito.when(sharedPreferences.getString(Mockito.anyString(), Mockito.anyString()))
                 .then(invocation -> {
-                    String key = invocation.getArgument(0);
-                    String defaultValue = invocation.getArgument(1);
+                    String key = (String) invocation.getArguments()[0];
+                    String defaultValue = (String) invocation.getArguments()[1];
                     return backingMap.getOrDefault(key, defaultValue);
                 });
         Mockito.when(editor.remove(Mockito.anyString()))
                 .then(invocation -> {
-                    String key = invocation.getArgument(0);
+                    String key = (String) invocation.getArguments()[0];
                     backingMap.remove(key);
                     return editor;
                 });

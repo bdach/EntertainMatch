@@ -125,7 +125,7 @@ public class FirebasePollController {
                         mutableData.child("stage").setValue(VoteEventStage.class.toString());
                         String winningCategory = winningCategories.get(0);
                         mutableData.child("chosenCategory").setValue(winningCategory);
-                        String imageUri = FirebaseCategoriesTemplatesController.getDrawableForCategory(winningCategory);
+                        String imageUri = FirebaseCategoriesTemplatesController.getImageForCategory(winningCategory);
                         mutableData.child("drawableUri").setValue(imageUri);
                         FirebaseUserController.setupEventStage(pollId, votedFor.keySet(), facebookId);
 

@@ -3,6 +3,8 @@ package io.github.entertainmatch.facebook;
 import android.content.Context;
 
 import com.facebook.FacebookSdk;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Class used to initialize the required Facebook SDKs.
@@ -12,6 +14,7 @@ import com.facebook.FacebookSdk;
  * @author Adrian Bednarz
  * @since 5/22/17
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FacebookInitializer {
     /**
      * Initializes the SDK for the supplied {@link Context}.

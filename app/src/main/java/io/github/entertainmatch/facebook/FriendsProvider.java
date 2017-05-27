@@ -7,12 +7,12 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.HttpMethod;
 import io.github.entertainmatch.model.Person;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -21,6 +21,7 @@ import java.util.List;
  * @author Bartlomiej Dach
  * @since 17.04.17
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FriendsProvider {
     /**
      * Returns an executable {@link GraphRequest} fetching a user's friends list.

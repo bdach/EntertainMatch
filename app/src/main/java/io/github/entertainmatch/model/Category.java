@@ -11,6 +11,7 @@ import io.github.entertainmatch.utils.ICloneable;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
  * @since 01.04.17
  */
 @AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class Category implements Parcelable, ICloneable<Category> {
     private final String name;
