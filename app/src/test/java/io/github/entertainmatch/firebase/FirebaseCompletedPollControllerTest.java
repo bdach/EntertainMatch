@@ -44,7 +44,7 @@ public class FirebaseCompletedPollControllerTest extends AbstractFirebaseControl
         MovieEvent event = new MovieEvent();
         FirebaseEventDate eventDate = new FirebaseEventDate();
         FirebaseLocation location = new FirebaseLocation();
-        DatabaseReference targetReference = FirebaseReferenceScaffold.from(reference)
+        DatabaseReference targetReference = FirebaseReferenceScaffold.from(getReference())
                 .child("correctId")
                 .finish();
         // when
@@ -106,7 +106,7 @@ public class FirebaseCompletedPollControllerTest extends AbstractFirebaseControl
     @Test
     public void setIsGoing() {
         // given
-        DatabaseReference targetReference = FirebaseReferenceScaffold.from(reference)
+        DatabaseReference targetReference = FirebaseReferenceScaffold.from(getReference())
                 .child("pollId")
                 .child("going")
                 .child("111222333")

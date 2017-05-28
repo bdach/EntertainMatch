@@ -6,33 +6,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Created by Adrian Bednarz on 5/5/17.
+ * Provides predefined category types stored in Firebase.
  *
- * Provides predefined category types stored in firebase.
+ * @author Adrian Bednarz
+ * @since 5/5/17.
  */
 @AllArgsConstructor
 @NoArgsConstructor
 public class FirebaseCategoryTemplate {
     /**
-     * User-friendly name of category
+     * User-friendly name of category.
      */
     @Getter
     public String name;
 
     /**
-     * Url to theme image
+     * URL to category image.
      */
     @Getter
     public String imageUrl;
 
     /**
-     * Identifier of a category
+     * Category identifier.
      */
     @Getter
     public String id;
 
     /**
-     * @return Constructs application Category from firebase template
+     * @return Constructs application Category from Firebase template.
      */
     public Category toCategory() {
         return new Category(name, 0, false, imageUrl, id);

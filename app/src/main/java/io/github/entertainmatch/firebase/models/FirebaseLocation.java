@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * Created by Adrian Bednarz on 5/8/17.
- *
  * Holds information about event's locations.
+ * @author Adrian Bednarz
+ * @since 5/8/17.
  */
 
 @NoArgsConstructor
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class FirebaseLocation {
     /**
-     * Unique location identifier
+     * Unique location identifier.
      */
     private String id;
     /**

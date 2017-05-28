@@ -7,28 +7,26 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.firebase.models.FirebaseUser;
 import io.github.entertainmatch.model.Person;
-import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 
+import java.util.List;
+import java.util.Set;
+
 /**
- * Created by Adrian Bednarz on 4/30/17.
+ * Manages user state stored in Firebase.
  *
- * Manages user state stored in firebase
+ * @author Adrian Bednarz
+ * @since 4/30/17
  */
 public class FirebaseUserController {
     /**
-     * Instance of the database
+     * Instance of the database.
      */
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     /**
      * Holds reference to people collection.
      * In this collection each node is denoted by user's facebook id.
@@ -36,18 +34,18 @@ public class FirebaseUserController {
     private static final DatabaseReference ref = database.getReference("user_polls");
 
     /**
-     * Adds person information to the database
-     * @param person Freshly authorized person
+     * Adds person information to the database.
+     * @param person Freshly authorized person.
      */
     public static void addPerson(Person person) {
         ref.child(person.getFacebookId());
     }
 
     /**
-     * Adds poll for a user
+     * Adds poll for a user.
      * @param pollId Id of new poll to add for all the users.
-     * @param membersFacebookIds Facebook ids of members
-     * @param creatorUserId Poll creator facebookId
+     * @param membersFacebookIds Facebook ids of members.
+     * @param creatorUserId Poll creator facebookId.
      */
     public static void addPoll(String pollId, List<String> membersFacebookIds, String creatorUserId) {
         for (String facebookId : membersFacebookIds) {
@@ -55,20 +53,13 @@ public class FirebaseUserController {
         }
     }
 
+    /**
+     * Remove a poll from the user's list of active poll.
+     * @param pollId ID of poll to clear.
+     * @param userId ID of user for whom the poll should be removed.
+     */
     public static void removePollForUser(String pollId, String userId) {
         ref.child(userId).child("polls").child(pollId).setValue(null);
-    }
-
-    /**
-     * Grabs user information stored in firebase by facebook id.
-     * Initially used to fetch data about polls.
-     * @param facebookId User's facebook id.
-     * @return Observable to the person provided by Firebase which fires one time only
-     */
-    public static Observable<FirebaseUser> getUserOnce(String facebookId) {
-        return RxFirebaseDatabase.observeSingleValueEvent(
-                ref.child(facebookId),
-                FirebaseUser.class);
     }
 
     /**
@@ -99,46 +90,75 @@ public class FirebaseUserController {
      * @param user Firebase user representation to change. Should be paired with provided facebookId
      */
     public static void makePollsOldForUser(String facebookId, FirebaseUser user) {
-        ref.child(facebookId).runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData mutableData) {
-                for (String pollId : user.getPolls().keySet()) {
-                    mutableData.child("polls").child(pollId).setValue(false);
-                }
-
-                for (String pollId : user.getEvents().keySet()) {
-                    mutableData.child("events").child(pollId).setValue(false);
-                }
-
-                for (String pollId : user.getDates().keySet()) {
-                    mutableData.child("dates").child(pollId).setValue(false);
-                }
-
-                for (String pollId : user.getFinished().keySet()) {
-                    mutableData.child("finished").child(pollId).setValue(false);
-                }
-
-                return Transaction.success(mutableData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-
-            }
-        });
+        ref.child(facebookId).runTransaction(new NotificationResetHandler(user));
     }
 
-    public static void setupEventStage(String pollId, Set<String> facebookIds, String thisUserId) {
+    /**
+     * Fires a notification for all users in the given poll upon moving to
+     * {@link io.github.entertainmatch.model.VoteEventStage}
+     * by setting the proper Firebase values.
+     * @param pollId ID of the poll to fire a notification for.
+     * @param facebookIds A {@link Set} containing IDs of all of the poll's participants.
+     */
+    public static void setupEventStage(String pollId, Set<String> facebookIds) {
         for (String facebookId : facebookIds) {
             ref.child(facebookId).child("events").child(pollId).setValue(true);
         }
     }
 
+    /**
+     * Fires a notification for a single user in the given poll upon moving to
+     * {@link io.github.entertainmatch.model.VoteDateStage}
+     * by setting the proper Firebase values.
+     * @param pollId ID of the poll to fire a notification for.
+     * @param facebookId ID of the user to fire a notification for.
+     */
     public static void setupDateStage(String pollId, String facebookId) {
         ref.child(facebookId).child("dates").child(pollId).setValue(true);
     }
 
+    /**
+     * Fires a notification for a single user in the given poll upon moving to
+     * {@link io.github.entertainmatch.model.VoteResultStage}
+     * by setting the proper Firebase values.
+     * @param pollId ID of the poll to fire a notification for.
+     * @param facebookId ID of the user to fire a notification for.
+     */
     public static void setupResultStage(String pollId, String facebookId) {
         ref.child(facebookId).child("finished").child(pollId).setValue(true);
+    }
+
+    static class NotificationResetHandler implements Transaction.Handler {
+        private final FirebaseUser user;
+
+        public NotificationResetHandler(FirebaseUser user) {
+            this.user = user;
+        }
+
+        @Override
+        public Transaction.Result doTransaction(MutableData mutableData) {
+            for (String pollId : user.getPolls().keySet()) {
+                mutableData.child("polls").child(pollId).setValue(false);
+            }
+
+            for (String pollId : user.getEvents().keySet()) {
+                mutableData.child("events").child(pollId).setValue(false);
+            }
+
+            for (String pollId : user.getDates().keySet()) {
+                mutableData.child("dates").child(pollId).setValue(false);
+            }
+
+            for (String pollId : user.getFinished().keySet()) {
+                mutableData.child("finished").child(pollId).setValue(false);
+            }
+
+            return Transaction.success(mutableData);
+        }
+
+        @Override
+        public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+        }
     }
 }
