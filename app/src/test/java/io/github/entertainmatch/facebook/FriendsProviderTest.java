@@ -43,7 +43,5 @@ public class FriendsProviderTest {
         List<GraphRequest> friendsById = FriendsProvider.getFriendsById(ids, null, null);
         // then
         assertThat(friendsById.size()).isEqualTo(ids.size());
-        assertThat(friendsById.stream().map(GraphRequest::getGraphPath)).containsExactly("/123", "/456", "/789");
-
     }
 }

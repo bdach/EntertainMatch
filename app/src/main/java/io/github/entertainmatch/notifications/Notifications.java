@@ -44,7 +44,7 @@ public class Notifications {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true); // hide on click
 
-        Intent intent = PollStageFactory.get(VoteCategoryStage.class.toString(), pollId).getViewStageIntent(context);
+        Intent intent = PollStageFactory.getIntentForStage(VoteCategoryStage.class, pollId, context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);
@@ -69,7 +69,7 @@ public class Notifications {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true); // hide on click
 
-        Intent intent = PollStageFactory.get(VoteEventStage.class.toString(), pollId).getViewStageIntent(context);
+        Intent intent = PollStageFactory.getIntentForStage(VoteEventStage.class, pollId, context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);
@@ -94,7 +94,7 @@ public class Notifications {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true); // hide on click
 
-        Intent intent = PollStageFactory.get(VoteDateStage.class.toString(), pollId).getViewStageIntent(context);
+        Intent intent = PollStageFactory.getIntentForStage(VoteDateStage.class, pollId, context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);
@@ -119,7 +119,7 @@ public class Notifications {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
                 .setAutoCancel(true); // hide on click
 
-        Intent intent = PollStageFactory.get(VoteResultStage.class.toString(), pollId).getViewStageIntent(context);
+        Intent intent = PollStageFactory.getIntentForStage(VoteResultStage.class, pollId, context);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(intent);

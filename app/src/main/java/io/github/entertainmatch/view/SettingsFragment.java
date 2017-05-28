@@ -11,9 +11,16 @@ import io.github.entertainmatch.firebase.FirebaseCityController;
 
 /**
  * Fragment containing the list of user preferences.
+ *
+ * @author Bartłomiej Dach
+ * @since 25.05.17
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
 
+    /**
+     * Called when the fragment is created.
+     * @param savedInstanceState The saved state of the fragment.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +47,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         category.addPreference(locationPreference);
     }
 
+    /**
+     * Called when the preferences are being created.
+     * @param savedInstanceState Saved instance state.
+     * @param rootKey The root key under which to store preferences.
+     */
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 
