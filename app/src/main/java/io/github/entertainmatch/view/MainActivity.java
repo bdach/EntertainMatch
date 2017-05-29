@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     /**
      * The fragment used to display the settings menu.
      */
-    private SettingsFragment settingsFragment;
+    SettingsFragment settingsFragment;
 
     private MainActivityPagerAdapter pagerAdapter;
 

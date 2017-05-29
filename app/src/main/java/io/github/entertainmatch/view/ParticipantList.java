@@ -2,6 +2,7 @@ package io.github.entertainmatch.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import com.facebook.GraphRequest;
 import io.github.entertainmatch.R;
