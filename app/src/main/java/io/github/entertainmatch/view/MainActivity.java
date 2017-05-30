@@ -103,10 +103,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FirebaseEventController.init();
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(STAGE_FINISHED_POLL_ID_KEY)) {
+            checkPollStatus(RESULT_OK, intent);
+        }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        FirebaseEventController.init();
 
         settingsFragment = new SettingsFragment();
 

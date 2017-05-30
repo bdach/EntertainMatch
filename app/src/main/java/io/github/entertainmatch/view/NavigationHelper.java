@@ -19,8 +19,9 @@ public class NavigationHelper {
             intent.putExtra(MainActivity.STAGE_FINISHED_POLL_ID_KEY, pollId);
             context.setResult(RESULT_OK, intent);
         } else {
-            // ??
-            context.startActivity(new Intent(context, MainActivity.class));
+            Intent intent = new Intent(context, MainActivity.class);
+            intent.putExtra(MainActivity.STAGE_FINISHED_POLL_ID_KEY, pollId);
+            context.startActivity(intent);
         }
         context.finish();
     }

@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity implements InternetDialogFr
             }
             // ...
         };
-        
+
         checkNetworkConnection();
 
         setContentView(R.layout.activity_login);
