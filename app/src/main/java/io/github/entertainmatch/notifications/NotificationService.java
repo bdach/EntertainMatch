@@ -10,21 +10,28 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Created by Adrian Bednarz on 5/10/17.
  */
 
 public class NotificationService extends IntentService {
+    @Inject
+    FacebookUsers FacebookUsers;
+
     public NotificationService() {
         super("NotificationService");
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
 
-        String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         FirebaseUserController.getUser(facebookId).subscribe(user -> {
             Log.d("NotificationsService", "User data changed");
             if (user == null)

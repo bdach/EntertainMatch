@@ -8,6 +8,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 import com.facebook.AccessToken;
+
+import javax.inject.Singleton;
+
 import io.github.entertainmatch.model.Person;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,17 +19,18 @@ import lombok.Setter;
  * Created by Adrian Bednarz on 4/5/17.
  */
 
+@Singleton
 public class FacebookUsers {
     private final static String PREF_KEY = "facebook_users";
     private final static String USER_KEY = "user";
 
-    private static Person currentUser = null;
+    private Person currentUser = null;
 
-    public static boolean isUserLoggedIn(Context ctx) {
+    public boolean isUserLoggedIn(Context ctx) {
         return currentUser != null || getCurrentUser(ctx) != null;
     }
 
-    public static Person getCurrentUser(Context ctx) {
+    public Person getCurrentUser(Context ctx) {
         if (currentUser != null)
             return currentUser;
 
@@ -37,14 +41,14 @@ public class FacebookUsers {
         return currentUser;
     }
 
-    public static void setCurrentUser(Context ctx, Person user) {
+    public void setCurrentUser(Context ctx, Person user) {
         SharedPreferences preferences = ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
         putObject(preferences, USER_KEY, user);
 
         currentUser = user;
     }
 
-    public static void removeCurrentUser(Context ctx) {
+    public void removeCurrentUser(Context ctx) {
         SharedPreferences preferences = ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
         removeObject(preferences, USER_KEY, Person.class);
 

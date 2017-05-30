@@ -3,6 +3,7 @@ package io.github.entertainmatch.firebase.models;
 import android.support.annotation.Nullable;
 
 import bolts.Bolts;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
@@ -12,6 +13,7 @@ import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -34,6 +38,11 @@ import java.util.Map;
 @Getter
 public class FirebasePoll {
     public static final String NO_USER_VOTE = "-1";
+
+    @Getter(AccessLevel.NONE)
+    @Inject
+    FacebookUsers FacebookUsers;
+
     /**
      * Users who participate in the poll
      */
@@ -100,6 +109,8 @@ public class FirebasePoll {
     }
 
     public FirebasePoll(String hostFacebookId, PollStub pollStub, String pollId) {
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+
         participants = ListExt.map(Arrays.asList(pollStub.getMembers()), Person::getFacebookId);
         participants.add(hostFacebookId);
 

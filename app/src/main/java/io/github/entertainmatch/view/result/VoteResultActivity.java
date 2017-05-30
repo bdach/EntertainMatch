@@ -24,7 +24,10 @@ import java.text.DateFormat;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
@@ -37,6 +40,8 @@ import io.github.entertainmatch.view.MainActivity;
 import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     private static final int ASK_CALENDAR = 2137;
 
@@ -60,6 +65,8 @@ public class VoteResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
 
         ButterKnife.bind(this);
         setContentView(R.layout.activity_vote_result);

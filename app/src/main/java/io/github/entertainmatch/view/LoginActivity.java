@@ -29,10 +29,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.Person;
 import org.json.JSONObject;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +45,9 @@ import io.github.entertainmatch.view.dialog.InternetDialogFragment;
 
 public class LoginActivity extends AppCompatActivity implements InternetDialogFragment.OnFragmentInteractionListener {
     private final static String Tag = "EntertainMatch_Login";
+    @Inject
+    FacebookUsers FacebookUsers;
+
 
     @BindView(R.id.btnLogin)
     Button btnLogin;
@@ -57,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements InternetDialogFr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
         FacebookInitializer.init(this);
 
         mAuth = FirebaseAuth.getInstance();

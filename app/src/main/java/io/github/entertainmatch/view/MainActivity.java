@@ -20,8 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
@@ -49,6 +52,8 @@ import rx.Subscription;
 public class MainActivity extends AppCompatActivity
         implements PollFragment.OnPollSelectedListener,
         EventFragment.OnEventSelectedListener {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * Identification number for the request to start a new poll.
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
 
         FirebaseEventController.init();
         Intent intent = getIntent();
@@ -132,6 +138,8 @@ public class MainActivity extends AppCompatActivity
                 this::navigateToSettings
         );
 
+        // init for service
+        FacebookUsers.getCurrentUser(this);
         if (!isMyServiceRunning(NotificationService.class))
             startService(new Intent(this, NotificationService.class));
     }

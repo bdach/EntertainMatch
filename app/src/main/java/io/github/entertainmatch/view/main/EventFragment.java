@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseUserEventController;
@@ -20,8 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 @NoArgsConstructor
 public class EventFragment extends Fragment {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     private OnEventSelectedListener listener;
     private Map<String, Pair<Integer, FirebaseCompletedPoll>> pollMap = new HashMap<>();
@@ -31,6 +37,7 @@ public class EventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
     }
 
     @Override

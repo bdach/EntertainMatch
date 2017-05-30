@@ -24,6 +24,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 
 import io.github.entertainmatch.facebook.FacebookInitializer;
@@ -45,10 +46,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * An activity containing the list of available events.
  */
 public class EventListActivity extends AppCompatActivity {
+    @Inject
+    FacebookUsers FacebookUsers;
+
     /**
      * The fragment argument representing the event ID that this fragment
      * represents.
@@ -83,6 +89,8 @@ public class EventListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+
         setContentView(R.layout.activity_event_list);
         ButterKnife.bind(this);
 

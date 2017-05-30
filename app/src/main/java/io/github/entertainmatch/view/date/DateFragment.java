@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebasePollController;
@@ -19,6 +21,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Fragment containing a list of dates for a given event.
  *
@@ -27,6 +31,8 @@ import java.util.ArrayList;
  */
 @NoArgsConstructor
 public class DateFragment extends Fragment {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * The key used to store and fetch {@link EventDate} items.
@@ -67,11 +73,13 @@ public class DateFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         if (getArguments() != null) {
             dates = new ArrayList<>();
             pollId = getArguments().getString(POLL_KEY);
-            FirebasePollController.getLocations(pollId).subscribe(locations -> {
+            FirebasePollController.getLocations(pollId, facebookId).subscribe(locations -> {
                 dates.clear();
                 dates.addAll(locations);
                 adapter.notifyDataSetChanged();

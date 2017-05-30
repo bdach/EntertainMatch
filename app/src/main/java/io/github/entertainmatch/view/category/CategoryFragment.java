@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
@@ -24,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 /**
  * A fragment used to display a list of {@link Category} items to select from.
  *
@@ -31,6 +35,8 @@ import java.util.Set;
  */
 @NoArgsConstructor
 public class CategoryFragment extends Fragment {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * The key used to store and fetch {@link Category} items to be displayed on the list.
@@ -65,6 +71,7 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
 
         if (getArguments() != null) {
             categories = getArguments().getParcelableArrayList(CATEGORIES_KEY);

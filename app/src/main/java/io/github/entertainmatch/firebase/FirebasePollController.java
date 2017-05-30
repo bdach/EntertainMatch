@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.inject.Inject;
+
 /**
  * Created by Adrian Bednarz on 4/30/17.
  *
@@ -331,35 +333,31 @@ public class FirebasePollController {
      * @param pollId Poll to get information about
      * @return Observable with retrieved event dates. It provides data once in sense that it will incrementally return the same list.
      */
-    public static Observable<List<EventDate>> getLocations(String pollId) {
-        return FirebasePollController.getPollOnce(pollId).flatMap(poll -> {
+    public static Observable<List<EventDate>> getLocations(String pollId, String facebookId) {
+        return FirebasePollController.getPollOnce(pollId).flatMap(poll ->
+                FirebaseEventDateController.getEventDatesSingle(poll.getVictoriousEvent()).flatMap(eventDates -> {
+                    List<EventDate> results = new ArrayList<>();
+                    PublishSubject<List<EventDate>> observable = PublishSubject.create();
 
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+                    for (FirebaseEventDate eventDate : eventDates.values()) {
+                        FirebaseLocationsController.getLocationOnce(eventDate.getLocationId()).subscribe(location -> {
+                            results.add(new EventDate(
+                                eventDate.getEventId(),
+                                location.getId(),
+                                location.getPlace(),
+                                location.getLat(),
+                                location.getLat(),
+                                new Date(eventDate.getDate()),
+                                poll.getEventDatesStatus()
+                                        .get(location.getId())
+                                        .get(facebookId)));
 
-        return FirebaseEventDateController.getEventDatesSingle(poll.getVictoriousEvent()).flatMap(eventDates -> {
-            List<EventDate> results = new ArrayList<>();
-            PublishSubject<List<EventDate>> observable = PublishSubject.create();
+                            observable.onNext(results);
+                        });
+                    }
 
-            for (FirebaseEventDate eventDate : eventDates.values()) {
-                FirebaseLocationsController.getLocationOnce(eventDate.getLocationId()).subscribe(location -> {
-                    results.add(new EventDate(
-                        eventDate.getEventId(),
-                        location.getId(),
-                        location.getPlace(),
-                        location.getLat(),
-                        location.getLat(),
-                        new Date(eventDate.getDate()),
-                        poll.getEventDatesStatus()
-                                .get(location.getId())
-                                .get(facebookId)));
-
-                    observable.onNext(results);
-                });
-            }
-
-            return observable;
-        });
-        });
+                    return observable;
+        }));
     }
 
     /**
