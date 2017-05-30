@@ -89,4 +89,7 @@
     <string name="no_city_set_snackbar">You haven\'t chosen your city yet. Choose one to start adding polls!</string>
     <string name="no_city_set_snackbar_action">Set city</string>
     <string name="message_tie">There was a tie! Choose from remaining events!</string>
+    <string name="internet_dialog_message">It seems that you are not connected to the internet</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
 </resources>
