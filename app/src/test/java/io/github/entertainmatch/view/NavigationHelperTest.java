@@ -1,4 +1,4 @@
-package view;
+package io.github.entertainmatch.view;
 
 import android.content.ComponentName;
 import android.content.Intent;

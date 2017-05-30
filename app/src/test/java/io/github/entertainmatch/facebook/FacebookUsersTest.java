@@ -34,7 +34,6 @@ public class FacebookUsersTest {
     @SuppressLint({"CommitPrefEdits", "NewApi"})
     @Before
     public void setUp() {
-        FacebookUsers.currentUser = null;
         // absolutely disgusting
         Mockito.when(context.getApplicationContext()).thenReturn(context);
         Mockito.when(context.getSharedPreferences(
@@ -68,7 +67,8 @@ public class FacebookUsersTest {
     public void getCurrentUser_returnsNullWhenNoUser() {
         // given
         // when
-        Person currentUser = FacebookUsers.getCurrentUser(context);
+        FacebookUsers facebookUsers = new FacebookUsers();
+        Person currentUser = facebookUsers.getCurrentUser(context);
         // then
         assertThat(currentUser).isNull();
     }
@@ -79,9 +79,10 @@ public class FacebookUsersTest {
         Person person = new Person();
         person.name = "John Smith";
         // when
-        FacebookUsers.setCurrentUser(context, person);
-        FacebookUsers.currentUser = null;
-        Person currentUser = FacebookUsers.getCurrentUser(context);
+        FacebookUsers facebookUsers = new FacebookUsers();
+        facebookUsers.setCurrentUser(context, person);
+        facebookUsers.currentUser = null;
+        Person currentUser = facebookUsers.getCurrentUser(context);
         // then
         assertThat(currentUser).isNull();
     }
@@ -91,9 +92,10 @@ public class FacebookUsersTest {
         // given
         Person person = new Person();
         person.facebookId = "111122223333";
-        FacebookUsers.currentUser = person;
+        FacebookUsers facebookUsers = new FacebookUsers();
+        facebookUsers.currentUser = person;
         // when
-        Person currentUser = FacebookUsers.getCurrentUser(context);
+        Person currentUser = facebookUsers.getCurrentUser(context);
         // then
         assertThat(currentUser).isEqualTo(person);
     }
@@ -105,8 +107,9 @@ public class FacebookUsersTest {
         person.facebookId = "123456789";
         person.name = "John Smith";
         // when
-        FacebookUsers.setCurrentUser(context, person);
-        Person currentUser = FacebookUsers.getCurrentUser(context);
+        FacebookUsers facebookUsers = new FacebookUsers();
+        facebookUsers.setCurrentUser(context, person);
+        Person currentUser = facebookUsers.getCurrentUser(context);
         // then
         assertThat(currentUser).isEqualToComparingFieldByField(person);
     }
@@ -118,8 +121,9 @@ public class FacebookUsersTest {
         person.facebookId = "123456789";
         person.name = "John Smith";
         // when
-        FacebookUsers.setCurrentUser(context, person); // user was saved into shared prefs
-        FacebookUsers.removeCurrentUser(context); // user should be removed here
+        FacebookUsers facebookUsers = new FacebookUsers();
+        facebookUsers.setCurrentUser(context, person); // user was saved into shared prefs
+        facebookUsers.removeCurrentUser(context); // user should be removed here
         // then
         assertThat(backingMap).isEmpty();
     }
