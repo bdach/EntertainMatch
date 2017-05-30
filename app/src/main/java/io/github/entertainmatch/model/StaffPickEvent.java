@@ -22,6 +22,7 @@ public class StaffPickEvent extends Event {
         drawableUri = source.readString();
         description = source.readString();
         detailsUrl = source.readString();
+        duration = source.readInt();
     }
 
     @Override
@@ -48,5 +49,6 @@ public class StaffPickEvent extends Event {
         dest.writeString(drawableUri);
         dest.writeString(description);
         dest.writeString(detailsUrl);
+        dest.writeInt(duration);
     }
 }

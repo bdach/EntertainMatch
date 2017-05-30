@@ -1,16 +1,22 @@
 package io.github.entertainmatch.firebase;
 
+import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.kelvinapps.rxfirebase.DataSnapshotMapper;
 import com.kelvinapps.rxfirebase.RxFirebaseDatabase;
+import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
+import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.ConcertEvent;
 import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.MovieEvent;
 import io.github.entertainmatch.model.PlayEvent;
 import io.github.entertainmatch.model.StaffPickEvent;
+import io.github.entertainmatch.utils.ListExt;
+import lombok.Getter;
 import rx.Observable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +35,34 @@ public class FirebaseEventController {
      * Holds reference to event collection.
      */
     private static final DatabaseReference ref = database.getReference("events");
+
+    /**
+     * Returns observable collection of currently available movies.
+     */
+    @Getter
+    private static final Observable<List<? extends Event>> movieEventsObservable;
+
+    static {
+        movieEventsObservable = read();
+    }
+
+    private static void save(List<? extends Event> list) {
+        ref.setValue(list);
+    }
+
+    private static Observable<List<? extends Event>> read() {
+        return RxFirebaseDatabase.observeValueEvent(ref.child("movies"), DataSnapshotMapper.listOf(MovieEvent.class));
+    }
+
+    public static void init() {
+        // force to call static constructor
+        FirebaseCategoriesTemplatesController.get().subscribe((List<FirebaseCategoryTemplate> x) -> {
+            FirebaseCategoriesTemplatesController.cached = ListExt.map(x, FirebaseCategoryTemplate::toCategory);
+            FirebaseCategoriesTemplatesController.setCachedMap(
+                    ListExt.toMap(FirebaseCategoriesTemplatesController.cached, Category::getId));
+            Log.d("FirebaseEventController", "categoriesTemplates ready " + FirebaseCategoriesTemplatesController.cached.size());
+        });
+}
 
     /**
      * Returns an {@link Observable} yielding {@link Map}s indexing available {@link Event}s by ID.

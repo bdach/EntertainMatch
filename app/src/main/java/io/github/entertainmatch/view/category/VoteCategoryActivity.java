@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
@@ -32,11 +33,15 @@ import rx.Subscription;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Activity used for voting on an event category.
  */
 public class VoteCategoryActivity extends AppCompatActivity
         implements CategoryFragment.OnCategorySelectedListener {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * The key used to store and fetch the {@link ArrayList} of {@link Category} items to display.
@@ -76,6 +81,8 @@ public class VoteCategoryActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+
         setContentView(R.layout.activity_vote_category);
         ButterKnife.bind(this);
 

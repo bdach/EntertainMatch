@@ -7,6 +7,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseUserEventController;
 import io.github.entertainmatch.firebase.FirebaseUserController;
@@ -19,6 +22,9 @@ import rx.Subscription;
  * @since 15.05.17
  */
 public class MainActivityPagerAdapter extends FragmentPagerAdapter {
+    @Inject
+    FacebookUsers FacebookUsers;
+
     @Getter
     List<Fragment> fragments;
 
@@ -26,6 +32,8 @@ public class MainActivityPagerAdapter extends FragmentPagerAdapter {
 
     public MainActivityPagerAdapter(FragmentManager fragmentManager, List<Fragment> fragments, List<Subscription> subscriptions) {
         super(fragmentManager);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+
         this.fragments = fragments;
         this.subscriptions = subscriptions;
     }

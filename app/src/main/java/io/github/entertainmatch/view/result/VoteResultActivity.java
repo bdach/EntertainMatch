@@ -1,11 +1,15 @@
 package io.github.entertainmatch.view.result;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -20,18 +24,26 @@ import java.text.DateFormat;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.*;
 import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.model.VoteResultStage;
+import io.github.entertainmatch.utils.CalendarUtils;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.MainActivity;
 import io.github.entertainmatch.view.ParticipantList;
 
 public class VoteResultActivity extends AppCompatActivity {
+    @Inject
+    FacebookUsers FacebookUsers;
+
+    private static final int ASK_CALENDAR = 2137;
 
     private CoordinatorLayout coordinatorLayout;
 
@@ -53,6 +65,8 @@ public class VoteResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
 
         ButterKnife.bind(this);
         setContentView(R.layout.activity_vote_result);
@@ -91,12 +105,49 @@ public class VoteResultActivity extends AppCompatActivity {
         });
 
         buttonYes.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_CALENDAR}, ASK_CALENDAR);
+                return;
+            }
+
+            addPollToCalendar();
             buttonListener(true);
         });
 
         buttonNo.setOnClickListener(v -> {
             buttonListener(false);
         });
+    }
+
+    /**
+     * Adds poll to a calendar after handling stuff related to permissions
+     */
+    private void addPollToCalendar() {
+        FirebaseCompletedPollController.getCompletedPollOnce(pollId).subscribe(poll -> {
+            CalendarUtils.addEventToCalendar(this, poll);
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case ASK_CALENDAR: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    addPollToCalendar();
+                    buttonListener(true);
+                } else {
+                    Snackbar.make(coordinatorLayout, R.string.no_calendar_permissions, Snackbar.LENGTH_LONG)
+                            .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            buttonListener(true);
+                        }
+                    }).show();
+                }
+            }
+        }
     }
 
     private void buttonListener(boolean going) {

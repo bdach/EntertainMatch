@@ -5,9 +5,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import io.github.entertainmatch.model.Person;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 
+import javax.inject.Singleton;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
@@ -17,7 +16,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Adrian Bednarz
  * @since 4/5/17
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Singleton
 public class FacebookUsers {
     /**
      * Key for the {@link SharedPreferences} containing user data.
@@ -32,14 +31,14 @@ public class FacebookUsers {
      * Contains the user currently logged into the application.
      */
     @VisibleForTesting
-    static Person currentUser = null;
+    Person currentUser = null;
 
     /**
      * Checks whether the user is logged in using Facebook.
      * @param ctx The {@link Context} from which the method is called.
      * @return True if user is logged in, false otherwise.
      */
-    public static boolean isUserLoggedIn(Context ctx) {
+    public boolean isUserLoggedIn(Context ctx) {
         return currentUser != null || getCurrentUser(ctx) != null;
     }
 
@@ -49,7 +48,7 @@ public class FacebookUsers {
      * @return A {@link Person} object containing a logged-in user's data, or null
      * if the user is not logged in.
      */
-    public static Person getCurrentUser(Context ctx) {
+    public Person getCurrentUser(Context ctx) {
         if (currentUser != null)
             return currentUser;
 
@@ -75,7 +74,7 @@ public class FacebookUsers {
      * @param ctx Context to use when fetching {@link SharedPreferences}.
      * @param user The {@link Person} object to store, containing user data.
      */
-    public static void setCurrentUser(Context ctx, Person user) {
+    public void setCurrentUser(Context ctx, Person user) {
         SharedPreferences preferences = getSharedPreferences(ctx);
         putObject(preferences, USER_KEY, user);
 
@@ -87,7 +86,7 @@ public class FacebookUsers {
      * {@link #currentUser} field.
      * @param ctx Context to use when fetching {@link SharedPreferences}.
      */
-    public static void removeCurrentUser(Context ctx) {
+    public void removeCurrentUser(Context ctx) {
         SharedPreferences preferences = getSharedPreferences(ctx);
         removeObject(preferences, USER_KEY, Person.class);
 

@@ -1,6 +1,9 @@
 package io.github.entertainmatch.firebase.models;
 
 import android.support.annotation.Nullable;
+
+import bolts.Bolts;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
@@ -10,6 +13,7 @@ import io.github.entertainmatch.model.Person;
 import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * The reason for this object is to provide Firebase-friendly implementation of Poll.
@@ -36,6 +42,10 @@ public class FirebasePoll {
      * Placeholder used when a vote for a category has not been cast yet.
      */
     public static final String NO_USER_VOTE = "-1";
+
+    @Getter(AccessLevel.NONE)
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * Facebook IDs of the users who participate in the poll.
@@ -117,6 +127,8 @@ public class FirebasePoll {
      */
     private String city;
 
+    private Map<String, Boolean> again;
+
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
      * @param pollStub Poll to convert
@@ -127,6 +139,8 @@ public class FirebasePoll {
     }
 
     public FirebasePoll(String hostFacebookId, PollStub pollStub, String pollId) {
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+
         participants = ListExt.map(Arrays.asList(pollStub.getMembers()), Person::getFacebookId);
         participants.add(hostFacebookId);
 

@@ -141,9 +141,9 @@ public class LocationChecker {
      * removes all displayed snackbars.
      */
     public void unsubscribe() {
-        citiesSubscription.unsubscribe();
-        if (snackbar != null) {
+        if (citiesSubscription != null)
+            citiesSubscription.unsubscribe();
+        if (snackbar != null)
             snackbar.dismiss();
-        }
     }
 }

@@ -71,4 +71,12 @@ public class HashMapExt {
             action.perform(entry.getKey(), entry.getValue());
         }
     }
+
+    public static Map<String, Boolean> shallowCopy(Map<String, Boolean> visible) {
+        Map<String, Boolean> result = new HashMap<>(visible.size());
+        for (Map.Entry<String, Boolean> entry : visible.entrySet()) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
 }

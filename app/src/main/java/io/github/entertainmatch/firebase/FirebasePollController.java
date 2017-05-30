@@ -1,5 +1,7 @@
 package io.github.entertainmatch.firebase;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,12 +27,15 @@ import io.github.entertainmatch.utils.ListExt;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import javax.inject.Inject;
 
 /**
  * Created by Adrian Bednarz on 4/30/17.
@@ -147,6 +152,8 @@ public class FirebasePollController {
                 eventIds.add(selection.getKey());
             }
         }
+
+        // maybe transaction, maybe not
         ref.child(pollId)
                 .child("remainingEventChoices")
                 .child(facebookId)
@@ -232,35 +239,40 @@ public class FirebasePollController {
      * @param pollId Poll to get information about
      * @return Observable with retrieved event dates. It provides data once in sense that it will incrementally return the same list.
      */
-    public static Observable<List<EventDate>> getLocations(String pollId) {
-        return FirebasePollController.getPollOnce(pollId).flatMap(poll -> {
+    public static Observable<List<EventDate>> getLocations(String pollId, String facebookId) {
+        return FirebasePollController.getPollOnce(pollId).flatMap(poll ->
+                FirebaseEventDateController.getEventDatesSingle(poll.getVictoriousEvent()).flatMap(eventDates -> {
+                    List<EventDate> results = new ArrayList<>();
+                    PublishSubject<List<EventDate>> observable = PublishSubject.create();
 
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+                    for (FirebaseEventDate eventDate : eventDates.values()) {
+                        FirebaseLocationsController.getLocationOnce(eventDate.getLocationId()).subscribe(location -> {
+                            results.add(new EventDate(
+                                eventDate.getEventId(),
+                                location.getId(),
+                                location.getPlace(),
+                                location.getLat(),
+                                location.getLat(),
+                                new Date(eventDate.getDate()),
+                                poll.getEventDatesStatus()
+                                        .get(location.getId())
+                                        .get(facebookId)));
 
-        return FirebaseEventDateController.getEventDatesSingle(poll.getVictoriousEvent()).flatMap(eventDates -> {
-            List<EventDate> results = new ArrayList<>();
-            PublishSubject<List<EventDate>> observable = PublishSubject.create();
+                            observable.onNext(results);
+                        });
+                    }
 
-            for (FirebaseEventDate eventDate : eventDates.values()) {
-                FirebaseLocationsController.getLocationOnce(eventDate.getLocationId()).subscribe(location -> {
-                    results.add(new EventDate(
-                        eventDate.getEventId(),
-                        location.getId(),
-                        location.getPlace(),
-                        location.getLat(),
-                        location.getLon(),
-                        new Date(eventDate.getDate()),
-                        poll.getEventDatesStatus()
-                                .get(location.getId())
-                                .get(facebookId)));
+                    return observable;
+        }));
+    }
 
-                    observable.onNext(results);
-                });
-            }
-
-            return observable;
-        });
-        });
+    /**
+     * Removes again flag - used to indicate that event voting runs again
+     * @param pollId Poll to remove flag in
+     * @param facebookId User to remove flag for
+     */
+    public static void removeVoteEventAgainFlag(String pollId, String facebookId) {
+        ref.child(pollId).child("again").child(facebookId).setValue(false);
     }
 
     private static class CategoryVoteHandler implements Transaction.Handler {
@@ -352,12 +364,14 @@ public class FirebasePollController {
         public Transaction.Result doTransaction(MutableData mutableData) {
             MutableData eventVotesRef = mutableData.child("eventVotes");
             HashMap<String, String> eventVotes = (HashMap<String, String>) eventVotesRef.getValue();
+            List<String> eventsToVote = (ArrayList<String>) mutableData.child("eventsToVote").getValue();
+
             eventVotes.put(facebookId, item.getId());
-            eventVotesRef.setValue(eventVotes);
+            eventVotesRef.child(facebookId).setValue(item.getId());
             if (HashMapExt.all(eventVotes, x -> !x.equals(FirebasePoll.NO_USER_VOTE))) {
                 List<String> candidates = HashMapExt.mostFrequent(eventVotes);
 
-                if (candidates.size() == 1) {
+                if (candidates.size() == 1 || eventsToVote.size() == 2) {
                     mutableData.child("stage").setValue(VoteDateStage.class.toString());
                     mutableData.child("victoriousEvent").setValue(item.getId());
                     mutableData.child("drawableUri").setValue(item.getDrawableUri());
@@ -368,8 +382,10 @@ public class FirebasePollController {
                 } else {
                     mutableData.child("eventsToVote").setValue(candidates);
                     mutableData.child("remainingEventChoices").setValue(null);
-                    for (String key : eventVotes.keySet()) {
-                        eventVotes.put(key, FirebasePoll.NO_USER_VOTE);
+                    for (String facebookId : eventVotes.keySet()) {
+                        eventVotes.put(facebookId, FirebasePoll.NO_USER_VOTE);
+                        // vote again flag
+                        mutableData.child("again").child(facebookId).setValue(true);
                     }
                     eventVotesRef.setValue(eventVotes);
                 }

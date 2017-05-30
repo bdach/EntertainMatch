@@ -1,7 +1,11 @@
 package io.github.entertainmatch.view;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -25,18 +29,25 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.firebase.FirebaseUserController;
 import io.github.entertainmatch.model.Person;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
+import io.github.entertainmatch.view.dialog.InternetDialogFragment;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements InternetDialogFragment.OnFragmentInteractionListener {
     private final static String Tag = "EntertainMatch_Login";
+    @Inject
+    FacebookUsers FacebookUsers;
+
 
     @BindView(R.id.btnLogin)
     Button btnLogin;
@@ -52,36 +63,51 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (FacebookUsers.isUserLoggedIn(this)) {
-            goToApp();
-            return;
-        }
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+        FacebookInitializer.init(this);
 
         mAuth = FirebaseAuth.getInstance();
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d("MAIN", "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d("MAIN", "onAuthStateChanged:signed_out");
-                }
-                // ...
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in
+                Log.d("MAIN", "onAuthStateChanged:signed_in:" + user.getUid());
+            } else {
+                // User is signed out
+                Log.d("MAIN", "onAuthStateChanged:signed_out");
             }
+            // ...
         };
+
+        checkNetworkConnection();
 
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
     }
 
+    private void init() {
+        if (FacebookUsers.isUserLoggedIn(this)) {
+            goToApp();
+        }
+        // else - stay in login activity
+    }
+
+    private void checkNetworkConnection() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null) {
+            // not connected to the internet
+            DialogFragment fragment = InternetDialogFragment.newInstance();
+            fragment.show(getFragmentManager(), "tag");
+        } else {
+            // connected to the internet, just start the app
+            init();
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-        FacebookInitializer.init(getApplicationContext());
 
         mAuth.addAuthStateListener(mAuthListener);
     }
@@ -196,5 +222,16 @@ public class LoginActivity extends AppCompatActivity {
     private void performFacebookLogin() {
         loginButton.performClick();
         loginButton.registerCallback(callbackManager, loginCallback);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment fragment) {
+        // check again
+        checkNetworkConnection();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment fragment) {
+        finish();
     }
 }

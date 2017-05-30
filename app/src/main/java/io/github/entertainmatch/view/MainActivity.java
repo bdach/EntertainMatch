@@ -18,12 +18,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
+import io.github.entertainmatch.firebase.FirebaseEventController;
 import io.github.entertainmatch.firebase.FirebasePollController;
 import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.model.Poll;
@@ -45,6 +49,8 @@ import rx.Subscription;
 public class MainActivity extends AppCompatActivity
         implements PollFragment.OnPollSelectedListener,
         EventFragment.OnEventSelectedListener {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * Identification number for the request to start a new poll.
@@ -99,10 +105,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+
+        FirebaseEventController.init();
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(STAGE_FINISHED_POLL_ID_KEY)) {
+            checkPollStatus(RESULT_OK, intent);
+        }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        FirebaseCategoriesTemplatesController.init();
 
         settingsFragment = new SettingsFragment();
 
@@ -122,6 +135,8 @@ public class MainActivity extends AppCompatActivity
                 this::navigateToSettings
         );
 
+        // init for service
+        FacebookUsers.getCurrentUser(this);
         if (!isMyServiceRunning(NotificationService.class))
             startService(new Intent(this, NotificationService.class));
     }
@@ -138,7 +153,9 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         ListExt.forEach(subscriptions, Subscription::unsubscribe);
-        locationChecker.unsubscribe();
+
+        if (locationChecker != null)
+            locationChecker.unsubscribe();
     }
 
     private boolean isMyServiceRunning(Class<?> serviceClass) {

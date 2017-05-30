@@ -14,8 +14,11 @@ import android.view.MenuItem;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
@@ -33,6 +36,8 @@ import rx.Subscription;
  * The activity responsible for voting on a date for the selected event.
  */
 public class VoteDateActivity extends AppCompatActivity implements DateFragment.OnDateSelectedListener {
+    @Inject
+    FacebookUsers FacebookUsers;
 
     /**
      * The activity toolbar.
@@ -57,6 +62,7 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
     protected void onStart() {
         super.onStart();
 
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
         FacebookInitializer.init(getApplicationContext());
 
         changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
