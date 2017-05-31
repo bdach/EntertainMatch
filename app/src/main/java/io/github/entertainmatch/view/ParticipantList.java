@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
 import com.facebook.GraphRequest;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FriendsProvider;
 import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
@@ -50,6 +51,7 @@ public class ParticipantList {
         this.context = context;
         this.idList = poll.getParticipants();
         this.nameList = new ArrayList<>();
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
     }
 
     /**
@@ -61,6 +63,7 @@ public class ParticipantList {
         this.context = context;
         this.idList = completedPoll.goingList();
         this.nameList = new ArrayList<>();
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
     }
 
     /**

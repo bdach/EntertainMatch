@@ -1,8 +1,6 @@
 package io.github.entertainmatch.firebase.models;
 
 import android.support.annotation.Nullable;
-
-import bolts.Bolts;
 import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
@@ -14,17 +12,14 @@ import io.github.entertainmatch.model.PollStub;
 import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * The reason for this object is to provide Firebase-friendly implementation of Poll.
@@ -34,8 +29,6 @@ import javax.inject.Inject;
  * @author Adrian Bednarz
  * @since 4/30/17
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 public class FirebasePoll {
     /**
@@ -128,6 +121,10 @@ public class FirebasePoll {
     private String city;
 
     private Map<String, Boolean> again;
+
+    public FirebasePoll() {
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
+    }
 
     /**
      * Construct Firebase Poll from a Poll object that is used throughout the application.
