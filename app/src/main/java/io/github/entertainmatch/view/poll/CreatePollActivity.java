@@ -115,7 +115,9 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
 
     private void removeAddOption() {
         View addPollMenuItem = findViewById(R.id.action_create_poll);
-        addPollMenuItem.setEnabled(false);
+        if (addPollMenuItem != null) {
+            addPollMenuItem.setEnabled(false);
+        }
     }
 
     @Override

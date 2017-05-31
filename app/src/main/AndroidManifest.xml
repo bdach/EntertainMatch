@@ -1,71 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.entertainmatch">
+          package="io.github.entertainmatch">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".DaggerApplication">
-
+            android:name=".DaggerApplication"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
-        <service android:name=".notifications.NotificationService" android:exported="false" />
-        <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
+                android:name="com.facebook.sdk.ApplicationId"
+                android:value="@string/app_id"/>
+
+        <service
+                android:name=".notifications.NotificationService"
+                android:exported="false"/>
 
         <activity
-            android:name=".view.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+                android:name="com.facebook.FacebookActivity"
+                android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+                android:name=".view.MainActivity"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".view.category.VoteCategoryActivity"
-            android:label="@string/title_activity_vote_category"
-            android:parentActivityName=".view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+                android:name=".view.category.VoteCategoryActivity"
+                android:label="@string/title_activity_vote_category"
+                android:parentActivityName=".view.MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.entertainmatch.view.MainActivity" />
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.MainActivity"/>
         </activity>
         <activity
-            android:name=".view.event.EventListActivity"
-            android:label="@string/title_event_list"
-            android:parentActivityName=".view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+                android:name=".view.event.EventListActivity"
+                android:label="@string/title_event_list"
+                android:parentActivityName=".view.MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.entertainmatch.view.MainActivity" />
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.MainActivity"/>
         </activity>
         <activity
-            android:name=".view.event.EventDetailActivity"
-            android:label="@string/title_event_detail"
-            android:parentActivityName=".view.event.EventListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+                android:name=".view.event.EventDetailActivity"
+                android:label="@string/title_event_detail"
+                android:parentActivityName=".view.event.EventListActivity"
+                android:theme="@style/AppTheme.NoActionBar">
             <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.entertainmatch.view.event.EventListActivity" />
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value="io.github.entertainmatch.view.event.EventListActivity"/>
         </activity>
         <activity
-            android:name=".view.LoginActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+                android:name=".view.LoginActivity"
+                android:label="@string/app_name"
+                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
