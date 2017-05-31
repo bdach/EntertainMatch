@@ -21,14 +21,13 @@ import java.util.List;
  * @author Bartlomiej Dach
  * @since 17.04.17
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FriendsProvider {
     /**
      * Returns an executable {@link GraphRequest} fetching a user's friends list.
      * @param callback The callback function to execute upon request completion.
      * @return An instance of {@link GraphRequest} ready to execute.
      */
-    public static GraphRequest getFriendsList(GraphRequest.GraphJSONArrayCallback callback) {
+    public GraphRequest getFriendsList(GraphRequest.GraphJSONArrayCallback callback) {
         AccessToken token = AccessToken.getCurrentAccessToken();
         return getFriendsList(callback, token);
     }
@@ -55,7 +54,7 @@ public class FriendsProvider {
      * @param callback The callback to execute upon each of the requests' completion.
      * @return A {@link List} of {@link GraphRequest}s for user data.
      */
-    public static List<GraphRequest> getFriendsById(List<String> ids, GraphRequest.Callback callback) {
+    public List<GraphRequest> getFriendsById(List<String> ids, GraphRequest.Callback callback) {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return getFriendsById(ids, callback, accessToken);
     }

@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
+import io.github.entertainmatch.facebook.FacebookModule;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebaseEventController;
@@ -51,6 +52,9 @@ public class MainActivity extends AppCompatActivity
         EventFragment.OnEventSelectedListener {
     @Inject
     FacebookUsers FacebookUsers;
+
+    @Inject
+    FacebookInitializer facebookInitializer;
 
     /**
      * Identification number for the request to start a new poll.
@@ -249,7 +253,7 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        FacebookInitializer.init(getApplicationContext());
+        facebookInitializer.initNonStatic(getApplicationContext());
     }
 
     private void checkPollStatus(int resultCode, Intent data) {

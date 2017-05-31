@@ -65,6 +65,9 @@ public class FacebookUsers {
      * @return An instance of {@link SharedPreferences} with the key of {@link #PREF_KEY}
      */
     private static SharedPreferences getSharedPreferences(Context ctx) {
+        if (ctx == null || ctx.getApplicationContext() == null) {
+            return null;
+        }
         return ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
     }
 

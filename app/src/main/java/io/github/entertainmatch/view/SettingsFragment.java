@@ -2,12 +2,18 @@ package io.github.entertainmatch.view;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.firebase.FirebaseCityController;
+import lombok.AccessLevel;
+import lombok.Setter;
+import rx.Observable;
+
+import java.util.List;
 
 /**
  * Fragment containing the list of user preferences.
@@ -16,6 +22,8 @@ import io.github.entertainmatch.firebase.FirebaseCityController;
  * @since 25.05.17
  */
 public class SettingsFragment extends PreferenceFragmentCompat {
+    @Setter(value = AccessLevel.PACKAGE, onMethod = @__(@VisibleForTesting))
+    private Observable<List<String>> cityListObservable;
 
     /**
      * Called when the fragment is created.
@@ -38,8 +46,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         locationPreference.setKey(UserPreferences.PREF_LOCATION_KEY);
         locationPreference.setTitle(R.string.pref_location_label);
         locationPreference.setSummary(R.string.pref_location_summary);
-        FirebaseCityController.getCitiesOnce()
-                .subscribe(cities -> {
+        if (cityListObservable == null) {
+            cityListObservable = FirebaseCityController.getCitiesOnce();
+        }
+        cityListObservable.subscribe(cities -> {
                     String[] citiesArray = cities.toArray(new String[cities.size()]);
                     locationPreference.setEntries(citiesArray);
                     locationPreference.setEntryValues(citiesArray);

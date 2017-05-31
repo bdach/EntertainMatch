@@ -16,7 +16,7 @@ public class DaggerApplication extends Application {
     private static DaggerApplication app;
 
     @Getter
-    FacebookComponent facebookComponent;
+    protected FacebookComponent facebookComponent;
 
     @Override
     public void onCreate() {
@@ -27,7 +27,7 @@ public class DaggerApplication extends Application {
         facebookComponent.inject(this);
     }
 
-    private void initFacebookComponent() {
+    protected void initFacebookComponent() {
         facebookComponent = DaggerFacebookComponent.builder().facebookModule(new FacebookModule(this)).build();
     }
 }

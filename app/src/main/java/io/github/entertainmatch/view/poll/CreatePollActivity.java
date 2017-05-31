@@ -18,6 +18,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.facebook.GraphRequest;
+import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.facebook.FriendsProvider;
@@ -30,6 +31,7 @@ import io.github.entertainmatch.view.LocationChecker;
 import io.github.entertainmatch.view.MainActivity;
 import io.github.entertainmatch.view.UserPreferences;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -71,9 +73,13 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
     private final HashSet<Person> selectedPeople = new HashSet<>();
     private LocationChecker locationChecker;
 
+    @Inject
+    FriendsProvider friendsProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DaggerApplication.getApp().getFacebookComponent().inject(this);
         setContentView(R.layout.activity_create_poll);
         ButterKnife.bind(this);
 
@@ -81,11 +87,13 @@ public class CreatePollActivity extends AppCompatActivity implements PersonFragm
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         personFragment = new PersonFragment();
-        GraphRequest friendsListRequest = FriendsProvider.getFriendsList((array, response) -> {
+        GraphRequest friendsListRequest = friendsProvider.getFriendsList((array, response) -> {
             ArrayList<Person> people = FriendsProvider.arrayFromJson(array);
             personFragment.setItems(people);
         });
-        friendsListRequest.executeAsync();
+        if (friendsListRequest != null) {
+            friendsListRequest.executeAsync();
+        }
 
         locationChecker = new LocationChecker(
                 this,

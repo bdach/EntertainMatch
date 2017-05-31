@@ -2,7 +2,6 @@ package io.github.entertainmatch.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import com.facebook.GraphRequest;
 import io.github.entertainmatch.R;
@@ -12,6 +11,7 @@ import io.github.entertainmatch.firebase.models.FirebasePoll;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +37,9 @@ public class ParticipantList {
      * List of names of users fetched from the Facebook API.
      */
     private final List<String> nameList;
+
+    @Inject
+    FriendsProvider friendsProvider;
 
     /**
      * Constructor.
@@ -66,7 +69,7 @@ public class ParticipantList {
     public void fetchNames() {
         nameList.clear();
         if (idList.isEmpty()) return;
-        List<GraphRequest> requests = FriendsProvider.getFriendsById(idList, response -> {
+        List<GraphRequest> requests = friendsProvider.getFriendsById(idList, response -> {
             try {
                 JSONObject responseObject = response.getJSONObject();
                 String name = responseObject.getString("name");

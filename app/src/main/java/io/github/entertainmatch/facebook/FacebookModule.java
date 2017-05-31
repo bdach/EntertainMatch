@@ -24,4 +24,14 @@ public class FacebookModule {
     public FacebookUsers provideFacebookUsers() {
         return new FacebookUsers();
     }
+
+    @Provides
+    public FacebookInitializer provideFacebookInitializer() {
+        return new FacebookInitializer();
+    }
+
+    @Provides
+    public FriendsProvider provideFriendsProvider() {
+        return new FriendsProvider();
+    }
 }
