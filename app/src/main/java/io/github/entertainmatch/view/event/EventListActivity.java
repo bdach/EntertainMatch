@@ -36,6 +36,8 @@ import io.github.entertainmatch.model.Event;
 import io.github.entertainmatch.model.PollStage;
 import io.github.entertainmatch.model.VoteEventStage;
 import io.github.entertainmatch.utils.HashMapExt;
+import io.github.entertainmatch.utils.SnackbarStatusHelper;
+import io.github.entertainmatch.utils.StageType;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
@@ -113,10 +115,13 @@ public class EventListActivity extends AppCompatActivity {
         });
 
 
-        Snackbar.make(coordinatorLayout,
-            R.string.vote_event_start_tip,
-            Snackbar.LENGTH_LONG)
-            .show();
+        if (SnackbarStatusHelper.shouldDisplaySnackbar(this, StageType.Event)) {
+            Snackbar.make(coordinatorLayout,
+                R.string.vote_event_start_tip,
+                Snackbar.LENGTH_LONG)
+                .show();
+            SnackbarStatusHelper.stopShowingSnackbar(this, StageType.Event);
+        }
 
         if (findViewById(R.id.event_detail_container) != null) {
             // The detail container view will be present only in the

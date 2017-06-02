@@ -2,13 +2,13 @@ package io.github.entertainmatch.facebook;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.VisibleForTesting;
 import android.text.TextUtils;
 import io.github.entertainmatch.model.Person;
+import io.github.entertainmatch.utils.PreferencesHelper;
 
 import javax.inject.Singleton;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Class responsible for managing Facebook users.
@@ -52,23 +52,11 @@ public class FacebookUsers {
         if (currentUser != null)
             return currentUser;
 
-        SharedPreferences preferences = getSharedPreferences(ctx);
+        SharedPreferences preferences = PreferencesHelper.getSharedPreferences(ctx, PREF_KEY);
 
-        Person candidate = getObject(preferences, USER_KEY, Person.class);
+        Person candidate = PreferencesHelper.getObject(preferences, USER_KEY, Person.class);
         currentUser = candidate == null || TextUtils.isEmpty(candidate.getFacebookId()) ? null : candidate;
         return currentUser;
-    }
-
-    /**
-     * Retrieves {@link SharedPreferences} with the key of {@link #PREF_KEY}.
-     * @param ctx The {@link Context} to use when fetching the preferences.
-     * @return An instance of {@link SharedPreferences} with the key of {@link #PREF_KEY}
-     */
-    private static SharedPreferences getSharedPreferences(Context ctx) {
-        if (ctx == null || ctx.getApplicationContext() == null) {
-            return null;
-        }
-        return ctx.getApplicationContext().getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE);
     }
 
     /**
@@ -78,8 +66,8 @@ public class FacebookUsers {
      * @param user The {@link Person} object to store, containing user data.
      */
     public void setCurrentUser(Context ctx, Person user) {
-        SharedPreferences preferences = getSharedPreferences(ctx);
-        putObject(preferences, USER_KEY, user);
+        SharedPreferences preferences = PreferencesHelper.getSharedPreferences(ctx, PREF_KEY);
+        PreferencesHelper.putObject(preferences, USER_KEY, user);
 
         currentUser = user;
     }
@@ -90,94 +78,9 @@ public class FacebookUsers {
      * @param ctx Context to use when fetching {@link SharedPreferences}.
      */
     public void removeCurrentUser(Context ctx) {
-        SharedPreferences preferences = getSharedPreferences(ctx);
-        removeObject(preferences, USER_KEY, Person.class);
+        SharedPreferences preferences = PreferencesHelper.getSharedPreferences(ctx, PREF_KEY);
+        PreferencesHelper.removeObject(preferences, USER_KEY, Person.class);
 
         currentUser = null;
-    }
-
-    /**
-     * Helper method. Used to retrieve a Java object stored using the
-     * {@link #putObject(SharedPreferences, String, Object)} method.
-     * @param preferences The {@link SharedPreferences} instance to store the values into.
-     * @param key The key to use when storing field values.
-     * @param type The type of object to get.
-     * @param <T> The type of object to retrieve.
-     * @return An object of type {@link T} retrieved from {@link SharedPreferences}.
-     */
-    private static <T> T getObject(SharedPreferences preferences, String key, Class<T> type) {
-        T o  = null;
-
-        try {
-            o = type.getConstructor().newInstance();
-
-            for (Field field : type.getDeclaredFields()) {
-                try {
-                    if (field.getType().equals(String.class))
-                        field.set(o, preferences.getString(getFieldKey(key, field.getName()), ""));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-
-        return o;
-    }
-
-    /**
-     * Helper method. Used to store a Java object's field values into the supplied
-     * {@link SharedPreferences} object.
-     * @param preferences The {@link SharedPreferences} instance to store the values into.
-     * @param key The key to use when storing field values.
-     * @param o The object to store.
-     */
-    private static void putObject(SharedPreferences preferences, String key, Object o) {
-        SharedPreferences.Editor editor = preferences.edit();
-        for (Field field : o.getClass().getDeclaredFields()) {
-            try {
-                if (field.getType().equals(String.class))
-                    editor.putString(getFieldKey(key, field.getName()), field.get(o).toString());
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        editor.apply();
-    }
-
-    /**
-     * Helper method. Used to remove an object stored using {@link SharedPreferences} from
-     * the supplied {@link SharedPreferences} object.
-     * @param preferences The {@link SharedPreferences} instance to remove the object from.
-     * @param key The key under which the object was stored.
-     * @param type The type of object stored.
-     * @param <T> The type of object stored.
-     */
-    private static <T> void removeObject(SharedPreferences preferences, String key, Class<T> type) {
-        SharedPreferences.Editor editor = preferences.edit();
-
-        for (Field field : type.getDeclaredFields()) {
-            if (field.getType().equals(String.class))
-                editor.remove(getFieldKey(key, field.getName()));
-        }
-
-        editor.apply();
-    }
-
-    /**
-     * Returns a key for the field with the given name.
-     * @param objectKey The key used to store the whole object.
-     * @param name The name of the field whose value is being stored.
-     * @return A {@link String} to use when putting the value into {@link SharedPreferences}
-     */
-    private static String getFieldKey(String objectKey, String name) {
-        return objectKey + "_" + name;
     }
 }
