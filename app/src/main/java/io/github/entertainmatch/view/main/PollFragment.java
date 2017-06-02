@@ -87,7 +87,10 @@ public class PollFragment extends Fragment {
             Pair<Integer, Poll> pair = Pair.create(polls.size(), poll);
             pollMap.put(poll.getPollId(), pair);
             polls.add(poll);
-            adapter.notifyItemInserted(polls.size() - 1);
+
+            // probably too heavy
+            polls.sort((x, y) -> y.getPollId().compareTo(x.getPollId()));
+            adapter.notifyDataSetChanged();
         }
     }
 
