@@ -11,6 +11,7 @@ import io.github.entertainmatch.utils.Delegate;
 import rx.Observable;
 import rx.Subscription;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,6 +108,9 @@ public class LocationChecker {
      * @param cities Newly updated list of cities.
      */
     private void checkCities(List<String> cities) {
+        if (cities == null) {
+            return;
+        }
         lastValue = cities;
         String city = UserPreferences.getCity(context);
         if (cities.contains(city)) {

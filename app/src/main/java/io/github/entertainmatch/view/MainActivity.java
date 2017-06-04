@@ -130,6 +130,31 @@ public class MainActivity extends AppCompatActivity
         );
 
         viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                setFabVisibility(position);
+            }
+
+            private void setFabVisibility(int position) {
+                if (position == 0 && !settingsFragment.isVisible()) {
+                    fab.show();
+                    locationChecker.recheckCities();
+                } else {
+                    fab.hide();
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setFabVisibility(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
 
         locationChecker = new LocationChecker(
@@ -174,7 +199,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        fab.show();
+        if (viewPager.getCurrentItem() == 0) {
+            fab.show();
+        }
         locationChecker.recheckCities();
         tabLayout.setVisibility(View.VISIBLE);
         viewPager.setVisibility(View.VISIBLE);
