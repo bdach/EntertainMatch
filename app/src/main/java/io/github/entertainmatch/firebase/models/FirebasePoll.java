@@ -209,7 +209,6 @@ public class FirebasePoll {
      * @param selections User selections - eventId to isRemaining mapping
      */
     public void updateRemainingEvents(Map<String, Boolean> selections) {
-        // FIXME: This can throw NullPointers. Move this to activity.
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);
@@ -220,7 +219,6 @@ public class FirebasePoll {
      * @param event Event voted for by current user
      */
     public void voteEvent(Event event) {
-        // FIXME: This can throw NullPointers. Move this to activity.
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         FirebasePollController.voteEvent(pollId, facebookId, event);
     }
@@ -231,7 +229,6 @@ public class FirebasePoll {
      * @param selections Corresponding to locations selection flags (isChosen)
      */
     public void chooseDate(List<String> locationIds, List<Boolean> selections) {
-        // FIXME: This can throw NullPointers. Move this to activity.
         String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
         ListExt.zippedForeach(locationIds, selections, (l, s) -> FirebasePollController.chooseDate(pollId, l, facebookId, s));
         FirebasePollController.dateVotingFinished(pollId, facebookId);

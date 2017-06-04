@@ -118,8 +118,14 @@ public class CategoryFragment extends Fragment {
      */
     public void registerVote(Category item) {
         item.registerVote();
-        adapter.disableVoting();
+        adapter.setCanVote(false);
         adapter.sortItemsByVotes();
+        adapter.notifyDataSetChanged();
+    }
+
+    public void restoreVoting(Category item) {
+        item.undoVote();
+        adapter.setCanVote(true);
         adapter.notifyDataSetChanged();
     }
 

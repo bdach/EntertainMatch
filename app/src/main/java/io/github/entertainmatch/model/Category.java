@@ -60,6 +60,11 @@ public class Category implements Parcelable, ICloneable<Category> {
         votedFor = true;
     }
 
+    public void undoVote() {
+        voteCount--;
+        votedFor = false;
+    }
+
     @Override
     public int describeContents() {
         return 0;

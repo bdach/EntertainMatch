@@ -19,16 +19,13 @@ import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.FirebaseCategoriesTemplatesController;
 import io.github.entertainmatch.firebase.FirebasePollController;
-import io.github.entertainmatch.firebase.models.FirebaseCategory;
 import io.github.entertainmatch.firebase.models.FirebaseCategoryTemplate;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
 import io.github.entertainmatch.model.Category;
 import io.github.entertainmatch.model.VoteCategoryStage;
-import io.github.entertainmatch.utils.ListExt;
 import io.github.entertainmatch.view.LoginActivity;
 import io.github.entertainmatch.view.NavigationHelper;
 import io.github.entertainmatch.view.ParticipantList;
-import io.github.entertainmatch.view.UserPreferences;
 import rx.Subscription;
 
 import java.util.ArrayList;
@@ -206,17 +203,23 @@ public class VoteCategoryActivity extends AppCompatActivity
             return;
         }
         fragment.registerVote(item);
+        Snackbar.make(layout, String.format("You've voted for %s.", item.getName()), Snackbar.LENGTH_LONG)
+                .setAction("Undo", v -> {
+                    fragment.restoreVoting(item);
+                }).addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        if (event == DISMISS_EVENT_ACTION) return;
+                        confirmVote(item);
+                    }
+                }).show();
+    }
 
+    void confirmVote(Category item) {
+        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+            poll.voteCategory(item, poll.getCity());
+        });
         Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
-            .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
-                    FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                        poll.voteCategory(item, poll.getCity());
-                    });
-                    super.onDismissed(transientBottomBar, event);
-                }
-            })
             .show();
     }
 

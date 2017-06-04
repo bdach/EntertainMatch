@@ -52,7 +52,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
                 .inflate(R.layout.fragment_category, parent, false);
 
         if (ListExt.any(categories, Category::isVotedFor))
-            disableVoting();
+            setCanVote(false);
 
         return new ViewHolder(view);
     }
@@ -63,17 +63,10 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         holder.setVoting(canVote);
 
         holder.view.setOnClickListener(v -> {
-            if (null != listener) {
+            if (null != listener && canVote) {
                 listener.onCategorySelected(holder.category);
             }
         });
-    }
-
-    /**
-     * Disables the user's ability to vote for a category.
-     */
-    public void disableVoting() {
-        canVote = false;
     }
 
     @Override
