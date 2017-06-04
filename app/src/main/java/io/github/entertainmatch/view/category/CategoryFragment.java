@@ -147,6 +147,9 @@ public class CategoryFragment extends Fragment {
         Set<String> existingIds = categoryToCount.keySet();
         if (ListExt.removeIf(categories, category -> !existingIds.contains(category.getId()))) {
             listener.onCategoryReduce();
+            for (Category category : categories) {
+                category.setVotedFor(false);
+            }
         }
 
         adapter.notifyDataSetChanged();

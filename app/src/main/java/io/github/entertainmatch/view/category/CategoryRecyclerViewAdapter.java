@@ -62,7 +62,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         holder.setCategory(categories.get(position));
         holder.setVoting(canVote);
 
-        holder.voteButton.setOnClickListener(v -> {
+        holder.view.setOnClickListener(v -> {
             if (null != listener) {
                 listener.onCategorySelected(holder.category);
             }
@@ -97,6 +97,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
      * The {@link RecyclerView.ViewHolder} for {@link Category} items.
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
+        private final View view;
         /**
          * The {@link RelativeLayout} containing the category labels.
          */
@@ -113,11 +114,6 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         @BindView(R.id.category_vote_count)
         TextView voteCountView;
         /**
-         * The button used to vote for the category.
-         */
-        @BindView(R.id.category_vote_button)
-        ImageButton voteButton;
-        /**
          * The {@link ImageView} used to display the category image.
          */
         @BindView(R.id.category_background)
@@ -129,6 +125,7 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
 
         public ViewHolder(View view) {
             super(view);
+            this.view = view;
             ButterKnife.bind(this, view);
         }
 
@@ -158,11 +155,9 @@ public class CategoryRecyclerViewAdapter extends RecyclerView.Adapter<CategoryRe
         public void setVoting(boolean canVote) {
             if (canVote) {
                 voteCountView.setVisibility(View.INVISIBLE);
-                voteButton.setVisibility(View.VISIBLE);
             } else {
                 voteCountView.setVisibility(View.VISIBLE);
                 voteCountView.setText(category.getVoteCount().toString());
-                voteButton.setVisibility(View.INVISIBLE);
             }
         }
     }

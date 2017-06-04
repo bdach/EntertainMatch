@@ -16,6 +16,8 @@ import io.github.entertainmatch.model.Poll;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +91,7 @@ public class PollFragment extends Fragment {
             polls.add(poll);
 
             // probably too heavy
-            polls.sort((x, y) -> y.getPollId().compareTo(x.getPollId()));
+            Collections.sort(polls, (x, y) -> y.getPollId().compareTo(x.getPollId()));
             adapter.notifyDataSetChanged();
         }
     }

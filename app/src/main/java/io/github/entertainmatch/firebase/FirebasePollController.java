@@ -86,6 +86,7 @@ public class FirebasePollController {
     public static Poll addPoll(String facebookHostId, PollStub newPoll) {
         DatabaseReference firebasePollRef = ref.push();
         FirebasePoll firebasePoll = FirebasePoll.fromPoll(facebookHostId, newPoll, firebasePollRef.getKey());
+        firebasePoll.setFacebookUsers(null);
 
         // add poll to firebase
         firebasePollRef.setValue(firebasePoll);

@@ -13,6 +13,7 @@ import io.github.entertainmatch.model.VoteCategoryStage;
 import io.github.entertainmatch.utils.ListExt;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.inject.Inject;
 import java.util.Arrays;
@@ -37,6 +38,7 @@ public class FirebasePoll {
     public static final String NO_USER_VOTE = "-1";
 
     @Getter(AccessLevel.NONE)
+    @Setter
     @Inject
     FacebookUsers FacebookUsers;
 
