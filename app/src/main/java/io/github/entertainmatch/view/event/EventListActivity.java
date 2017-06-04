@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -205,8 +204,7 @@ public class EventListActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.show_participants && participantList != null) {
-            AlertDialog dialog = participantList.getDialog();
-            dialog.show();
+            participantList.showDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);

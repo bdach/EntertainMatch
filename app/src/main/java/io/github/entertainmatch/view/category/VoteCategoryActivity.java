@@ -99,8 +99,7 @@ public class VoteCategoryActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.show_participants && participantList != null) {
-            AlertDialog dialog = participantList.getDialog();
-            dialog.show();
+            participantList.showDialog();
             return true;
         }
 

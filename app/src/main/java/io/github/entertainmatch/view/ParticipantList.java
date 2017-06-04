@@ -3,18 +3,23 @@ package io.github.entertainmatch.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
+import android.widget.ListView;
 import com.facebook.GraphRequest;
 import io.github.entertainmatch.DaggerApplication;
 import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FriendsProvider;
 import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.firebase.models.FirebasePoll;
+import io.github.entertainmatch.model.VoteCategoryStage;
+import io.github.entertainmatch.model.VoteEventStage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class used to display popups with lists of participating
@@ -39,6 +44,8 @@ public class ParticipantList {
      */
     private final List<String> nameList;
 
+    private final boolean[] votedList;
+
     @Inject
     FriendsProvider friendsProvider;
 
@@ -51,7 +58,35 @@ public class ParticipantList {
         this.context = context;
         this.idList = poll.getParticipants();
         this.nameList = new ArrayList<>();
+        if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
+            votedList = generateVotedList(poll.getVotedFor());
+        } else if (poll.getStage().equals(VoteEventStage.class.toString())) {
+            votedList = generateVotedList(poll.getEventVotes());
+        } else {
+            votedList = generateVotedListForDates(poll.getEventDatesStatus());
+        }
         DaggerApplication.getApp().getFacebookComponent().inject(this);
+    }
+
+    private boolean[] generateVotedListForDates(Map<String, HashMap<String, Boolean>> eventDatesStatus) {
+        HashMap<String, Boolean> map = eventDatesStatus.get("voted");
+        return generateVotedListBoolean(map);
+    }
+
+    private boolean[] generateVotedListBoolean(Map<String, Boolean> map) {
+        boolean[] list = new boolean[idList.size()];
+        for (int i = 0; i < idList.size(); ++i) {
+            list[i] = map.get(idList.get(i));
+        }
+        return list;
+    }
+
+    private boolean[] generateVotedList(Map<String, String> votedFor) {
+        boolean[] list = new boolean[idList.size()];
+        for (int i = 0; i < idList.size(); ++i) {
+            list[i] = !votedFor.get(idList.get(i)).equals(FirebasePoll.NO_USER_VOTE);
+        }
+        return list;
     }
 
     /**
@@ -63,6 +98,7 @@ public class ParticipantList {
         this.context = context;
         this.idList = completedPoll.goingList();
         this.nameList = new ArrayList<>();
+        this.votedList = generateVotedListBoolean(completedPoll.getGoing());
         DaggerApplication.getApp().getFacebookComponent().inject(this);
     }
 
@@ -89,10 +125,17 @@ public class ParticipantList {
      * @return An instance of {@link AlertDialog} containing names of participants
      * fetched from the database.
      */
-    public AlertDialog getDialog() {
+    public void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.list_of_participants)
-                .setItems(nameList.toArray(new String[nameList.size()]), null);
-        return builder.create();
+                .setMultiChoiceItems(
+                        nameList.toArray(new String[nameList.size()]),
+                        votedList,
+                        null
+                );
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        ListView listView = alertDialog.getListView();
+        listView.setEnabled(false);
     }
 }

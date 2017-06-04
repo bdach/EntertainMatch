@@ -32,7 +32,6 @@ import io.github.entertainmatch.R;
 import io.github.entertainmatch.facebook.FacebookInitializer;
 import io.github.entertainmatch.facebook.FacebookUsers;
 import io.github.entertainmatch.firebase.*;
-import io.github.entertainmatch.firebase.models.FirebaseCompletedPoll;
 import io.github.entertainmatch.model.VoteResultStage;
 import io.github.entertainmatch.utils.CalendarUtils;
 import io.github.entertainmatch.view.LoginActivity;
@@ -188,8 +187,7 @@ public class VoteResultActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.show_participants && participantList != null) {
-            AlertDialog dialog = participantList.getDialog();
-            dialog.show();
+            participantList.showDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);

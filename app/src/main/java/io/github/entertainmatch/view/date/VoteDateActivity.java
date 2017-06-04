@@ -158,8 +158,7 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
             return true;
         }
         if (item.getItemId() == R.id.show_participants && participantList != null) {
-            AlertDialog dialog = participantList.getDialog();
-            dialog.show();
+            participantList.showDialog();
             return true;
         }
         if (item.getItemId() == android.R.id.home) {
