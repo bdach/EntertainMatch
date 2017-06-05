@@ -1,0 +1,136 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[polish]{babel}
+\usepackage{float}
+
+\title{Aplikacja EntertainMatch -- Raport końcowy}
+\author{Adrian Bednarz, Bartłomiej Dach}
+
+\begin{document}
+
+\maketitle
+
+\section{Opis biznesowy}
+
+Aplikacja EntertainMatch przeznaczona jest dla wieloosobowych grup znajomych.
+Za jej pomocą użytkownicy z grupy wspólnie wybierają wydarzenie, na które chcą się wybrać,
+przechodząc przez wieloetapowy proces głosowania, złożony z:
+
+\begin{itemize}
+	\item wyboru kategorii wydarzenia (np. filmy, koncerty),
+	\item wyboru konkretnego wydarzenia z danej kategorii (wydarzenia są wybierane ręcznie przez
+		deweloperów w obrębie poszczególnych miast),
+	\item wyboru daty dla danego wydarzenia,
+	\item deklaracji, czy dany użytkownik może przyjść na dane wydarzenie w danym terminie.
+\end{itemize}
+
+Poszczególni użytkownicy nie znają wyborów podjętych przez innych w obrębie głosowania, aby nie
+sugerować się ich wyborami.
+W przypadku remisu w obrębie danego etapu, głosowanie jest zawężane do najczęściej wybieranych
+do tej pory; w przypadku kolejnego remisu wynik wybierany jest losowo.
+Każda zmiana etapu powoduje wyświetlenie powiadomień u wszystkich użytkowników.
+
+Po zakończeniu głosowania, wydarzenia są dodawane do odpowiedniej zakładki w głównym widoku.
+Dodatkowo, jeśli użytkownik zezwoli aplikacji na dostęp do terminarza, dodawane jest do niego
+przypomnienie na dzień, w którym dane wydarzenie ma się odbyć.
+
+\section{Wykorzystane narzędzia i wzorce projektowe}
+
+W aplikacji wykorzystywana jest baza danych dostarczana przez usługę Firebase \cite{firebase},
+dostarczająca asynchroniczne aktualizacje danych do aplikacji, gdy aplikacja jest połączona
+z Internetem za pośrednictwem usług Google Play.
+Aktualizacje te obsługiwane są w aplikacji za pomocą pakietu Reactive Extensions oraz mechanizmu
+tzw. obiektów obserwowalnych (ang. \texttt{Observable}).
+Obiekty te reprezentują strumień asynchronicznych zdarzeń, na które można reagować, dodając
+do obserwowalnego obiektu subskrypcję.
+
+Logowanie do aplikacji odbywa się za pośrednictwem Facebook SDK \cite{facebook-sdk}.
+W aplikacji do głosowań można dodawać znajomych z Facebooka, którzy zainstalowali aplikację.
+
+Część komponentów aplikacji implementuje wzorzec wstrzykiwania zależności i inwersji kontroli.
+W celu wstrzykiwania użyty został kontener Dagger \cite{dagger}.
+Pozwala on na lepsze odseparowanie funkcjonalności, poprawia możliwości testowania oraz wspiera
+kompozycję klas.
+
+Przy projektowaniu i implementacji interfejsu użytkownika użyto biblioteki Butter Knife
+\cite{butterknife}, która pozwala wiązać pola w klasach aktywności z widokami definiowanymi
+w kodzie XML.
+Dodatkowo w celu wyświetlania obrazów z Internetu, wykorzystana została biblioteka Picasso
+\cite{picasso}, zapewniająca dynamiczne ładowanie obrazów oraz ich \emph{caching} na dysku.
+
+W celu ułatwienia pisania kodu, użyta została biblioteka Lombok \cite{lombok}, pozwalająca
+na automatyczne generowanie getterów, setterów i konstruktorów.
+
+W przykładowych testach wykorzystany został framework do testowania JUnit \cite{junit},
+biblioteka Mockito \cite{mockito} do tworzenia mocków oraz AssertJ \cite{assertj} wspomagająca
+pisanie asercji.
+Dodatkowo dołączone zostało kilka testów interfejsu, używających biblioteki Espresso \cite{espresso}
+w celu automatyzowanego wykonywania kliknięć.
+
+\section{Raport z testów z użytkownikami}
+
+\begin{thebibliography}{99}
+
+	\bibitem{assertj}
+		AssertJ,
+		Joel Costigliola,
+		\url{https://joel-costigliola.github.io/assertj/},
+		Apache 2.0
+
+	\bibitem{butterknife}
+		Butter Knife,
+		Jake Wharton,
+		\url{https://jakewharton.github.io/butterknife/},
+		Apache 2.0
+
+	\bibitem{dagger}
+		Dagger,
+		Square,
+		\url{https://square.github.io/dagger/},
+		Apache 2.0
+
+	\bibitem{espresso}
+		Espresso,
+		Android Testing Support Library,
+		\url{https://google.github.io/android-testing-support-library/docs/espresso/},
+		CC BY-SA 2.5
+
+	\bibitem{facebook-sdk}
+		Facebook SDK for Android v4.x,
+		Facebook for Developers,
+		\url{https://developers.facebook.com/docs/android/downloads}
+
+	\bibitem{firebase}
+		Firebase,
+		Google,
+		\url{https://firebase.google.com/}
+
+	\bibitem{junit}
+		JUnit,
+		\url{http://junit.org/junit4/},
+		Eclipse Public License 1.0
+
+	\bibitem{mockito}
+		Mockito,
+		\url{http://site.mockito.org/},
+		MIT
+
+	\bibitem{picasso}
+		Picasso,
+		Square,
+		\url{https://square.github.io/picasso/},
+		Apache 2.0
+
+	\bibitem{lombok}
+		Project Lombok,
+		\url{https://projectlombok.org/},
+		MIT
+
+\end{thebibliography}
+
+\end{document}
