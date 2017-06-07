@@ -2,6 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{subcaption}
 \usepackage{tabularx}
 \usepackage{hyperref}
 \usepackage[a4paper,margin=1in]{geometry}
@@ -24,8 +25,12 @@ przechodząc przez wieloetapowy proces głosowania, złożony z:
 \begin{itemize}
 	\item wyboru kategorii wydarzenia (np. filmy, koncerty),
 	\item wyboru konkretnego wydarzenia z danej kategorii (wydarzenia są wybierane ręcznie przez
-		deweloperów w obrębie poszczególnych miast),
-	\item wyboru daty dla danego wydarzenia,
+		deweloperów w obrębie poszczególnych miast). Użytkownicy mogą przejrzeć wybrane
+		informacje o wydarzeniach, zależne od kategorii (np. w przypadku filmów są to:
+		zwiastun filmu, krótki opis, obsada, reżyser, czas trwania i ocena filmu wg agregatora
+		recenzji Rotten Tomatoes);
+	\item wyboru miejsca oraz daty dla danego wydarzenia (możliwe jest wyświetlenie za pomocą
+		aplikacji Google Maps dokładnej lokalizacji),
 	\item deklaracji, czy dany użytkownik może przyjść na dane wydarzenie w danym terminie.
 \end{itemize}
 
@@ -37,7 +42,38 @@ Każda zmiana etapu powoduje wyświetlenie powiadomień u wszystkich użytkownik
 
 Po zakończeniu głosowania, wydarzenia są dodawane do odpowiedniej zakładki w głównym widoku.
 Dodatkowo, jeśli użytkownik zezwoli aplikacji na dostęp do terminarza, dodawane jest do niego
-przypomnienie na dzień, w którym dane wydarzenie ma się odbyć.
+przypomnienie na dzień, w którym dane wydarzenie ma się odbyć. Wydarzenia usuwane są z listy po
+zakończeniu.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{screen1.png}
+		\caption{Główny widok aplikacji, zawierający toczące się głosowania oraz nadchodzące
+		wydarzenia}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{screen2.png}
+		\caption{Ekran dodawania nowego głosowania}
+	\end{subfigure}
+
+	\begin{subfigure}[t]{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{screen3.png}
+		\caption{Głosowanie na etapie wyboru wydarzenia}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.4\textwidth}
+		\centering
+		\includegraphics[width=0.9\textwidth]{screen4.png}
+		\caption{Głosowanie na etapie wyboru daty. Widoczne są opcje: podglądu danej lokalizacji
+		dla wydarzenia oraz sprawdzenia, który z użytkowników zagłosował już w danym etapie}
+	\end{subfigure}
+	\caption{Przykładowe widoki interfejsu użytkownika aplikacji}
+\end{figure}
 
 \section{Wykorzystane narzędzia i wzorce projektowe}
 
@@ -67,8 +103,8 @@ W celu ułatwienia pisania kodu, użyta została biblioteka Lombok \cite{lombok}
 na automatyczne generowanie getterów, setterów i konstruktorów.
 
 W przykładowych testach wykorzystany został framework do testowania JUnit \cite{junit},
-biblioteka Mockito \cite{mockito} do tworzenia mocków oraz AssertJ \cite{assertj} wspomagająca
-pisanie asercji.
+biblioteka Mockito \cite{mockito} do tworzenia tzw. mocków oraz AssertJ \cite{assertj} wspomagająca
+pisanie asercji w testach jednostkowych.
 Dodatkowo dołączone zostało kilka testów interfejsu, używających biblioteki Espresso \cite{espresso}
 w celu automatyzowanego wykonywania kliknięć.
 
