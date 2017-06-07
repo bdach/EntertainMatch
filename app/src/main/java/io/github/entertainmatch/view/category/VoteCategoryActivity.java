@@ -230,5 +230,6 @@ public class VoteCategoryActivity extends AppCompatActivity
     public void onCategoryReduce() {
         Snackbar.make(layout, R.string.vote_category_tie, Snackbar.LENGTH_LONG)
                 .show();
+        fragment.restoreVoting();
     }
 }

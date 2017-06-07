@@ -125,6 +125,10 @@ public class CategoryFragment extends Fragment {
 
     public void restoreVoting(Category item) {
         item.undoVote();
+        restoreVoting();
+    }
+
+    public void restoreVoting() {
         adapter.setCanVote(true);
         adapter.notifyDataSetChanged();
     }

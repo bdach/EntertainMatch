@@ -69,12 +69,16 @@ public class ParticipantList {
     }
 
     private boolean[] generateVotedListForDates(Map<String, HashMap<String, Boolean>> eventDatesStatus) {
-        HashMap<String, Boolean> map = eventDatesStatus.get("voted");
+        HashMap<String, Boolean> map = new HashMap<>();
+        if (eventDatesStatus != null && eventDatesStatus.containsKey("voted")) {
+            map = eventDatesStatus.get("voted");
+        }
         return generateVotedListBoolean(map);
     }
 
     private boolean[] generateVotedListBoolean(Map<String, Boolean> map) {
         boolean[] list = new boolean[idList.size()];
+        if (map.size() < idList.size()) return list;
         for (int i = 0; i < idList.size(); ++i) {
             list[i] = map.get(idList.get(i));
         }
