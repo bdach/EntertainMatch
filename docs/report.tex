@@ -37,14 +37,12 @@ przechodząc przez wieloetapowy proces głosowania, złożony z:
 
 Poszczególni użytkownicy nie znają wyborów podjętych przez innych w obrębie głosowania, aby nie
 sugerować się ich wyborami.
-W przypadku remisu w obrębie danego etapu, głosowanie jest zawężane do najczęściej wybieranych
-do tej pory; w przypadku kolejnego remisu wynik wybierany jest losowo.
 Każda zmiana etapu powoduje wyświetlenie powiadomień u wszystkich użytkowników.
 
 Po zakończeniu głosowania, wydarzenia są dodawane do odpowiedniej zakładki w głównym widoku.
 Dodatkowo, jeśli użytkownik zezwoli aplikacji na dostęp do terminarza, dodawane jest do niego
-przypomnienie na dzień, w którym dane wydarzenie ma się odbyć. Wydarzenia usuwane są z listy po
-zakończeniu.
+przypomnienie na dzień, w którym dane wydarzenie ma się odbyć.
+Wydarzenia usuwane są z listy po zakończeniu.
 
 \begin{figure}
 	\centering
@@ -76,7 +74,46 @@ zakończeniu.
 	\caption{Przykładowe widoki interfejsu użytkownika aplikacji}
 \end{figure}
 
-%\section{Logika biznesowa}
+\section{Logika biznesowa}
+
+Logowanie do aplikacji realizowane jest za pośrednictwem API Facebooka, co pozwala na bezproblemowe
+obsługiwanie kont użytkowników. Dodatkowo, autentykacja poprzez Facebook dobrze integruje się z bazą
+Firebase, co pozwala na równoczesną kontrolę nad czynnościami wykonywanymi przez poszczególnych
+użytkowników.
+
+Centralnymi obiektami w aplikacji są poszczególne głosowania -- ich zawartość jest uzupełniana
+stopniowo w poszczególnych etapach (najpierw kategoria, potem konkretne wydarzenie i data).
+Ze względu na wykorzystanie bazy Firebase, większość aktualizacji danych jest wykonywanych po stronie
+klienta, co usuwa konieczność stworzenia i utrzymywania własnego serwera aplikacyjnego.
+Duży nacisk położono na wsparcie współbieżności, która w takiej architekturze stanowi szczególny
+problem.
+
+Dane w Firebase mają postać hierarchicznego słownika, którego kluczami są łańcuchy znaków.
+Format ten przypomina nieco w swojej budowie format JSON.
+Z tego względu schemat danych w bazie został zaprojektowany tak, aby było jak najmniej kluczy
+słownika, do których pisze wielu użytkowników.
+W ten sposób problemy z współbieżnością stają się rzadsze.
+W miejscach, gdzie nie można było wykluczyć wspólnych zapisów, stosowany został wbudowany w Firebase
+system transakcji.
+
+Głosowanie w poszczególnych fazach odbywa się poprzez wpisanie odpowiedniego klucza do bazy,
+a następnie sprawdzenia warunku przejścia do następnej fazy.
+W wypadku pierwszego remisu głosowanie jest powtarzane z mniejszą liczbą opcji, w przypadku
+kolejnych -- z wygrywających opcji wybierana jest losowo jedna.
+
+W przypadku stwierdzenia zakończenia danej fazy, aktualizowana jest zawartość pola zawierającego
+nazwę kolejnej fazy, oraz poprzez zmianę wartości kluczy w specjalnym obiekcie wywoływane są
+powiadomienia dla pozostałych użytkowników. Powiadomienia te są realizowane za pośrednictwem
+serwisu Androida, nasłuchującego zmiany zachodzące w bazie.
+
+Część zadań aplikacji, takie jak:
+\begin{itemize}
+	\item wyświetlanie zwiastunów dla określonych wydarzeń,
+	\item wyświetlanie mapy z położeniem danej lokalizacji,
+	\item dodanie przypomnienia dla danego wydarzenia
+\end{itemize}
+są delegowane do innych aplikacji (odpowiednio: YouTube lub przeglądarka internetowa, Google Maps, 
+Kalendarz Google) za pośrednictwem mechanizmu intencji (ang. \texttt{Intent}).
 
 \section{Wykorzystane narzędzia i wzorce projektowe}
 
