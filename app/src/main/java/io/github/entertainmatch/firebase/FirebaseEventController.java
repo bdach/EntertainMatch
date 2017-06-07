@@ -84,8 +84,6 @@ public class FirebaseEventController {
      * @param chosenCategory Category name.
      * @param victoriousEvent Event identifier.
      * @return Object of type {@link Event}, containing event data.
-     *
-     * FIXME: This method could take a {@link io.github.entertainmatch.firebase.models.FirebasePoll} instead
      */
     public static Observable<? extends Event> getEventSingle(String chosenCategory, String victoriousEvent) {
         Class<? extends Event> eventClass = getClassForCategory(chosenCategory);

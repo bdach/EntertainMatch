@@ -216,17 +216,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO: handle options here
         int id = item.getItemId();
 
         if (id == R.id.action_settings && getSupportFragmentManager().getBackStackEntryCount() == 0) {
             navigateToSettings();
             return true;
-        }
-        else if (id == R.id.logout) {
-            FacebookUsers.removeCurrentUser(this);
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
         }
 
         return super.onOptionsItemSelected(item);

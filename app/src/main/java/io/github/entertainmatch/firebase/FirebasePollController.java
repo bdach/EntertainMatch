@@ -226,7 +226,6 @@ public class FirebasePollController {
 
     /**
      * Checks whether its time to move to next stage.
-     * TODO: not sure if there won't be any races between users
      * @param pollId Current poll
      */
     private static void checkDateVotingMoveToNextStage(String pollId, String facebookId) {
@@ -376,7 +375,6 @@ public class FirebasePollController {
                     mutableData.child("stage").setValue(VoteDateStage.class.toString());
                     mutableData.child("victoriousEvent").setValue(item.getId());
                     mutableData.child("drawableUri").setValue(item.getDrawableUri());
-                    // TODO: not sure
                     FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                         FirebaseEventDateController.setupDataStage(poll, candidates.get(0));
                     });
@@ -420,7 +418,6 @@ public class FirebasePollController {
 
             ref.child(pollId).child("stage").setValue(VoteResultStage.class.toString());
 
-            // TODO: not sure
             FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                 HashMap<String, Long> locationToCounts = new HashMap<>();
                 HashMapExt.forEach(poll.getEventDatesStatus(), (locationId, facebookIdToChosen) -> {

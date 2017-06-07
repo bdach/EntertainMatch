@@ -59,7 +59,6 @@ public class Poll implements Parcelable {
         }
     };
 
-    // TODO: Makeshift constructor. Here until we decide how to fetch participants.
     public Poll(FirebasePoll firebasePoll, String userId) {
         this.name = firebasePoll.getName();
         this.pollStage = PollStageFactory.get(firebasePoll.getStage(), firebasePoll.getPollId());

@@ -54,7 +54,6 @@ public class CalendarUtils {
 
         Uri event = cr.insert(CalendarContract.Events.CONTENT_URI, values);
         if (event == null) {
-            // TODO: maybe snack?
             Toast.makeText(activity, R.string.calendar_failed, Toast.LENGTH_LONG).show();
             return;
         }
