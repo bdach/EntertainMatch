@@ -2,6 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage{parskip}
 \usepackage{subcaption}
 \usepackage{tabularx}
 \usepackage{hyperref}
@@ -16,7 +17,7 @@
 
 \maketitle
 
-\section{Opis biznesowy}
+\section{Opis aplikacji}
 
 Aplikacja EntertainMatch przeznaczona jest dla wieloosobowych grup znajomych.
 Za jej pomocą użytkownicy z grupy wspólnie wybierają wydarzenie, na które chcą się wybrać,
@@ -75,6 +76,8 @@ zakończeniu.
 	\caption{Przykładowe widoki interfejsu użytkownika aplikacji}
 \end{figure}
 
+%\section{Logika biznesowa}
+
 \section{Wykorzystane narzędzia i wzorce projektowe}
 
 W aplikacji wykorzystywana jest baza danych dostarczana przez usługę Firebase \cite{firebase},
@@ -109,6 +112,84 @@ Dodatkowo dołączone zostało kilka testów interfejsu, używających bibliotek
 w celu automatyzowanego wykonywania kliknięć.
 
 \section{Raport z testów z użytkownikami}
+
+Poniżej znajduje się lista testów z użytkownikami wykonanych w trakcie tworzenia aplikacji. Większość
+z uwag została uwzględniona i poprawiona w ostatecznej wersji.
+
+\begin{enumerate}
+	\item Zalogowanie się do aplikacji
+		\begin{itemize}
+			\item \textbf{Opis testu:}
+				Użytkownik po zainstalowaniu aplikacji loguje się za pośrednictwem
+				konta w serwisie Facebook.
+			\item \textbf{Przewidywany rezultat:}
+				Po poprawnym zalogowaniu się następuje przejście do głównego ekranu
+				aplikacji.
+			\item \textbf{Wynik testu:} Pozytywny
+			\item \textbf{Uwagi:} Brak.
+		\end{itemize}
+	\item Dodanie nowego głosowania
+		\begin{itemize}
+			\item \textbf{Opis testu:}
+				Użytkownik z poziomu głównego ekranu przechodzi do widoku dodawania
+				nowego głosowania, wypełnia go i zatwierdza wprowadzone dane.
+			\item \textbf{Przewidywany rezultat:}
+				W głównym ekranie aplikacji pojawia się dodane głosowanie.
+			\item \textbf{Wynik testu:} Pozytywny
+			\item \textbf{Uwagi:}
+				Myląca ikona na przycisku dodającym głosowania, dodane głosowania
+				pojawiały się na końcu listy, brak domyślnej nazwy głosowania.
+		\end{itemize}
+	\item Głosowanie na kategorię
+		\begin{itemize}
+			\item \textbf{Opis testu:}
+				Użytkownik w głównym ekranie wybiera głosowanie znajdujące się na
+				etapie kategorii i oddaje głos na jedną z nich.
+			\item \textbf{Przewidywany rezultat:}
+				Głos zostaje zarejestrowany; jeśli głosujący był ostatni, następuje
+				przejście do kolejnego etapu.
+			\item \textbf{Wynik testu:} Pozytywny
+			\item \textbf{Uwagi:}
+				Kliknięcie na obrazek reprezentujący kategorię nie powoduje reakcji,
+				brak możliwości podejrzenia głosów innych użytkowników lub sprawdzenia
+				kto zagłosował w danym etapie.
+		\end{itemize}
+	\item Głosowanie na wydarzenie
+		\begin{itemize}
+			\item \textbf{Opis testu:}
+				Użytkownik w głównym ekranie wybiera głosowanie znajdujące się na
+				etapie wydarzeń i oddaje głos na jedno z nich.
+			\item \textbf{Przewidywany rezultat:} 
+				Rejestracja głosu, przejście do kolejnego etapu.
+			\item \textbf{Wynik testu:} Pozytywny
+			\item \textbf{Uwagi:}
+				Snackbar informujący o sposobie głosowania niepotrzebnie pojawiał się
+				za każdym razem.
+		\end{itemize}
+	\item Głosowanie na datę
+		\begin{itemize}
+			\item \textbf{Opis testu:}
+				Użytkownik w głównym ekranie wybiera głosowanie znajdujące się na
+				etapie daty i oddaje głos na jedno z nich.
+			\item \textbf{Przewidywany rezultat:} 
+				Rejestracja głosu, przejście do kolejnego etapu.
+			\item \textbf{Wynik testu:} Pozytywny
+			\item \textbf{Uwagi:} Brak.
+		\end{itemize}
+	\item Potwierdzenie lub odmowa potwierdzenia obecności
+		\begin{itemize}
+			\item \textbf{Opis testu:}
+				Użytkownik wybiera w głównym ekranie zakończone głosowanie i potwierdza
+				lub odmawia potwierdzenia obecności w wybranym terminie.
+			\item \textbf{Przewidywany rezultat:} 
+				Wybór użytkownika zostaje zapisany, głosowanie znika z listy. W przypadku
+				zgody w zakładce z wydarzeniami dodane jest nowe wydarzenie; dodatkowo,
+				jeśli użytkownik wyrazi zgodę, dodawane jest również w terminarzu
+				przypomnienie związane z terminem wydarzenia.
+			\item \textbf{Wynik testu:} Pozytywny
+			\item \textbf{Uwagi:} Brak.
+		\end{itemize}
+\end{enumerate}
 
 \begin{thebibliography}{99}
 
