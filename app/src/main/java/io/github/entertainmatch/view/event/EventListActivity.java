@@ -134,8 +134,6 @@ public class EventListActivity extends AppCompatActivity {
     private void stageFinishCallback(FirebasePoll firebasePoll) {
         String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
 
-        participantList = new ParticipantList(this, firebasePoll);
-        participantList.fetchNames();
         if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
             subscription.unsubscribe();
             Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
@@ -148,6 +146,8 @@ public class EventListActivity extends AppCompatActivity {
                     })
                     .show();
         } else if (firebasePoll.getAgain() != null && firebasePoll.getAgain().get(facebookId)) {
+            participantList = new ParticipantList(this, firebasePoll);
+            participantList.fetchNames();
             FirebasePollController.removeVoteEventAgainFlag(pollId, facebookId);
             FirebaseEventController.getEventsSingle(
                     firebasePoll.getCity(),

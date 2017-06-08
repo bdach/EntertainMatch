@@ -149,9 +149,9 @@ public class VoteCategoryActivity extends AppCompatActivity
     }
 
     private void subscribeCallback(FirebasePoll poll) {
-        participantList = new ParticipantList(this, poll);
-        participantList.fetchNames();
         if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
+            participantList = new ParticipantList(this, poll);
+            participantList.fetchNames();
             fragment.updateCategories(poll.getVoteCounts(), poll.getVotedFor());
         } else {
             subscription.unsubscribe();

@@ -66,17 +66,18 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         FacebookInitializer.init(getApplicationContext());
 
         changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
-            participantList = new ParticipantList(this, poll);
-            participantList.fetchNames();
             if (poll.getStage().equals(VoteResultStage.class.toString())) {
                 Snackbar.make(coordinatorLayout, R.string.results_stage_message, Snackbar.LENGTH_LONG)
                         .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        NavigationHelper.back(VoteDateActivity.this, pollId);
-                    }
-                }).show();
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+                                NavigationHelper.back(VoteDateActivity.this, pollId);
+                            }
+                        }).show();
+            } else {
+                participantList = new ParticipantList(this, poll);
+                participantList.fetchNames();
             }
         });
     }
