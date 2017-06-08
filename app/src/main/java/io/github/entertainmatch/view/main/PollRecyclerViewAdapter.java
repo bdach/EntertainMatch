@@ -119,7 +119,9 @@ public class PollRecyclerViewAdapter extends RecyclerView.Adapter<PollRecyclerVi
                         .load(uri)
                         .into(pollImage);
             } else {
-                pollImage.setImageDrawable(null);
+                Picasso.with(listener.getContext())
+                        .cancelRequest(pollImage);
+                pollImage.setImageBitmap(null);
             }
         }
 

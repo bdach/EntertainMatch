@@ -58,12 +58,14 @@ public class ParticipantList {
         this.context = context;
         this.idList = poll.getParticipants();
         this.nameList = new ArrayList<>();
-        if (poll.getStage().equals(VoteCategoryStage.class.toString())) {
+        if (poll.getStage().equals(VoteCategoryStage.class.toString()) && poll.getVotedFor() != null) {
             votedList = generateVotedList(poll.getVotedFor());
-        } else if (poll.getStage().equals(VoteEventStage.class.toString())) {
+        } else if (poll.getStage().equals(VoteEventStage.class.toString()) && poll.getEventVotes() != null) {
             votedList = generateVotedList(poll.getEventVotes());
-        } else {
+        } else if (poll.getEventDatesStatus() != null) {
             votedList = generateVotedListForDates(poll.getEventDatesStatus());
+        } else {
+            votedList = new boolean[idList.size()];
         }
         DaggerApplication.getApp().getFacebookComponent().inject(this);
     }
@@ -78,17 +80,21 @@ public class ParticipantList {
 
     private boolean[] generateVotedListBoolean(Map<String, Boolean> map) {
         boolean[] list = new boolean[idList.size()];
-        if (map.size() < idList.size()) return list;
         for (int i = 0; i < idList.size(); ++i) {
-            list[i] = map.get(idList.get(i));
+            if (map.containsKey(idList.get(i))) {
+                list[i] = map.get(idList.get(i));
+            }
         }
         return list;
     }
 
     private boolean[] generateVotedList(Map<String, String> votedFor) {
         boolean[] list = new boolean[idList.size()];
+        if (votedFor.size() < idList.size()) return list;
         for (int i = 0; i < idList.size(); ++i) {
-            list[i] = !votedFor.get(idList.get(i)).equals(FirebasePoll.NO_USER_VOTE);
+            if (votedFor.containsKey(idList.get(i))) {
+                list[i] = !votedFor.get(idList.get(i)).equals(FirebasePoll.NO_USER_VOTE);
+            }
         }
         return list;
     }
@@ -102,7 +108,11 @@ public class ParticipantList {
         this.context = context;
         this.idList = completedPoll.goingList();
         this.nameList = new ArrayList<>();
-        this.votedList = generateVotedListBoolean(completedPoll.getGoing());
+        if (completedPoll.getGoing() != null) {
+            this.votedList = generateVotedListBoolean(completedPoll.getGoing());
+        } else {
+            votedList = new boolean[idList.size()];
+        }
         DaggerApplication.getApp().getFacebookComponent().inject(this);
     }
 
