@@ -40,7 +40,7 @@ public class FirebasePoll {
     @Getter(AccessLevel.NONE)
     @Setter
     @Inject
-    FacebookUsers FacebookUsers;
+    FacebookUsers facebookUsers;
 
     /**
      * Facebook IDs of the users who participate in the poll.
@@ -170,7 +170,7 @@ public class FirebasePoll {
      */
     public void voteCategory(Category category, String city) {
         String itemId = category.getId();
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        String facebookId = facebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.vote(pollId, facebookId, itemId, city);
     }
@@ -181,7 +181,7 @@ public class FirebasePoll {
      */
     public void setValues(Category amendedCategory) {
         String itemId = amendedCategory.getId();
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        String facebookId = facebookUsers.getCurrentUser(null).getFacebookId();
 
         amendedCategory.setVotedFor(getVotedFor().get(facebookId).equals(itemId));
         amendedCategory.setVoteCount(getVoteCounts().get(itemId));
@@ -209,7 +209,7 @@ public class FirebasePoll {
      * @param selections User selections - eventId to isRemaining mapping
      */
     public void updateRemainingEvents(Map<String, Boolean> selections) {
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        String facebookId = facebookUsers.getCurrentUser(null).getFacebookId();
 
         FirebasePollController.updateRemainingEvents(pollId, facebookId, selections);
     }
@@ -219,7 +219,7 @@ public class FirebasePoll {
      * @param event Event voted for by current user
      */
     public void voteEvent(Event event) {
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        String facebookId = facebookUsers.getCurrentUser(null).getFacebookId();
         FirebasePollController.voteEvent(pollId, facebookId, event);
     }
 
@@ -229,7 +229,7 @@ public class FirebasePoll {
      * @param selections Corresponding to locations selection flags (isChosen)
      */
     public void chooseDate(List<String> locationIds, List<Boolean> selections) {
-        String facebookId = FacebookUsers.getCurrentUser(null).getFacebookId();
+        String facebookId = facebookUsers.getCurrentUser(null).getFacebookId();
         ListExt.zippedForeach(locationIds, selections, (l, s) -> FirebasePollController.chooseDate(pollId, l, facebookId, s));
         FirebasePollController.dateVotingFinished(pollId, facebookId);
     }
