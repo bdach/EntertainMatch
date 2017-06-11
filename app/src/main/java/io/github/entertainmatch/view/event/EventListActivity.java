@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -149,13 +150,13 @@ public class EventListActivity extends AppCompatActivity {
         if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
             subscription.unsubscribe();
             setSnackbar(Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
-                    .addCallback(new Snackbar.Callback() {
-                        @Override
-                        public void onDismissed(Snackbar transientBottomBar, int event) {
-                            super.onDismissed(transientBottomBar, event);
-                            NavigationHelper.back(EventListActivity.this, firebasePoll.getPollId());
-                        }
-                    }));
+                .addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    NavigationHelper.back(EventListActivity.this, firebasePoll.getPollId());
+                    }
+                }));
         } else if (firebasePoll.getAgain() != null && firebasePoll.getAgain().get(facebookId)) {
             participantList = new ParticipantList(this, firebasePoll);
             participantList.fetchNames();
@@ -305,22 +306,24 @@ public class EventListActivity extends AppCompatActivity {
                 if (event == DISMISS_EVENT_ACTION) return;
                 FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
                     poll.updateRemainingEvents(visibleCopy);
-                    checkOneChoiceLeft(poll);
+                    checkOneChoiceLeft(poll, visibleCopy);
                 });
                 }
             };
         }
 
-        private void checkOneChoiceLeft(FirebasePoll poll) {
-            if (values.size() == 1) {
+        private void checkOneChoiceLeft(FirebasePoll poll, Map<String, Boolean> visibleCopy) {
+            // at the moment of calling there was just one option left
+            // fix for fast swiping
+            if (HashMapExt.count(visibleCopy, Map.Entry::getValue) == 1) {
                 setSnackbar(Snackbar.make(coordinatorLayout,
                     String.format("You've chosen %s!", values.get(0).getTitle()),
                     Snackbar.LENGTH_LONG)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         @Override
                         public void onDismissed(Snackbar transientBottomBar, int event) {
-                            super.onDismissed(transientBottomBar, event);
-                            poll.voteEvent(values.get(0));
+                        super.onDismissed(transientBottomBar, event);
+                        poll.voteEvent(values.get(0));
                         }
                     }));
             }

@@ -79,4 +79,12 @@ public class HashMapExt {
         }
         return result;
     }
+
+    public static <T, U> int count(Map<T, U> map, Function<Map.Entry<T, U>, Boolean> predicate) {
+        int counter = 0;
+        for (Map.Entry<T, U> entry : map.entrySet()) {
+            if (predicate.apply(entry)) ++counter;
+        }
+        return counter;
+    }
 }
