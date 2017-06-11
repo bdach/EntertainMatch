@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -68,6 +69,11 @@ public class VoteCategoryActivity extends AppCompatActivity
      */
     private Subscription subscription;
     private ParticipantList participantList;
+
+    /**
+     * Holds reference to currently presented snackbar.
+     */
+    private Snackbar currentSnack;
 
     @Override
     protected void onStart() {
@@ -155,15 +161,18 @@ public class VoteCategoryActivity extends AppCompatActivity
             fragment.updateCategories(poll.getVoteCounts(), poll.getVotedFor());
         } else {
             subscription.unsubscribe();
-            Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
+            if (currentSnack != null)
+                currentSnack.dismiss();
+
+            currentSnack = Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         NavigationHelper.back(VoteCategoryActivity.this, pollId);
                     }
-                })
-                .show();
+                });
+            currentSnack.show();
         }
     }
 
@@ -202,24 +211,33 @@ public class VoteCategoryActivity extends AppCompatActivity
             return;
         }
         fragment.registerVote(item);
-        Snackbar.make(layout, String.format("You've voted for %s.", item.getName()), Snackbar.LENGTH_LONG)
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = Snackbar.make(layout, String.format("You've voted for %s.", item.getName()), Snackbar.LENGTH_LONG)
                 .setAction("Undo", v -> {
                     fragment.restoreVoting(item);
                 }).addCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
                         if (event == DISMISS_EVENT_ACTION) return;
                         confirmVote(item);
                     }
-                }).show();
+                });
+        currentSnack.show();
     }
 
     void confirmVote(Category item) {
         FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
             poll.voteCategory(item, poll.getCity());
         });
-        Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG)
-            .show();
+
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG);
+        currentSnack.show();
     }
 
     /**
@@ -228,8 +246,11 @@ public class VoteCategoryActivity extends AppCompatActivity
      */
     @Override
     public void onCategoryReduce() {
-        Snackbar.make(layout, R.string.vote_category_tie, Snackbar.LENGTH_LONG)
-                .show();
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = Snackbar.make(layout, R.string.vote_category_tie, Snackbar.LENGTH_LONG);
+        currentSnack.show();
         fragment.restoreVoting();
     }
 }
