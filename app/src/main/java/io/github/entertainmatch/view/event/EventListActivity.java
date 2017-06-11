@@ -87,6 +87,19 @@ public class EventListActivity extends AppCompatActivity {
     private Subscription subscription;
     private ParticipantList participantList;
 
+    /**
+     * Holds reference to currently presented snackbar.
+     */
+    private Snackbar currentSnack;
+
+    private void setSnackbar(Snackbar newSnack) {
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = newSnack;
+        currentSnack.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,10 +128,9 @@ public class EventListActivity extends AppCompatActivity {
 
 
         if (SnackbarStatusHelper.shouldDisplaySnackbar(this, StageType.Event)) {
-            Snackbar.make(coordinatorLayout,
+            setSnackbar(Snackbar.make(coordinatorLayout,
                 R.string.vote_event_start_tip,
-                Snackbar.LENGTH_LONG)
-                .show();
+                Snackbar.LENGTH_LONG));
             SnackbarStatusHelper.stopShowingSnackbar(this, StageType.Event);
         }
 
@@ -136,15 +148,14 @@ public class EventListActivity extends AppCompatActivity {
 
         if (!firebasePoll.getStage().equals(VoteEventStage.class.toString())) {
             subscription.unsubscribe();
-            Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
+            setSnackbar(Snackbar.make(coordinatorLayout, R.string.voting_finished, Snackbar.LENGTH_LONG)
                     .addCallback(new Snackbar.Callback() {
                         @Override
                         public void onDismissed(Snackbar transientBottomBar, int event) {
                             super.onDismissed(transientBottomBar, event);
                             NavigationHelper.back(EventListActivity.this, firebasePoll.getPollId());
                         }
-                    })
-                    .show();
+                    }));
         } else if (firebasePoll.getAgain() != null && firebasePoll.getAgain().get(facebookId)) {
             participantList = new ParticipantList(this, firebasePoll);
             participantList.fetchNames();
@@ -154,7 +165,7 @@ public class EventListActivity extends AppCompatActivity {
                     firebasePoll.getChosenCategory()
             ).subscribe(events -> {
                 adapter.updateData(firebasePoll, events);
-                Snackbar.make(coordinatorLayout, R.string.message_tie, Snackbar.LENGTH_LONG).show();
+                setSnackbar(Snackbar.make(coordinatorLayout, R.string.message_tie, Snackbar.LENGTH_LONG));
             });
         }
     }
@@ -280,12 +291,11 @@ public class EventListActivity extends AppCompatActivity {
             notifyItemRemoved(adapterPosition);
 
             Map<String, Boolean> visibleCopy = HashMapExt.shallowCopy(visible);
-            Snackbar.make(coordinatorLayout,
+            setSnackbar(Snackbar.make(coordinatorLayout,
                     String.format(getString(R.string.vote_event_item_discarded), item.getTitle()),
                     Snackbar.LENGTH_LONG)
                     .addCallback(snackbarCallback(visibleCopy))
-                    .setAction("Undo", v -> undoRemoval(item, adapterPosition))
-                    .show();
+                    .setAction("Undo", v -> undoRemoval(item, adapterPosition)));
         }
 
         private Snackbar.Callback snackbarCallback(Map<String, Boolean> visibleCopy) {
@@ -303,7 +313,7 @@ public class EventListActivity extends AppCompatActivity {
 
         private void checkOneChoiceLeft(FirebasePoll poll) {
             if (values.size() == 1) {
-                Snackbar.make(coordinatorLayout,
+                setSnackbar(Snackbar.make(coordinatorLayout,
                     String.format("You've chosen %s!", values.get(0).getTitle()),
                     Snackbar.LENGTH_LONG)
                     .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -312,8 +322,7 @@ public class EventListActivity extends AppCompatActivity {
                             super.onDismissed(transientBottomBar, event);
                             poll.voteEvent(values.get(0));
                         }
-                    })
-                    .show();
+                    }));
             }
         }
 

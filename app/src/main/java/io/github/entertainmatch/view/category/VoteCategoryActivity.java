@@ -75,6 +75,14 @@ public class VoteCategoryActivity extends AppCompatActivity
      */
     private Snackbar currentSnack;
 
+    private void setSnackbar(Snackbar newSnack) {
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = newSnack;
+        currentSnack.show();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -161,18 +169,15 @@ public class VoteCategoryActivity extends AppCompatActivity
             fragment.updateCategories(poll.getVoteCounts(), poll.getVotedFor());
         } else {
             subscription.unsubscribe();
-            if (currentSnack != null)
-                currentSnack.dismiss();
 
-            currentSnack = Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
+            setSnackbar(Snackbar.make(layout, R.string.voting_finished, BaseTransientBottomBar.LENGTH_LONG)
                 .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         NavigationHelper.back(VoteCategoryActivity.this, pollId);
                     }
-                });
-            currentSnack.show();
+                }));
         }
     }
 
@@ -211,21 +216,18 @@ public class VoteCategoryActivity extends AppCompatActivity
             return;
         }
         fragment.registerVote(item);
-        if (currentSnack != null)
-            currentSnack.dismiss();
 
-        currentSnack = Snackbar.make(layout, String.format("You've voted for %s.", item.getName()), Snackbar.LENGTH_LONG)
-                .setAction("Undo", v -> {
-                    fragment.restoreVoting(item);
-                }).addCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar transientBottomBar, int event) {
-                        super.onDismissed(transientBottomBar, event);
-                        if (event == DISMISS_EVENT_ACTION) return;
-                        confirmVote(item);
-                    }
-                });
-        currentSnack.show();
+        setSnackbar(Snackbar.make(layout, String.format("You've voted for %s.", item.getName()), Snackbar.LENGTH_LONG)
+            .setAction("Undo", v -> {
+                fragment.restoreVoting(item);
+            }).addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    if (event == DISMISS_EVENT_ACTION) return;
+                    confirmVote(item);
+                }
+            }));
     }
 
     void confirmVote(Category item) {
@@ -233,10 +235,7 @@ public class VoteCategoryActivity extends AppCompatActivity
             poll.voteCategory(item, poll.getCity());
         });
 
-        if (currentSnack != null)
-            currentSnack.dismiss();
-
-        currentSnack = Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG);
+        setSnackbar(Snackbar.make(layout, R.string.vote_category_snackbar, BaseTransientBottomBar.LENGTH_LONG));
         currentSnack.show();
     }
 
@@ -246,11 +245,8 @@ public class VoteCategoryActivity extends AppCompatActivity
      */
     @Override
     public void onCategoryReduce() {
-        if (currentSnack != null)
-            currentSnack.dismiss();
 
-        currentSnack = Snackbar.make(layout, R.string.vote_category_tie, Snackbar.LENGTH_LONG);
-        currentSnack.show();
+        setSnackbar(Snackbar.make(layout, R.string.vote_category_tie, Snackbar.LENGTH_LONG));
         fragment.restoreVoting();
     }
 }

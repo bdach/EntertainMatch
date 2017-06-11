@@ -58,6 +58,26 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
      */
     private Subscription changesSubscription;
 
+    /**
+     * Holds reference to currently presented snackbar.
+     */
+    private Snackbar currentSnack;
+
+    /**
+     * Kinda dirty hack for fast-dismissing snackbars.
+     * When the last user decides on date then we might get several callbacks to this view.
+     * But we want to show snackbar indicating stage finish just once.
+     */
+    private boolean hasFinishSnackbarBeenShown;
+
+    private void setSnackbar(Snackbar newSnack) {
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = newSnack;
+        currentSnack.show();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -66,15 +86,19 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
         FacebookInitializer.init(getApplicationContext());
 
         changesSubscription = FirebasePollController.getPoll(pollId).subscribe(poll -> {
+            if (hasFinishSnackbarBeenShown)
+                return;
+
             if (poll.getStage().equals(VoteResultStage.class.toString())) {
-                Snackbar.make(coordinatorLayout, R.string.results_stage_message, Snackbar.LENGTH_LONG)
-                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                super.onDismissed(transientBottomBar, event);
-                                NavigationHelper.back(VoteDateActivity.this, pollId);
-                            }
-                        }).show();
+                hasFinishSnackbarBeenShown = true;
+                setSnackbar(Snackbar.make(coordinatorLayout, R.string.results_stage_message, Snackbar.LENGTH_LONG)
+                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        NavigationHelper.back(VoteDateActivity.this, pollId);
+                        }
+                    }));
             } else {
                 participantList = new ParticipantList(this, poll);
                 participantList.fetchNames();
@@ -144,15 +168,21 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
                 dateFragment.disallowEdition();
 
                 if (poll.getEventDatesStatus().get("voted").get(facebookId)) {
-                    Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG).show();
+                    setSnackbar(Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG));
                 } else {
-                    List<EventDate> dates = dateFragment.getDates();
-                    poll.chooseDate(
-                        ListExt.map(dates, EventDate::getLocationId),
-                        ListExt.map(dates, EventDate::isSelected)
-                    );
+                    setSnackbar(Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG)
+                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
 
-                    Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG).show();
+                                List<EventDate> dates = dateFragment.getDates();
+                                poll.chooseDate(
+                                    ListExt.map(dates, EventDate::getLocationId),
+                                    ListExt.map(dates, EventDate::isSelected)
+                                );
+                            }
+                    }));
                 }
             });
 

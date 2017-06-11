@@ -61,6 +61,19 @@ public class VoteResultActivity extends AppCompatActivity {
 
     private ParticipantList participantList;
 
+    /**
+     * Holds reference to currently presented snackbar.
+     */
+    private Snackbar currentSnack;
+
+    private void setSnackbar(Snackbar newSnack) {
+        if (currentSnack != null)
+            currentSnack.dismiss();
+
+        currentSnack = newSnack;
+        currentSnack.show();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,14 +149,14 @@ public class VoteResultActivity extends AppCompatActivity {
                     addPollToCalendar();
                     buttonListener(true);
                 } else {
-                    Snackbar.make(coordinatorLayout, R.string.no_calendar_permissions, Snackbar.LENGTH_LONG)
-                            .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                        @Override
-                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                    setSnackbar(Snackbar.make(coordinatorLayout, R.string.no_calendar_permissions, Snackbar.LENGTH_LONG)
+                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
                             super.onDismissed(transientBottomBar, event);
                             buttonListener(true);
                         }
-                    }).show();
+                    }));
                 }
             }
         }
@@ -159,15 +172,14 @@ public class VoteResultActivity extends AppCompatActivity {
             FirebaseUserController.removePollForUser(pollId, facebookId);
             FirebaseUserEventController.addEventForUser(pollId, facebookId);
             notifyPollEnded();
-            Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
-                    .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                @Override
-                public void onDismissed(Snackbar transientBottomBar, int event) {
+            setSnackbar(Snackbar.make(coordinatorLayout, going ? getString(R.string.going_positive) : getString(R.string.going_negative), Snackbar.LENGTH_LONG)
+                .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
                     super.onDismissed(transientBottomBar, event);
-
                     onBackPressed();
                 }
-            }).show();
+            }));
         });
     }
 
