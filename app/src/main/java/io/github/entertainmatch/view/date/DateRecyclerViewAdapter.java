@@ -43,6 +43,7 @@ public class DateRecyclerViewAdapter extends RecyclerView.Adapter<DateRecyclerVi
      * After pressing confirm button it should not be possible to edit items.
      */
     @Setter
+    @Getter
     private boolean isEditable;
 
     @Override

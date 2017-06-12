@@ -133,6 +133,13 @@ public class DateFragment extends Fragment {
     }
 
     /**
+     * Used to check if status can be edited.
+     */
+    public boolean isEditable() {
+        return adapter.isEditable();
+    }
+
+    /**
      * Interface used to notify the activity of an item selection.
      */
     public interface OnDateSelectedListener {

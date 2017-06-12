@@ -1,6 +1,7 @@
 package io.github.entertainmatch.view.date;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
@@ -162,29 +163,14 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_confirm_vote) {
-            FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
-                String facebookId = FacebookUsers.getCurrentUser(this).getFacebookId();
-                dateFragment.disallowEdition();
-
-                if (poll.getEventDatesStatus().get("voted").get(facebookId)) {
-                    setSnackbar(Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG));
-                } else {
-                    setSnackbar(Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG)
-                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                super.onDismissed(transientBottomBar, event);
-
-                                List<EventDate> dates = dateFragment.getDates();
-                                poll.chooseDate(
-                                    ListExt.map(dates, EventDate::getLocationId),
-                                    ListExt.map(dates, EventDate::isSelected)
-                                );
-                            }
-                    }));
-                }
-            });
+        if (item.getItemId() == R.id.action_confirm_vote && dateFragment.isEditable()) {
+            new AlertDialog.Builder(this)
+                .setTitle(R.string.are_you_sure)
+                .setMessage(R.string.one_voting_chance_message)
+                .setPositiveButton(R.string.vote, (dialog, which) -> proceedWithVoting())
+                .setNegativeButton(R.string.cancel, (dialog1, which) -> {})
+                .create()
+                .show();
 
             return true;
         }
@@ -197,6 +183,35 @@ public class VoteDateActivity extends AppCompatActivity implements DateFragment.
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Method used when user is totally sure that he wants to vote.
+     * There is no option to vote again.
+     */
+    private void proceedWithVoting() {
+        FirebasePollController.getPollOnce(pollId).subscribe(poll -> {
+            String facebookId = FacebookUsers.getCurrentUser(VoteDateActivity.this).getFacebookId();
+            dateFragment.disallowEdition();
+
+            if (poll.getEventDatesStatus().get("voted").get(facebookId)) {
+                setSnackbar(Snackbar.make(coordinatorLayout, R.string.already_voted, Snackbar.LENGTH_LONG));
+            } else {
+                setSnackbar(Snackbar.make(coordinatorLayout, R.string.date_notification, Snackbar.LENGTH_LONG)
+                        .addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                super.onDismissed(transientBottomBar, event);
+
+                                List<EventDate> dates = dateFragment.getDates();
+                                poll.chooseDate(
+                                        ListExt.map(dates, EventDate::getLocationId),
+                                        ListExt.map(dates, EventDate::isSelected)
+                                );
+                            }
+                        }));
+            }
+        });
     }
 
     @Override

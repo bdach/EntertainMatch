@@ -91,4 +91,7 @@
     <string name="internet_dialog_message">It seems that you are not connected to the internet</string>
     <string name="retry">Retry</string>
     <string name="cancel">Cancel</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="one_voting_chance_message">You will not be able to change your mind later</string>
+    <string name="vote">Vote</string>
 </resources>
