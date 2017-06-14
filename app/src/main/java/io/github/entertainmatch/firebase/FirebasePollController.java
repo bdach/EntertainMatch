@@ -252,7 +252,7 @@ public class FirebasePollController {
                                 location.getId(),
                                 location.getPlace(),
                                 location.getLat(),
-                                location.getLat(),
+                                location.getLon(),
                                 new Date(eventDate.getDate()),
                                 poll.getEventDatesStatus()
                                         .get(location.getId())
